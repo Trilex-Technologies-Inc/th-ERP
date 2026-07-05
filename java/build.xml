@@ -1,0 +1,34 @@
+<project name="therp" default="jar" basedir=".">
+
+  <path id="classpath">
+    <fileset dir="lib" includes="**/*.jar"/>
+  </path>
+  
+  <target name="compile">
+    <javac srcdir="src" destdir="classes" classpathref="classpath" debug="on"/>
+  </target>
+
+  <target name="signutil">
+	<signjar jar="lib/tablelayout.jar" alias="therp" keystore="therp.keystore"
+             storepass="abc123"/>
+  </target>
+
+  <target name="jarpos" depends="compile">
+    <jar jarfile="posclient.jar" basedir="classes" includes="therp/pos/**"/>
+	<signjar jar="posclient.jar" alias="therp" keystore="therp.keystore"
+             storepass="abc123"/>
+  </target>
+  
+  <target name="jarprint" depends="compile">
+    <jar jarfile="printapplet.jar" basedir="classes" includes="therp/print/**"/>
+	<signjar jar="printapplet.jar" alias="therp" keystore="therp.keystore"
+             storepass="abc123"/>
+  </target>
+
+  <target name="jarutil" depends="compile">
+    <jar jarfile="therputil.jar" basedir="classes" includes="therp/util/**"/>
+	<signjar jar="therputil.jar" alias="therp" keystore="therp.keystore"
+             storepass="abc123"/>
+  </target>
+  
+</project>

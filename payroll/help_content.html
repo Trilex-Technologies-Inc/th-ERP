@@ -1,0 +1,161 @@
+<h1>Payroll documentation</h1>
+<ul>
+<li><a href='#hiring'>Hiring a new employee</a></li>
+<li><a href='#daily'>Daily attendence report</a></li>
+<li><a href='#calendar'>Employee calendar</a></li>
+<li><a href='#end'>End of pay period</a></li>
+<li><a href='#config'>Configure</a></li>
+<li><a href='#policy'>Creating a policy</a></li>
+</ul>
+
+<a name='hiring'></a>
+<h2>Hiring new employee</h2>
+<p>When a new employee is hired, you first have to enter some basic information like
+givenname and surname.</p>
+<p>Next, you have to assign a policy to the employee. A policy decides many things about payroll 
+processing, like deductions, benefits, tax, etc, etc. In the default configuration there 
+are only one policy defined - standard. This policy is used for employees that are paided 
+a montly salary. But it is possible to define other policies for other kind of employees,
+like hourly paid employees or comissioned employees. </p>
+<p>Depending on what policy that is used, you have to enter different attribute values for
+the employee, in the tab "Attributes". For the standard policy, there are one attribute to 
+set - "Salary", which is the monthly standard salary to pay. Historical attributes are stored and
+may be view by clicking the magnifying glass icon.</p>
+<p>If a bank payment file should be produced, the employee need to have a bank account, to which the
+salary should be payed.</p>
+<p>You might also define pay items for an employee. A pay item will create a new pay event
+for every pay perid. A pay item contains a pay accountid and an optional amount.
+</p>
+
+<a name='daily'></a>
+<h2>Daily attendence report</h2>
+<p>The daily attendece report should be used by administrators that are registering attendence
+for the staff. In this form, the date for which the report should be done can be selected. Today
+is default. Below the date selector, all employees are listed. For each employee following
+information may be registered.</p>
+<ul>
+<li><i>Late arrival</i> - Should be checked if the employee arrived late. (This is not
+applicable for hourly payed employees.)</li>
+<li><i>Absent full day</i> - Should be checked if the employee didn't show up at all for that day. (Only
+applicable for salaried employees.)</li>
+<li><i>Absence hours</i> - Number of hours the employee didn't work.
+(Only applicable for salaried employees.)</li>
+<li><i>Working full day</i> - Should be checked if the employee was working. (Not applicable for
+salaried employees.)</li>
+<li><i>Working hours</i> - Numbers of hours worked. (Only applicable for hourly paid employees.)</li>
+
+</ul>
+
+<a name='calendar'></a>
+<h2>Employee calendar</h2>
+<p>If reporting is done by the employee himself or made by week or by month by the administrator,
+the employee calendar should be used. In this form all reporting for a given month, is displayed.</p>
+<p>To report a new pay event, click on "New" for the given day and select what kind of event (account)
+to create. In the default configuration there are following accounts to choose.</p>
+<ul>
+<li><i>Attendence</i> - Accounts related to attendence.
+	<ul>
+	<li><i>Hour absence</i> - Absent some hours.</li>
+	<li><i>Day absence</i> - Absent one or more days.</li>
+	<li><i>Sick leave</i> - Absent because of sickness, the first x number of days per year are 
+	payed, otherwise they are unpaided.</li>
+	</ul>
+</li>
+<li><i>Expenses</i> - Expenses made by the employee, that should be paid by the employeer.
+	<ul>
+	<li><i>Travel expenses</i> - Expenses made during business travels.</li>
+	<li><i>Health care</i> - Expenses for health care that should be paided by the employeer.</li>
+	</ul>
+</li>
+</ul>
+<p>Depending on what account you choose, you have to enter some kind of
+value. The different types of values are: Amount, hours, days, units.</p>
+<p>Please remember that the accounts above is only the default configuration. The application
+is highlt configurable and the list might be very different.</p>
+
+<a name='end'></a>
+<h2>End of pay period</h2>
+<p>At the end of a pay period there a number of steps to do.</p>
+<ol>
+<li>Make sure that all necessary registration is done.</li>
+<li>Check the payment report that the payments looks OK. It is possible to click
+on single employees to get a detailed report.</li>
+<li>Lock the pay period. After this, no more reporting could be done for this pay period.</li>
+<li>Send the payment file to the bank, or pay cache to the employees.</li>
+</ol>
+
+<a name='config'></a>
+<h2>Configuration</h2>
+<p>Payroll is a highly configurable payroll processing software. The application is shipped
+with a default configuration that should fit basic payroll processing. But it is likely that
+you need to do additional configuration to for you country or company.</p>
+
+<h3>Pay accounts</h3>
+<p>Pay accounts are a key concept in Payroll. Every pay event belongs to one pay account.
+The pay account decides the type of the event. Examples of accounts is absence, attendence,
+expenses, standard salary, etc.
+</p>
+<p>Every pay account has an input type. Possible input types are: Amount, hours, days or units.
+The input type tells what kind of value the user might enter when a pay event is registered.
+</p>
+<p>A pay account is associated to zero or many pay account groups. Pay account groups are used
+for summarize amounts. Examples of pay account groups are taxable, payable, etc.</p>
+<p>It is possible to write a formula for a pay account. The formula is used for used for
+calculating unit price or amount for the pay event. If the input type is minutes, days or units,
+the formula is used for calculating unit price. Otherwise the formula is used for calculating
+the amount.
+</p>
+<p>Every pay account has a calculation order with tells in what order the calulations of
+the pay events should be done. For example should tax calculation have a high calculation
+order.</p>
+
+<h3>Formulas</h3>
+<p>Formula expression may use basic arthmetric expressins and a number of pre-defined
+functions. The pre-defined functions are:</p>
+<ul>
+<li>attribute(attributename) - Returns the current value for the given attribute and the
+current employee.</li>
+<li>periodSum(groupname) - Returns the amount sum for all previous calculated pay events
+during the current period.</li>
+<li>advanced_percent(name, amount) - Returns the effective percent for an advanced percent
+and the given amount.</li>
+<li>sick_leave(paid_accountid, unpaid_accountid) - Created derived payevents (paid and unpaid)
+for a sick leave, the first x days per year is paid and the result is unpaid. The limit
+is decided by the attribute sick_days_per_year.</li>
+</ul>
+
+<h3>Advanced percent</h3>
+<p>For tax calculations, it is common to have different tax percent for different intervals
+or taxable income. The tax percent might be given by a table like below.</p>
+<table>
+<th>Taxable income</th>
+<th>Percent</th>
+<tr><td>0 - $20K</td><td align=right>0%</td></tr>
+<tr><td>$20K - $50K</td><td align=right>10%</td></tr>
+<tr><td>$50K - </td><td align=right>20%</td></tr>
+</table>
+<p>When doing such tax calculations, you need to know the effective percent for a given
+amount, accordning to a given table. The effective percent are then applied to the taxable
+sum.</p>
+
+<a name='policy'></a>
+<h2>Creating a policy</h2>
+<p>Before the any payroll processing can be done, at least one policy has to be defined.
+Every employee are later associated to a pre-defined policy.</p>
+
+<h3>Attributes</h3>
+<p>
+Different policies may demand different employee attribute values to be defined. The
+valid attributes should be pre-defined. The attributes values may be defined here and 
+in that case, they may apply for all employees having this policy, but most common is
+that the attribute values are defined for each employees. Historical attribute values
+are also stored.
+</p>
+
+<h3>Pay items</h3>
+<p>
+A policy may have a set of pay items. Every pay item will produce a new pay event for every
+employee associated to that policy, every pay period. The pay item contains a pay account
+and an optional amount.
+</p>
+

@@ -1,0 +1,71 @@
+H1 { font-family: "Courier New"; font-size: 16pt; font-weight: bold; }
+H2 { font-family: tahoma; font-size: 12pt; font-weight: bold; }
+H3 { font-family: tahoma; font-size: 10pt; font-weight: bold; }
+
+BODY { 
+    margin-left: 40; 
+    margin-right: 40; 
+    margin-top: 10; 
+    margin-bottom: 40; 
+}
+
+FONT { font-family: tahoma; font-size: 10pt; }
+
+TH {
+    font-family: tahoma; 
+    font-size: 10pt; 
+    background-color: #000099;
+    color: #FFFFFF;
+}
+
+TD { font-family: tahoma; font-size: 10pt; }
+
+table.border {
+    background-color: #A0A0A0;
+}
+
+TR.even {
+    background-color: #E9E9E9;
+}
+
+A {	
+}
+
+A:visited {
+	color: blue;
+}
+
+.menubar {
+	background-color: #000099;
+	color: white;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+A.menubar:visited {
+	color: white;
+}
+
+.title {
+	background-color: #CCCCE5;
+	color: black;
+}
+
+#border {
+	border: 1px solid #666;
+	padding: 10;
+}
+
+.border {
+	border: 1px solid #666;
+	padding: 10;
+}
+
+.label {
+	font-weight: bold;
+}
+
+.shortcut {
+	font-size: 14pt;
+	text-decoration: none;
+}

@@ -1,0 +1,60 @@
+Prerequisites: Before installing thERP, following software need to be installed.
+1. MySQL 4+
+2. Apache 2+
+3. PHP 4+
+ 
+To install therp, follow the steps below.
+1. Unpack the tar-file in your web directory (like /var/www).
+2. Create a mysql database named therp. 
+4. Create a mysql user named therp with password abc123.
+5. Navigate to http://localhost/therp in your browser.
+6. Login as admin with password abc123.
+
+
+You can change mysql hostname, username, password and database by creating a file 
+conf/config.php where you define the constants that are different from the default values. 
+Below is an example with default values.
+
+<?php
+define('DBHOST', 'localhost');
+define('DBUSER', 'therp');
+define('DBPWD', 'abc123');
+define('DBNAME', 'therp');
+?>
+
+If you have any problem, email support@therpsoft.com for free support.
+
+osCommerce integration
+======================
+In order to use the osCommerce and thERP together, you should use the same
+database for both applications. 
+
+The thERP installation folder must be located in the same folder as the oscommerce
+"catalog" folder (probably in the web server document root folder like /var/www).
+
+Next, copy the content of the oscommerce folder into osCommerce "catalog" folder.
+
+Finally, create a customer in thERP named "osCommerce".
+
+When creating products in thERP, the same products should be visible in osCommerce. 
+When processing customer orders in osCommerce, sales orders will be registered in
+thERP.
+
+
+
+Language & Translate
+=========
+You can choose the user's language when you create one use at the th-ERP.
+when you setup finished,retry login to th-ERP,user will use the choosed language GUI.
+
+You can find any language at the directory "languages" that can use in th-ERP.
+If your language not in support now, you can translate to your location language.
+step:
+1, in directory "languages",you can find any language file like *.inc. copy the cn.inc and
+   save to another file(please save as utf-8),like xx.inc
+2, login th-ERP, in home->common->language,insert one row for your language.
+   sample: if you add new language xx.inc , insert one new row and set code to xx
+3, now, you can use the new language when you create new user or edit the user.
+good luck ;)
+
+use it

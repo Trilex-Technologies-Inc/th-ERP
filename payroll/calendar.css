@@ -1,0 +1,36 @@
+A.event
+{
+	text-decoration: none;
+}
+
+
+A.event:hover 
+{
+	background : #E0E0E0;
+}
+
+A.new
+{
+	text-decoration: none;
+}
+
+
+A.new:hover 
+{
+	background : #E0E0E0;
+}
+
+TABLE.calendar {
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+
+TD.calendar {
+    border-collapse: collapse;
+    border: 1px solid black;
+}
+
+TR.calendar {
+    border-collapse: collapse;
+    border: 1px solid black;
+}

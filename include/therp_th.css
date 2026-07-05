@@ -1,0 +1,142 @@
+H1 { font-family: "Courier New"; font-size: 16pt; font-weight: bold; }
+H2 { font-family: tahoma; font-size: 12pt; font-weight: bold; }
+H3 { font-family: tahoma; font-size: 10pt; font-weight: bold; }
+
+BODY { 
+    margin-left: 20; 
+    margin-right: 20; 
+    margin-top: 10; 
+    margin-bottom: 40; 
+    font-family: tahoma;
+    font-size: 10pt;
+}
+
+FONT { font-family: tahoma; font-size: 10pt; }
+
+TH {
+    font-family: tahoma; 
+    font-size: 10pt; 
+    background-color: #CCCCE5;
+    font-weight: bold;
+}
+
+TD { font-family: tahoma; font-size: 10pt; }
+
+table.border {
+    background-color: #A0A0A0;
+}
+
+TR.even {
+    background-color: #E9E9E9;
+}
+
+A {	
+	text-decoration: none;
+	color: #000099;
+}
+
+A:visited {
+	color: #000099;
+}
+
+A:hover {
+	color: cccce5;
+}
+
+.menubar {
+	background-color: #000099;
+	color: white;
+	text-decoration: none;
+	font-weight: normal;
+}
+
+.menubar_current {
+	color: white;
+	text-decoration: none;
+	font-weight: bold;
+}
+
+A.menubar:visited {
+	color: white;
+}
+
+A.menubar_current:visited {
+	color: white;
+}
+
+.title {
+	color: black;
+	font-weight: bold;
+}
+
+A.title {
+	text-decoration: none;
+	color: black;
+}
+
+A.logo {
+	text-decoration: none;
+	color: black;
+}
+
+A.logo:hover {
+	color: #e9e9e9;
+}
+
+#border {
+	border: 1px solid #666;
+	padding: 10;
+}
+
+.border {
+	border: 1px solid #666;
+	padding: 10;
+}
+
+.label {
+	font-weight: bold;
+}
+
+.shortcut {
+	font-size: 14pt;
+	text-decoration: none;
+}
+
+.menupage {
+	margin: 10px;
+	padding: 10px; 	
+	font-size: 12pt;
+	text-decoration: none;
+}
+
+A.menupage {
+	color: black;
+}
+
+A.menupage:visited {
+	color: black;
+}
+
+A.menupage:hover {
+	color: cccce5;
+}
+
+A.sum {
+	text-decoration: none;
+}
+
+.error {
+	color: red;
+}
+
+.username {
+	font-size: 10pt;
+}
+
+TD.login {
+	background-color: #cccce5;	
+}
+
+P.help {
+	margin-left: 20pt;	
+}
