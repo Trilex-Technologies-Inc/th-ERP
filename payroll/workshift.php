@@ -16,7 +16,7 @@
 	        $sql .= "(starttime, endtime) ";
 	        $sql .= "values ('$starttime', '$endtime') ";
 	        sql($sql);
-	        $shiftid = mysql_insert_id();
+	        $shiftid = insert_id();
 	        $sql = "insert into schedule_shift ";
 	        $sql .= "(scheduleid, shiftid) ";
 	        $sql .= "values ($scheduleid, $shiftid) ";
