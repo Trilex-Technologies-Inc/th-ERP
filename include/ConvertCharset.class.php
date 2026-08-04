@@ -7,7 +7,7 @@
  * @link http://www.mikkom.pl My Homepage
  * 
  **/
-$PATH_TO_CLASS = dirname(ereg_replace("\\\\","/",__FILE__)) . "/" . "ConvertTables" . "/";
+$PATH_TO_CLASS = dirname(str_replace("\\","/",__FILE__)) . "/" . "ConvertTables" . "/";
 define ("CONVERT_TABLES_DIR", $PATH_TO_CLASS);
 define ("DEBUG_MODE", 1);
 
