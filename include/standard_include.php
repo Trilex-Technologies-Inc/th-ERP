@@ -88,12 +88,15 @@ function formatCase($str)
 
 function field_name($rs, $i)
 {
-    return mysql_field_name($rs, $i);
+    $fields = mysqli_fetch_fields($rs);
+    if (!array_key_exists($i, $fields))
+    	return null;
+    return $fields[$i]->name;
 }
 
 function num_fields($rs)
 {
-    return mysql_num_fields($rs);
+    return mysqli_num_fields($rs);
 }
 
 

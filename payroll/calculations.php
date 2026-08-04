@@ -166,7 +166,7 @@ function calculatePayevent($payeventid, $value = null, $accountid = null,
 
 function replaceNarrative($description, $payeventid)
 {
-	ereg("\\{.*\\}", $description, $regs);
+	preg_match('/\\{.*\\}/', $description, $regs);
 	foreach ($regs as $reg) {
 		$expression = str_replace('{', '', $reg);
 		$expression = str_replace('}', '', $expression);

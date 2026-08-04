@@ -1,14 +1,22 @@
 <?php
+
+$GLOBALS['therp_db_connection'] = null;
+
+function db_connection()
+{
+	return $GLOBALS['therp_db_connection'];
+}
+
 function query($sql)
 {
-	$q = mysql_query($sql);
-	$err = mysql_error();
+	$conn = db_connection();
+	$q = mysqli_query($conn, $sql);
+	$err = mysqli_error($conn);
 	if (strlen($err) > 0) {
 		$mess = "SQL error: " . $err . "\n";
-		$mess .= "SQL errno: " . mysql_errno() . "\n";
+		$mess .= "SQL errno: " . mysqli_errno($conn) . "\n";
 		$mess .= "<br/>";
 		$mess .= "SQL: " . $sql . "\n";
-		//echo $mess;
 		rollback();
 		trigger_error($mess, E_USER_ERROR);
 	}
@@ -17,46 +25,48 @@ function query($sql)
 
 function connect($host, $dbuser, $password)
 {
-	mysql_connect($host, $dbuser, $password);
+	$conn = mysqli_connect($host, $dbuser, $password);
+	if ($conn === false) {
+		trigger_error("Database connection failed: " . mysqli_connect_error(), E_USER_ERROR);
+	}
+	$GLOBALS['therp_db_connection'] = $conn;
 
-	// set for utf8
 	sql("SET NAMES 'utf8'");
-	//sql("SET CHARACTER_SET 'utf8'");
 }
 
 function select_db($dbname)
 {
-	return mysql_select_db($dbname);
+	return mysqli_select_db(db_connection(), $dbname);
 }
 
 function fetch_row($query)
 {
-	return mysql_fetch_row($query);
+	return mysqli_fetch_row($query);
 }
 
 function fetch_assoc($query)
 {
-	return mysql_fetch_assoc($query);
+	return mysqli_fetch_assoc($query);
 }
 
 function fetch_array($query)
 {
-	return mysql_fetch_array($query);
+	return mysqli_fetch_array($query);
 }
 
 function fetch_object($query)
 {
-	return mysql_fetch_object($query);
+	return mysqli_fetch_object($query);
 }
 
 function num_rows($rs)
 {
-	return mysql_num_rows($rs);
+	return mysqli_num_rows($rs);
 }
 
 function affected_rows()
 {
-	return mysql_affected_rows();
+	return mysqli_affected_rows(db_connection());
 }
 
 function find($sql, $dummy = false)
@@ -104,13 +114,16 @@ function commit()
 
 function rollback()
 {
-	sql("rollback");
-	sql("set autocommit=1");
+	$conn = db_connection();
+	if ($conn == null)
+		return;
+	@mysqli_rollback($conn);
+	@mysqli_autocommit($conn, true);
 }
 
 function insert_id()
 {
-    return mysql_insert_id();
+    return mysqli_insert_id(db_connection());
 }
 
 function findValue($sql, $default = null)
