@@ -114,71 +114,68 @@ title("<a href='receipts.php'>" . tr("Receipts") . "</a> > $title")
 
 <form action="receipt.php" method="POST">
 <input type=hidden name=customerid value='<?php echo $customerid ?>'/>
-<table>
-<?php
-	if (!$new) {
-		echo "<tr><td class=label>" . tr("Receipt id") . ":</td>";
-		echo "<td>";
-		echo $receiptid;
-		echo "<input type='hidden' name='receiptid' value='$receiptid'/>";
-		echo "</td>";
-	}
-?>
-<tr><td class=label><?php etr("Customer") ?>:</td><td><?php echo $customer->name ?></td>
-<tr><td class=label><?php etr("Date") ?>:</td><td><?php echo date(DATE_PATTERN, $receiptdate) ?></td></tr>
-<tr>
-	<td class=label><?php etr("Amount") ?>:</td>
-	<td>
-	<?php 
-	if ($new)
-		echo "<input type=text name=amount value='$amount'/>";
-	else	
-		echo $amount;
-	?>
-	</td>
-</tr>
-<tr>
-	<td class=label><?php etr("Bank account") ?>:</td>
-	<td><?php comboBox('accountid', $bankaccounts, $accountid, false, !$new) ?></td>
-	</td>
-</tr>
-	
-</tr>
-<?php
-if (!$new) {
-	echo "<tr>";
-	echo "<td colspan=2><a href='../accounting/transaction.php?transactionid=$transid'>General ledger transaction</a></td>";
-	echo "</tr>";
-}
-
-?>
-</table>
+<div class="border p-3 mb-4">
+	<div class="row g-3">
+		<?php if (!$new) { ?>
+		<div class="col-md-3">
+			<label class="form-label"><?php etr("Receipt id") ?></label>
+			<div class="form-control-plaintext"><?php echo $receiptid ?></div>
+			<input type='hidden' name='receiptid' value='<?php echo $receiptid ?>'/>
+		</div>
+		<?php } ?>
+		<div class="col-md-3">
+			<label class="form-label"><?php etr("Customer") ?></label>
+			<div class="form-control-plaintext"><?php echo $customer->name ?></div>
+		</div>
+		<div class="col-md-3">
+			<label class="form-label"><?php etr("Date") ?></label>
+			<div class="form-control-plaintext"><?php echo date(DATE_PATTERN, $receiptdate) ?></div>
+		</div>
+		<div class="col-md-3">
+			<label class="form-label"><?php etr("Amount") ?></label>
+			<?php if ($new) { ?>
+				<input type="text" name="amount" value="<?php echo $amount ?>" class="form-control" />
+			<?php } else { ?>
+				<div class="form-control-plaintext"><?php echo $amount ?></div>
+			<?php } ?>
+		</div>
+		<div class="col-md-4">
+			<label class="form-label"><?php etr("Bank account") ?></label>
+			<?php comboBox('accountid', $bankaccounts, $accountid, false, !$new) ?>
+		</div>
+	</div>
+	<?php if (!$new) { ?>
+	<div class="mt-3"><a href='../accounting/transaction.php?transactionid=<?php echo $transid ?>'><?php etr("General ledger transaction") ?></a></div>
+	<?php } ?>
+</div>
 <br/>
 <?php 
 if ($orders != null) { 
-	echo "<p>Left to allocate: $leftToAllocate</p>";
-	echo "<table>";
+	echo "<div class='mb-3'><strong>" . tr("Left to allocate") . ":</strong> $leftToAllocate</div>";
+	echo "<div class='table-responsive'><table class='table table-sm table-striped table-hover align-middle w-100'>";
+	echo "<thead><tr>";
 	echo "<th>" . tr("Sales order") . "</th>";
-	echo "<th>" . tr("Amount") . "</th>";
-	echo "<th>" . tr("Previous allocations") . "</th>";
-	echo "<th>" . tr("Allocated all") . "</th>";
+	echo "<th class='text-end'>" . tr("Amount") . "</th>";
+	echo "<th class='text-end'>" . tr("Previous allocations") . "</th>";
+	echo "<th class='text-center'>" . tr("Allocated all") . "</th>";
 	echo "<th>" . tr("Allocation") . "</th>";
+	echo "</tr></thead><tbody>";
 	$class = 'odd';
 	$i = 0;
 	while ($row = fetch($orders)) {
 		echo "<input type=hidden name=orderid_$i value='$row->orderid'/>";
 		echo "<tr class='$class'>";
 		echo "<td><a href='salesorder.php?orderid=$row->orderid'>$row->orderid</a></td>";
-		echo "<td align=right>$row->total</td>";
-		echo "<td align=right>$row->allocated</td>";
-		echo "<td align=center><input type=checkbox name='allocate_all_$i' value='1'/></td>";
-		echo "<td><input type=text name=allocation_$i value='$row->allocation'/></td>";
+		echo "<td class='text-end'>$row->total</td>";
+		echo "<td class='text-end'>$row->allocated</td>";
+		echo "<td class='text-center'><input type=checkbox name='allocate_all_$i' value='1'/></td>";
+		echo "<td><input type='text' name='allocation_$i' value='$row->allocation' class='form-control form-control-sm'/></td>";
 		echo "<input type=hidden name=old_allocation_$i value='$row->allocation'/>";
 		echo "</tr>";
         $class = ($class == "odd" ? "even" : "odd");
 		$i++;
 	}
-	echo "</table>";
+	echo "</tbody></table></div>";
 	echo "<input type=hidden name=count value='$i' />";
 }
 ?>

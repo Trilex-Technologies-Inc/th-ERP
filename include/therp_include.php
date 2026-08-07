@@ -189,9 +189,10 @@ function top0($module = null)
 	if (isEmpty($company))
 		$company = '$thERP';
 
-	echo "<header class='app-header navbar navbar-expand-lg bg-white border-bottom shadow-sm px-3 py-2'>";
+	echo "<header class='app-header navbar navbar-expand-lg bg-white px-3 py-2'>";
 	echo "<div class='container-fluid px-0'>";
-	echo "<a class='navbar-brand fw-bold text-primary' href='../common/modules.php' title='$title'>$company</a>";
+	echo "<button class='sidebar-toggle' type='button' aria-label='" . tr("Toggle navigation") . "' aria-expanded='false'><span></span><span></span><span></span></button>";
+	echo "<a class='navbar-brand fw-bold text-primary' href='../common/modules.php' title='$title'><span class='brand-mark'>ERP</span><span class='brand-name'>$company</span></a>";
 	if ($module != null) {
 		echo "<span class='badge text-bg-light border me-auto'>" . tr($module) . "</span>";
 	} else {
@@ -199,8 +200,9 @@ function top0($module = null)
 	}
 	$href = '../payroll/selfservice_settings.php';
 	echo "<div class='d-flex align-items-center gap-2 small'>";
-	echo "<span class='text-secondary'>" . tr("User") . ": <a class='fw-semibold' href='$href'>" . getUser() . "</a></span>";
-	echo "<a class='btn btn-outline-secondary btn-sm' href='../common/modules.php?logout=true'>" . tr("Logout") . "</a>";
+	echo "<span class='user-avatar' aria-hidden='true'>" . strtoupper(substr(getUser(), 0, 1)) . "</span>";
+	echo "<span class='text-secondary user-label'>" . tr("User") . ": <a class='fw-semibold' href='$href'>" . getUser() . "</a></span>";
+	echo "<a class='btn btn-outline-secondary btn-sm logout-link' href='../common/modules.php?logout=true'>" . tr("Logout") . "</a>";
 	echo "</div></div></header>\n";
 }
 
@@ -210,13 +212,22 @@ function bottom()
 	echo "<a href='http://www.therpsoft.com' class='text-decoration-none'>www.therpsoft.com</a>";
 	echo "</footer>";
 	echo "<script src='../include/bootstrap.bundle.min.js'></script>";
+	echo "<script src='../include/therp_modern.js'></script>";
 }
 
 function menu($href, $text, $width, $hasNext, $currentHref)
 {
 	$current = $href == $currentHref;
 	$class = $current ? 'menubar_current' : 'menubar';
-	echo "<td class='app-nav-item' style='width:$width%'><a class='$class' href='$href'>" . tr($text) . "</a></td>\n";
+	$icons = array(
+		'Products' => '&#9638;', 'Purchase' => '&#128722;', 'Stock move' => '&#8644;',
+		'Configuration' => '&#9881;', 'Help' => '?', 'Employees' => '&#9787;',
+		'Reporting' => '&#9636;', 'End of period' => '&#10003;', 'Security' => '&#128274;',
+		'Languages' => 'A', 'Company info' => '&#9635;', 'Sales' => '$',
+		'Customers' => '&#9787;', 'Transactions' => '&#8644;', 'Accounts' => '&#9636;'
+	);
+	$icon = array_key_exists($text, $icons) ? $icons[$text] : '&#9679;';
+	echo "<td class='app-nav-item' style='width:$width%'><a class='$class' href='$href'><span class='nav-icon' aria-hidden='true'>$icon</span><span>" . tr($text) . "</span></a></td>\n";
 }
 
 function showUpgrade()

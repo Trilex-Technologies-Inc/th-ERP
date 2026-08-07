@@ -113,54 +113,79 @@ title($title);
 
 <form action="customer.php" method="POST">
 <input type=hidden name=mode value='<?php echo $mode ?>'/>
-<table>
-<tr><td><?php etr("Customer id") ?>:</td>
-<td>
-<?php
-	if (!$new) {
-		echo $customerid;
-		hidden('customerid', $customerid);
-	}
-?>
-</td>
-</tr>
-<tr><td><?php echo tr("Name") ?>:</td><td><?php textbox("name", $rec->name) ?></td></tr>
-<tr><td><?php echo tr("Street address") ?>:</td><td><?php textbox("streetaddress", $rec->streetaddress, 30) ?></td></tr>
-<tr><td><?php echo tr("City") ?>:</td><td><?php textbox("city", $rec->city) ?></td></tr>
-<tr><td><?php echo tr("Zip code") ?>:</td><td><?php textbox("zipcode", $rec->zipcode) ?></td></tr>
-<tr><td><?php echo tr("E-mail") ?>:</td><td><?php textbox("email", $rec->email, 30) ?></td></tr>
-<tr>
-<td><?php etr("Telephone numbers") ?></td>
-</tr>
-<?php
-while ($row = fetch($phoneNumbers)) {
-	echo "<tr>";
-	echo "<td>$row->description</td>";
-	echo "<td>";
-	echo $row->telephoneno;
-	echo "&nbsp;";
-	deleteIcon("customer.php?customerid=$customerid&del_telephoneno=$row->telephoneno");
-	echo "</td>";
-	echo "</tr>";
-}
-echo "<tr>";
-echo "<td>";
-combobox('phonecatid_new', $phonecats, null, true);
-echo "</td>";
-echo "<td>";
-textbox('telephoneno_new', '');
-echo "</td>";
-echo "</tr>";
-?>
-<tr>
-	<td><?php echo tr("Price list") ?>:</td>
-	<td><?php combobox("pricelistid", $pricelists, $rec->pricelistid, false) ?></td>
-</tr>
-<tr><td><?php echo tr("VAT number") ?>:</td><td><?php textbox("vatnumber", $rec->vatnumber, 20) ?></td></tr>
-<tr><td><?php echo tr("Credit length") ?>:</td><td><?php numberbox("credit_length", $rec->credit_length, 5) ?></td></tr>
-<tr><td><?php echo tr("Use VAT") ?>:</td><td><?php checkbox("use_vat", $rec->use_vat) ?></td></tr>
-<tr><td><?php echo tr("Balance") ?>:</td><td><?php echo formatMoney($balance) ?></td></tr>
-</table>
+<div class="border p-3 mb-4">
+	<div class="row g-3">
+		<div class="col-md-3">
+			<label class="form-label"><?php etr("Customer id") ?></label>
+			<div class="form-control-plaintext"><?php if (!$new) { echo $customerid; hidden('customerid', $customerid); } ?></div>
+		</div>
+		<div class="col-md-6">
+			<label class="form-label"><?php echo tr("Name") ?></label>
+			<?php textbox("name", $rec->name) ?>
+		</div>
+		<div class="col-md-6">
+			<label class="form-label"><?php echo tr("Street address") ?></label>
+			<?php textbox("streetaddress", $rec->streetaddress, 30) ?>
+		</div>
+		<div class="col-md-3">
+			<label class="form-label"><?php echo tr("City") ?></label>
+			<?php textbox("city", $rec->city) ?>
+		</div>
+		<div class="col-md-3">
+			<label class="form-label"><?php echo tr("Zip code") ?></label>
+			<?php textbox("zipcode", $rec->zipcode) ?>
+		</div>
+		<div class="col-md-6">
+			<label class="form-label"><?php echo tr("E-mail") ?></label>
+			<?php textbox("email", $rec->email, 30) ?>
+		</div>
+	</div>
+	<div class="row g-3 mt-4">
+		<div class="col-12">
+			<strong><?php etr("Telephone numbers") ?></strong>
+		</div>
+		<?php
+		while ($row = fetch($phoneNumbers)) {
+			echo "<div class='row g-2 align-items-center'>";
+			echo "<div class='col-auto'>$row->description</div>";
+			echo "<div class='col'>";
+			echo $row->telephoneno;
+			echo "&nbsp;";
+			deleteIcon("customer.php?customerid=$customerid&del_telephoneno=$row->telephoneno");
+			echo "</div>";
+			echo "</div>";
+		}
+		?>
+	</div>
+	<div class="row g-3 align-items-end mt-3">
+		<div class="col-md-4"><?php combobox('phonecatid_new', $phonecats, null, true); ?></div>
+		<div class="col-md-4"><?php textbox('telephoneno_new', ''); ?></div>
+	</div>
+	<div class="row g-3 mt-4">
+		<div class="col-md-4">
+			<label class="form-label"><?php echo tr("Price list") ?></label>
+			<?php combobox("pricelistid", $pricelists, $rec->pricelistid, false) ?>
+		</div>
+		<div class="col-md-4">
+			<label class="form-label"><?php echo tr("VAT number") ?></label>
+			<?php textbox("vatnumber", $rec->vatnumber, 20) ?>
+		</div>
+		<div class="col-md-2">
+			<label class="form-label"><?php echo tr("Credit length") ?></label>
+			<?php numberbox("credit_length", $rec->credit_length, 5) ?>
+		</div>
+		<div class="col-md-2">
+			<label class="form-label"><?php echo tr("Use VAT") ?></label>
+			<?php checkbox("use_vat", $rec->use_vat) ?>
+		</div>
+	</div>
+	<div class="row g-3 mt-3">
+		<div class="col-md-4">
+			<label class="form-label"><?php echo tr("Balance") ?></label>
+			<div class="form-control-plaintext"><?php echo formatMoney($balance) ?></div>
+		</div>
+	</div>
+</div>
 <br/>
 <?php saveButton() ?>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>

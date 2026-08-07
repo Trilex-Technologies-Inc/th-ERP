@@ -77,39 +77,49 @@ menubar('index.php');
 ?>
 <br>
 <form action="sales.php" method="GET">
-<div class="border">
-<table>
-<tr><td><?php etr("Customer") ?>:</td><td><?php comboBox('customerid', $customers, $customerid, true) ?></td>
-<tr>
-	<td><?php etr("Only show") ?>:</td>
-	<td>
-		<?php checkbox('uninvoiced', $uninvoiced, 'Not invoiced') ?>
-		<?php checkbox('unpaid', $unpaid, 'Unpaid') ?>
-		<?php checkbox('overdue', $overdue, 'Overdue') ?>
-	</td>
-</tr>
-<tr>
-	<td><?php etr("Interval") ?>:</td>
-	<td>
-		<?php datebox("starttime", formatDate($starttime)) ?>
-		<?php datebox("endtime", formatDate($endtime)) ?>
-	</td>
-</tr>
-<tr><td><input type="submit" name="search" value="<?php etr("Search") ?>" /></td></tr>
-</tr>
-</table>
+<div class="border p-3 mb-4">
+	<div class="row g-3 align-items-end">
+		<div class="col-md-4">
+			<label class="form-label"><?php etr("Customer") ?></label>
+			<?php comboBox('customerid', $customers, $customerid, true) ?>
+		</div>
+		<div class="col-md-8">
+			<label class="form-label d-block"><?php etr("Only show") ?></label>
+			<div class="d-flex flex-wrap gap-3">
+				<?php checkbox('uninvoiced', $uninvoiced, 'Not invoiced') ?>
+				<?php checkbox('unpaid', $unpaid, 'Unpaid') ?>
+				<?php checkbox('overdue', $overdue, 'Overdue') ?>
+			</div>
+		</div>
+		<div class="col-md-4">
+			<label class="form-label"><?php etr("Interval") ?></label>
+			<div class="d-flex gap-2 flex-wrap align-items-center">
+				<?php datebox("starttime", formatDate($starttime)) ?>
+				<?php datebox("endtime", formatDate($endtime)) ?>
+			</div>
+		</div>
+		<div class="col-auto">
+			<input type="submit" name="search" value="<?php etr("Search") ?>" class="btn btn-primary" />
+		</div>
+	</div>
 </div>
 </form>
 
 <form action="sales.php" method=POST>
-<table width="100%">
+<div class="table-responsive">
+<table class="table table-sm table-striped table-hover align-middle w-100">
+<thead>
+<tr>
 <th><?php etr("Cancel") ?></th>
 <th><?php etr("No") ?></th>
-<th width='50%'><?php etr("Customer") ?></th>
+<th><?php etr("Customer") ?></th>
 <th><?php etr("Order date") ?></th>
 <th><?php etr("Invoiced") ?></th>
 <th><?php etr("Payed") ?></th>
 <th><?php etr("Recurring") ?></th>
+</tr>
+</thead>
+<tbody>
 <?php
     $class = "odd";
     $i = 0;
@@ -120,23 +130,23 @@ menubar('index.php');
     	if ($row->credit_orgid != null)
     		$script = "credit_salesorder.php";
     	$href = "$script?orderid=$row->orderid";    	
-        echo "<td align=right><a href='$href'>";
+        echo "<td class='text-end'><a href='$href'>";
         if ($row->no == null)
         	printf("(%06d)", $row->orderid);
         else
         	printf("%06d", $row->no);
         echo "</a></td>";
         echo "<td>$row->customername</td>";
-        echo "<td align=center>" . date(DATE_PATTERN, $row->orderdate) . "</td>";
+        echo "<td class='text-center'>" . date(DATE_PATTERN, $row->orderdate) . "</td>";
         if (isEmpty($row->invoice_transid))
-        	echo "<td/>";
+        	echo "<td class='text-center'></td>";
         else
-        	echo "<td align=center>X</td>";
+        	echo "<td class='text-center'>X</td>";
         if ($row->total > $row->allocated || $row->total == 0)
-        	echo "<td/>";
+        	echo "<td class='text-center'></td>";
         else
-        	echo "<td align=center>X</td>";
-		echo "<td align=center>";
+        	echo "<td class='text-center'>X</td>";
+		echo "<td class='text-center'>";
 		echo $row->recur != null ? 'X' : '';
 		echo "</td>";
         echo "</tr>";
@@ -144,7 +154,9 @@ menubar('index.php');
         $i++;
     }
 ?>
+</tbody>
 </table>
+</div>
 <br/>
 <?php newButton("customers.php?mode=createorder") ?>
 </form>

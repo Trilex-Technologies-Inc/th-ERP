@@ -14,6 +14,14 @@
   }
 
   document.addEventListener('DOMContentLoaded', function () {
+    var toggle = document.querySelector('.sidebar-toggle');
+    if (toggle) {
+      toggle.addEventListener('click', function () {
+        var open = document.body.classList.toggle('sidebar-open');
+        toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+      });
+    }
+
     document.querySelectorAll('table').forEach(function (table) {
       if (isNavigation(table) || isTinyLayout(table)) return;
 
@@ -31,6 +39,12 @@
           wrapper.appendChild(table);
         }
       }
+    });
+
+    document.querySelectorAll('.app-nav-item a').forEach(function (link) {
+      link.addEventListener('click', function () {
+        document.body.classList.remove('sidebar-open');
+      });
     });
   });
 })();

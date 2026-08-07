@@ -66,26 +66,29 @@ title(tr("Invoice configuration"));
 
 <form action="invoice_conf.php" method="POST">
 
-<table>
-<tr>
-<td><?php etr("Template") ?>:</td>
-<td>
-<?php combobox('invoice_template', $templates, $invoice_template) ?>
-</td>
-</tr>
-</table>
-<br><br>
+<div class="row g-3 mb-4">
+	<div class="col-md-4">
+		<label class="form-label"><?php etr("Template") ?></label>
+		<?php combobox('invoice_template', $templates, $invoice_template) ?>
+	</div>
+</div>
 
-<table width='100%'>
+<div class="table-responsive">
+<table class="table table-sm table-striped table-hover align-middle w-100">
+<thead>
+<tr>
 <th><?php echo tr("Delete") ?></th>
 <th><?php echo tr("Footer") ?></th>
+</tr>
+</thead>
+<tbody>
 <?php
 $class = "odd";
 $i = 0;
 while ($row = fetch($rs)) {
 	echo "<input type=hidden name=rowno_$i value='$row->rowno'/>";
     echo "<tr class='$class'>";
-    echo "<td align=center>";
+    echo "<td class='text-center'>";
 	deleteIcon("invoice_conf.php?del_rowno=$row->rowno");
     echo "</td>";
     echo "<td>";
@@ -98,10 +101,12 @@ while ($row = fetch($rs)) {
 hidden('count', $i);
 ?>
 <tr>
-<td/>
+<td></td>
 <td><?php textBox('text_new', '', 80) ?></td>
 </tr>
+</tbody>
 </table>
+</div>
 <br/>
 <?php saveButton() ?>
 </form>

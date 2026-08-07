@@ -45,40 +45,36 @@ title($title);
 
 <form action="email_invoice.php" method="POST">
 <?php hidden('orderid', $orderid) ?>
-<table>
-<tr>
-	<td><?php etr("Customer") ?>:</td>
-	<td><?php echo $customer ?></td>
-</tr>
-<tr>
-	<td><?php etr("To") ?>:</td>
-	<td><?php textbox('to', $to, 60) ?></td>
-</tr>
-<tr>
-	<td><?php etr("CC") ?>:</td>
-	<td><?php textbox('cc', $from, 60) ?></td>
-</tr>
-<tr>
-	<td><?php etr("From") ?>:</td>
-	<td><?php textbox('from', $from, 40) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Subject") ?>:</td>
-	<td><?php textbox('subject', $subject, 80) ?></td>
-</tr>
-<tr>
-	<td colspan=2>
-		<textarea name='body' cols=80 rows=10><?php echo $body ?></textarea>
-	</td>
-</tr>
-</table>
-<table>
-<tr>
-<td><input type=submit name=send value='Send e-mail'></td>
-<td>&nbsp;</td>
-<td><?php echo "<a href='invoice_pdf.php?orderid=$orderid'>" . tr("Attachment") . "</a>"; ?></td>
-</tr>
-</table>
+<div class="row g-3 mb-3">
+	<div class="col-md-6">
+		<label class="form-label"><?php etr("Customer") ?></label>
+		<div class="form-control-plaintext"><?php echo htmlspecialchars($customer) ?></div>
+	</div>
+	<div class="col-md-6">
+		<label class="form-label"><?php etr("To") ?></label>
+		<?php textbox('to', $to, 60) ?>
+	</div>
+	<div class="col-md-6">
+		<label class="form-label"><?php etr("CC") ?></label>
+		<?php textbox('cc', $from, 60) ?>
+	</div>
+	<div class="col-md-6">
+		<label class="form-label"><?php etr("From") ?></label>
+		<?php textbox('from', $from, 40) ?>
+	</div>
+	<div class="col-12">
+		<label class="form-label"><?php etr("Subject") ?></label>
+		<?php textbox('subject', $subject, 80) ?>
+	</div>
+	<div class="col-12">
+		<label class="form-label"><?php etr("Body") ?></label>
+		<textarea name='body' cols=80 rows=10 class='form-control'><?php echo htmlspecialchars($body) ?></textarea>
+	</div>
+</div>
+<div class="d-flex gap-2 align-items-center">
+	<input type=submit name=send value='Send e-mail' class='btn btn-primary'>
+	<?php echo "<a href='invoice_pdf.php?orderid=$orderid' class='btn btn-outline-secondary'>" . tr("Attachment") . "</a>"; ?>
+</div>
 </form>
 <?php bottom() ?>
 </body>

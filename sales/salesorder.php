@@ -301,140 +301,130 @@ if (array_key_exists('finish', $_POST) && false) {
 
 <form name=postform action="salesorder.php" method="POST">
 <input type=hidden name=customerid value='<?php echo $customerid ?>'/>
-<table>
-<tr>
-<?php
-	if (!$new) {
-		echo "<td><b>" . tr("Order no") . ":</b></td>";
-		echo "<td>";
-		if ($rec->no != null)
-			echo $rec->no;
-		else
-			echo $orderid;
-		echo "<input type='hidden' name='orderid' value='$orderid'/>";
-		echo "</td>";
-	}
-?>
-<td width=20/>
-<td><b><?php etr("Customer") ?>:</b></td><td><?php echo $customer->name ?></td>
-<td width=20/>
-<?php 
-if ($customerid != CUSTOMERID_CASH) {
-	echo "<td><b>" . tr("Ordered by") .":</b></td>";
-	echo "<td>";
-	if (isEmpty($invoice_transid)) {
-		textbox('orderedby', $rec->orderedby);
-		echo "</td><td><input type='image' name='save' value='Save' src='../images/disk.gif'>";	
-	} else
-		echo $rec->orderedby;	 
-	echo "</td>";
-} else {
-	echo "<td/><td/>";
-}
-?>
-</tr>
-<tr>
-	<td><b><?php etr("Order date") ?>:</b></td><td><?php echo date(DATE_PATTERN, $orderdate) ?></td>
-	<td/>
-	<td class=label><?php etr("Location") ?>:</td>
-	<td>
+<div class="border p-3 mb-4">
+	<div class="row g-3 align-items-end">
+		<?php if (!$new) { ?>
+		<div class="col-md-3">
+			<label class="form-label"><?php echo tr("Order no") ?></label>
+			<div class="form-control-plaintext"><?php echo $rec->no != null ? $rec->no : $orderid ?></div>
+			<input type='hidden' name='orderid' value='<?php echo $orderid ?>'/>
+		</div>
+		<?php } ?>
+		<div class="col-md-3">
+			<label class="form-label"><?php etr("Customer") ?></label>
+			<div class="form-control-plaintext"><?php echo $customer->name ?></div>
+		</div>
+		<?php if ($customerid != CUSTOMERID_CASH) { ?>
+		<div class="col-md-4">
+			<label class="form-label"><?php echo tr("Ordered by") ?></label>
+			<?php if (isEmpty($invoice_transid)) { textbox('orderedby', $rec->orderedby); } else { echo "<div class='form-control-plaintext'>" . $rec->orderedby . "</div>"; } ?>
+		</div>
+		<div class="col-auto align-self-end">
+			<?php if (isEmpty($invoice_transid)) { ?><input type='image' name='save' value='Save' src='../images/disk.gif'><?php } ?>
+		</div>
+		<?php } ?>
+	</div>
+	<div class="row g-3 align-items-end mt-3">
+		<div class="col-md-3">
+			<label class="form-label"><?php etr("Order date") ?></label>
+			<div class="form-control-plaintext"><?php echo date(DATE_PATTERN, $orderdate) ?></div>
+		</div>
+		<div class="col-md-4">
+			<label class="form-label"><?php etr("Location") ?></label>
+			<?php
+			if (isEmpty($invoice_transid))
+				combobox('locationid', $locations, $locationid, false, 'saveForm()');
+			else {
+				$location = findValue("select name from location where locationid=$locationid");
+				echo $location;
+			}
+			?>
+		</div>
+	</div>
 	<?php
-	if (isEmpty($invoice_transid))
-		combobox('locationid', $locations, $locationid, false, 'saveForm()');
-	else {
-		$location = findValue("select name from location where locationid=$locationid");
-		echo $location;
+	if ($recur) {
+		hidden('recur', 1);
+		?>
+		<div class="row g-3 align-items-center mt-3">
+			<div class="col-auto"><label class="form-label"><?php echo tr("Recur active") ?></label></div>
+			<div class="col-auto"><?php checkBox('recur_active', $recur_active); ?></div>
+		</div>
+		<?php
+	} else {
+		if ($customerid != CUSTOMERID_CASH) {
+			if (!isEmpty($invoice_transid)) {
+				?>
+				<div class="row g-3 mt-3">
+					<div class="col-md-12">
+						<a href='invoice_pdf.php?orderid=<?php echo $orderid ?>'><?php echo tr("Print") ?></a>
+						&nbsp;&nbsp;
+						<a href='email_invoice.php?orderid=<?php echo $orderid ?>'><?php echo tr("E-mail customer") ?></a>
+						&nbsp;&nbsp;
+						<a href='../accounting/transaction.php?transactionid=<?php echo $invoice_transid ?>&salesorderid=<?php echo $orderid ?>'><?php echo tr("Show transaction") ?></a>
+					</div>
+				</div>
+				<?php
+			}
+			if (!$new) {
+				?>
+				<div class="row g-3 mt-3">
+					<div class="col-md-12">
+						<strong><?php echo tr("Receipt") ?></strong>: <?php if ($fullyPayed) { etr("Fully paid"); } else { echo formatMoney($payed) . " / " . formatMoney($toPay); } ?>
+						&nbsp;&nbsp;
+						<?php if ($payed != 0) {
+							if ($receiptCount > 1) { ?>
+								<a href='salesorder_receipts.php?orderid=<?php echo $orderid ?>'><?php echo tr("Show receipts") ?></a>
+							<?php } else {
+								$href = "../accounting/transaction.php?transactionid=$receipt_transid&salesorderid=$orderid"; ?>
+								<a href='<?php echo $href ?>'><?php echo tr("Show transaction") ?></a>
+							<?php }
+						} ?>
+					</div>
+				</div>
+				<?php
+			}
+		}
+		else {
+			?>
+			<div class="row g-3 mt-3">
+				<div class="col-md-12">
+					<strong><?php echo tr("Receipt") ?></strong>: <?php if ($fullyPayed) { etr("Fully paid"); } else { etr("Not paid"); } ?>
+					&nbsp;&nbsp;
+					<?php if ($payed != 0) { ?>
+						<a href='invoice_pdf.php?orderid=<?php echo $orderid ?>&type=receipt'><?php echo tr("Print") ?></a>
+						&nbsp;&nbsp;
+						<a href='../accounting/transaction.php?transactionid=<?php echo $receipt_transid ?>&salesorderid=<?php echo $orderid ?>'><?php echo tr("Show transaction") ?></a>
+					<?php } ?>
+				</div>
+			</div>
+			<?php
+		}
+		if ($credited) {
+			?>
+			<div class="row g-3 mt-3">
+				<div class="col-md-12">
+					<?php echo tr("This order is credited") ?> &nbsp;&nbsp;
+					<a href='sales.php?credit_orgid=<?php echo $orderid ?>'><?php echo tr("Show credit orders") ?></a>
+				</div>
+			</div>
+			<?php
+		}
+		if ($cancelled) {
+			?>
+			<div class="row g-3 mt-3">
+				<div class="col-md-12 text-danger"><?php echo tr("This order is cancelled") ?></div>
+			</div>
+			<?php
+		}
 	}
 	?>
-	</td>
-</tr>
-<?php
-if ($recur) {
-	hidden('recur', 1);
-	echo "<tr>";
-	echo "<td class=label>" . tr("Recur active") . ":</td>";
-	echo "<td>";
-	checkBox('recur_active', $recur_active);
-	echo "</td>";
-	echo "</tr>";
-} else {
-	if ($customerid != CUSTOMERID_CASH) {
-		if (!isEmpty($invoice_transid)) {
-			echo "<tr>";
-			echo "<td class=label>" . tr("Invoice") . ":</td>";
-			echo "<td colspan=4>";
-			echo "<a href='invoice_pdf.php?orderid=$orderid'>" . tr("Print") . "</a>";
-			echo "&nbsp;&nbsp;";
-			echo "<a href='email_invoice.php?orderid=$orderid'>" . tr("E-mail customer") . "</a>";
-			echo "&nbsp;&nbsp;";
-			echo "<a href='../accounting/transaction.php?transactionid=$invoice_transid&salesorderid=$orderid'>";
-			echo tr("Show transaction") . "</a>";
-			echo "</td>";
-			echo "</tr>";
-		}
-		if (!$new) {
-			echo "<tr>";
-			echo "<td class=label>" . tr("Receipt") . ":</td>";
-			echo "<td colspan=4>";
-			if ($fullyPayed)
-				etr("Fully paid");
-			else
-				echo formatMoney($payed) . " / " . formatMoney($toPay);
-			echo "&nbsp;&nbsp;";
-			if ($payed != 0) {
-				if ($receiptCount > 1) {
-					echo "<a href='salesorder_receipts.php?orderid=$orderid'>";
-					echo tr("Show receipts") . "</a>";
-				} else {
-					$href = "../accounting/transaction.php?
-                             transactionid=$receipt_transid&salesorderid=$orderid";
-					echo "<a href='$href'>";
-					echo tr("Show transaction") . "</a>";
-				}
-			}
-			echo "</td>";
-			echo "</tr>";
-		}
-	} else {
-		echo "<tr>";
-		echo "<td class=label>" . tr("Receipt") . ":</td>";
-		echo "<td colspan=4>";
-		if ($fullyPayed)
-			etr("Fully paid");
-		else
-			etr("Not paid");
-		echo "&nbsp;&nbsp;";
-		if ($payed != 0) {
-			echo "<a href='invoice_pdf.php?orderid=$orderid&type=receipt'>" . tr("Print") . "</a>";
-			echo "&nbsp;&nbsp;";
-			echo "<a href='../accounting/transaction.php?transactionid=$invoice_transid
-			      &salesorderid=$orderid'>" . tr("Show transaction") . "</a>";
-		}
-		echo "</td>";
-		echo "</tr>";
-	}
-	if ($credited) {
-		echo "<tr>";
-		echo "<td colspan=2>";
-		echo tr("This order is credited") . "&nbsp;&nbsp;";
-		echo "<a href='sales.php?credit_orgid=$orderid'>" . tr("Show credit orders") . "</a>";
-		echo "</td>";
-		echo "</tr>";
-	}
-	if ($cancelled) {
-		echo "<tr>";
-		echo "<td colspan=2>";
-		echo tr("This order is cancelled");
-		echo "</td>";
-		echo "</tr>";
-	}
-}
-?>
-<tr>
-<td class=label><?php etr("Created by") ?>:</td>
-<td><?php echo $createdby ?></td>
-</tr>
-</table>
+	<div class="row g-3 mt-3">
+		<div class="col-md-3">
+			<label class="form-label"><?php etr("Created by") ?></label>
+			<div class="form-control-plaintext"><?php echo $createdby ?></div>
+		</div>
+	</div>
+</div>
 <br/>
 <?php
 if ($recur) {
@@ -444,100 +434,106 @@ if ($recur) {
 ?>
 <?php if ($items != null) { ?>
 <div class='border'>
-<table>
+<div class='table-responsive'>
+<table class='table table-sm table-striped table-hover align-middle w-100'>
+<thead>
+<tr>
 <?php
 if ($addable)
-	echo "<th>" . tr("Delete") . "</th>";
+    echo "<th>" . tr("Delete") . "</th>";
 ?>
 <th><?php etr("Product") ?></th>
 <th><?php etr("Comment") ?></th>
-<th><?php etr("Quantity") ?></th>
-<th><?php etr("Unit price") ?></th>
+<th class='text-end'><?php etr("Quantity") ?></th>
+<th class='text-end'><?php etr("Unit price") ?></th>
 <!--  <th><?php etr("Purchase price") ?></th> -->
-<th><?php etr("Amount") ?></th>
+<th class='text-end'><?php etr("Amount") ?></th>
 <?php
 if (!$incVAT)
-	echo "<th>" . tr("VAT") . "</th>";
+    echo "<th class='text-end'>" . tr("VAT") . "</th>";
 if ($addable)
-	echo "<th>" . tr("Save") . "</th>";
-
-
+    echo "<th class='text-center'>" . tr("Save") . "</th>";
+?>
+</tr>
+</thead>
+<tbody>
+<?php
 $class = 'odd';
 $i = 0;
 $sum = 0;
 $vatSum = 0;
 while ($row = fetch($items)) {
-	if ($addable)
-		echo "<input type=hidden name=no_$i value='$row->no'/>";
-	echo "<tr class='$class'>";
-	$href = "salesorder.php?orderid=$orderid&del_no=$row->no";
-	if ($addable)
-		deleteColumn($href);
-	echo "<td><a href='../erp/product.php?productid=$row->productid'>";
-	echo "$row->productid - $row->model</a></td>";
-	echo "<td>";
-	if ($addable)
-		textbox("comment_$i", $row->comment, 20);
-	else
-		echo $row->comment;
-	echo "</td>";
-	echo "<td align=right>";
-	if ($addable)
-		numberbox("quantity_$i", $row->quantity, 5, false, true);
-	else
-		echo $row->quantity . ' ' . $row->unittype;
-	echo "</td>";
-	echo "<td align=right>";
-	$unitprice = $row->unitprice;
-	if ($incVAT)
-		$unitprice = $unitprice + $row->vat;
-	if ($addable)
-		moneybox("unitprice_$i", $unitprice);
-	else
-		echo formatMoney($unitprice);
-	echo "</td>";
-	//echo "<td align=right>" . formatMoney($row->purchase_price) . "</td>";
-	$amount = $row->quantity * $unitprice;
-	echo "<td align=right>" . formatMoney($amount) . "</td>";
-	if (!$incVAT) {
-		$vat = $row->vat/100 * $row->unitprice * $row->quantity;
-		echo "<td align=right>" . formatMoney($vat) . "</td>";
-	}
-	if ($addable) {
-		echo "<td align=center>";
-		echo "<input type='image' name='save' value='Save' src='../images/disk.gif'>";
-		echo "</td>";
-	}
-	echo "</tr>\n";
-	$sum += $amount;
-	$vatSum += $row->vat/100 * $row->quantity * $row->unitprice;
+    if ($addable)
+        echo "<input type=hidden name=no_$i value='$row->no'/>";
+    echo "<tr class='$class'>";
+    $href = "salesorder.php?orderid=$orderid&del_no=$row->no";
+    if ($addable)
+        deleteColumn($href);
+    echo "<td><a href='../erp/product.php?productid=$row->productid'>";
+    echo "$row->productid - $row->model</a></td>";
+    echo "<td>";
+    if ($addable)
+        textbox("comment_$i", $row->comment, 20);
+    else
+        echo $row->comment;
+    echo "</td>";
+    echo "<td class='text-end'>";
+    if ($addable)
+        numberbox("quantity_$i", $row->quantity, 5, false, true);
+    else
+        echo $row->quantity . ' ' . $row->unittype;
+    echo "</td>";
+    echo "<td class='text-end'>";
+    $unitprice = $row->unitprice;
+    if ($incVAT)
+        $unitprice = $unitprice + $row->vat;
+    if ($addable)
+        moneybox("unitprice_$i", $unitprice);
+    else
+        echo formatMoney($unitprice);
+    echo "</td>";
+    $amount = $row->quantity * $unitprice;
+    echo "<td class='text-end'>" . formatMoney($amount) . "</td>";
+    if (!$incVAT) {
+        $vat = $row->vat/100 * $row->unitprice * $row->quantity;
+        echo "<td class='text-end'>" . formatMoney($vat) . "</td>";
+    }
+    if ($addable) {
+        echo "<td class='text-center'>";
+        echo "<input type='image' name='save' value='Save' src='../images/disk.gif'>";
+        echo "</td>";
+    }
+    echo "</tr>
+";
+    $sum += $amount;
+    $vatSum += $row->vat/100 * $row->quantity * $row->unitprice;
     $class = ($class == "odd" ? "even" : "odd");
     $i++;
 }
 
 if ($addable) {
-	hidden('count', $i);
-	echo "<tr class='<?php echo $class ?>'>";
-	echo "<td/>";
-	echo "<td>";
-	textbox('productid_new', $productid, 10);
-	button("Search", "search", "../erp/products.php?mode=selectproduct&orderid=$orderid");
-	echo "</td>";
-	echo "<td>";
-	textbox('comment_new', '', 20);
-	echo "</td>";
-	echo "<td align=right>";
-	numberbox('quantity_new', 1, 5, false, true);
-	echo "</td>";
-	echo "<td align=right>";
-	moneybox('unitprice_new', $unitprice_new);
-	echo "</td>";
-	echo "<td align=right>";
-	if (!isEmpty($purchaseprice_new))
-		echo formatMoney($purchaseprice_new);
-	echo "</td>";
-	echo "<td><input type=submit name=add value='Add'/></td>";
-	echo "</tr>";
+    hidden('count', $i);
+    echo "<tr class='$class'>";
+    echo "<td/>";
+    echo "<td>";
+    textbox('productid_new', $productid, 10);
+    button("Search", "search", "../erp/products.php?mode=selectproduct&orderid=$orderid");
+    echo "</td>";
+    echo "<td>";
+    textbox('comment_new', '', 20);
+    echo "</td>";
+    echo "<td class='text-end'>";
+    numberbox('quantity_new', 1, 5, false, true);
+    echo "</td>";
+    echo "<td class='text-end'>";
+    moneybox('unitprice_new', $unitprice_new);
+    echo "</td>";
+    echo "<td class='text-end'>";
+    if (!isEmpty($purchaseprice_new))
+        echo formatMoney($purchaseprice_new);
+    echo "</td>";
+    echo "<td><input type=submit name=add value='Add'/></td>";
+    echo "</tr>";
 }
 ?>
 <tr>
@@ -549,76 +545,25 @@ if ($addable) echo "<td/>";
 <td/>
 <?php
 if ($incVAT)
-	echo "<td align=right>" . tr("VAT") . ":</td>";
+    echo "<td class='text-end'>" . tr("VAT") . ":</td>";
 else {
-	echo "<td/>";
-	echo "<td align=right>" . formatMoney($sum) . "</td>";
+    echo "<td/>";
+    echo "<td class='text-end'>" . formatMoney($sum) . "</td>";
 }
 ?>
-<td align=right><?php echo formatMoney($vatSum) ?></td>
+<td class='text-end'><?php echo formatMoney($vatSum) ?></td>
 </tr>
 <?php $colspan = $addable ? 4 : 3 ?>
 <tr>
-<td colspan='<?php echo $colspan ?>'/>
-<!--
-<td align=right><?php etr("Rounding") ?>:</td>
-<td align=right><?php echo formatMoney($rounding) ?></td>
--->
-</tr>
+<td colspan='<?php echo $colspan ?>'/> 
 <tr>
-<td colspan='<?php echo $colspan ?>'/>
-<td align=right class=label><?php etr("To pay") ?>:</td>
-<td align=right><?php echo formatMoney($toPay) ?></td>
+<td colspan='<?php echo $colspan ?>'/> 
+<td class='text-end label'><?php etr("To pay") ?>:</td>
+<td class='text-end'><?php echo formatMoney($toPay) ?></td>
 </tr>
-<?php
-if ($customerid == CUSTOMERID_CASH) {
-	$showExchange = true;
-	$exchange = 0;
-	if ($payedGross > 0) {
-		$exchange = $payedGross - $toPay;
-	}
-	if ($exchange < 0.01)
-		$showExchange = false;
-	echo "<tr>";
-	$colspan = $addable ? 4 : 3;
-	echo "<td colspan='$colspan'>";
-	if ($payed < $toPay) {
-		echo tr("Payment method").':&nbsp;';
-		combobox('method', $methods, $method, false, "methodChanged()");
-		hidden('method_changed', 0);
-	}
-	echo "</td>";
-	$text = $method == METHOD_CASH ? "Amount paid" : "Credit card no";
-	echo "<td align=right>" . tr($text) . ":</td>";
-	echo "<td align=right>";
-	if ($payedGross == 0)
-		$payedGross = $toPay;
-	$payedGross = round($payedGross, 2);
-	if ($method == METHOD_CASH) {
-		if ($payed < $toPay)
-			moneybox('payedGross', $payedGross);
-		else
-			echo formatMoney($payedGross);
-	} else {
-		if ($payed < $toPay) {
-			echo "<input type=password name=creditcardno>";
-			hidden('payedGross', $payedGross);
-		}
-	}
-	echo "</td>";
-	if ($showExchange) {
-		echo "</tr>";
-		echo "<tr>";
-		echo "<td colspan='$colspan'/>";
-		echo "<td align=right>" . tr("Exchange") . ":</td>";
-		echo "<td align=right>";
-		echo formatMoney($exchange);
-		echo "</td>";
-		echo "</tr>";
-	}
-}
-?>
+</tbody>
 </table>
+</div>
 </div>
 <br/>
 <?php } ?>

@@ -26,20 +26,30 @@ title(tr("Customer balance"))
 ?>
 
 <form action="customer_balance.php" method="GET">
-<div class="border">
-<table>
-<tr><td>Name:</td><td><input type="text" name="name" value="<?php echo $name ?>"/></td>
-<tr><td><input type="submit" name="search" value="Search" /></td></tr>
-</tr>
-</table>
+<div class="border p-3 mb-4">
+	<div class="row g-3 align-items-end">
+		<div class="col-md-6">
+			<label class="form-label"><?php etr("Name") ?></label>
+			<input type="text" name="name" value="<?php echo htmlspecialchars($name) ?>" class="form-control" />
+		</div>
+		<div class="col-auto">
+			<input type="submit" name="search" value="<?php etr("Search") ?>" class="btn btn-primary" />
+		</div>
+	</div>
 </div>
 </form>
 &nbsp;
 
-<table>
+<div class="table-responsive">
+<table class="table table-sm table-striped table-hover align-middle w-100">
+<thead>
+<tr>
 <th><?php etr("Id") ?></th>
 <th><?php etr("Name") ?></th>
-<th><?php etr("Balance") ?></th>
+<th class="text-end"><?php etr("Balance") ?></th>
+</tr>
+</thead>
+<tbody>
 <?php
     $rs = query($selectSQL);
     $class = "odd";
