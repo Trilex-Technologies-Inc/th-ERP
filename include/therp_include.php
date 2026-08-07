@@ -54,14 +54,14 @@ function therpExceptionHandler($e)
 	echo $e;
 	echo "</pre>";
 	//try {
-		$ex = str_replace('\"', '', $e);
-		$sql ="insert into logger (loggtext, loggtime, username)
+	$ex = str_replace('\"', '', $e);
+	$sql = "insert into logger (loggtext, loggtime, username)
 		     values (\"$ex\", now(), '" . getUser() . "')";
-		echo $sql;
-		sql($sql);
-		die;
+	echo $sql;
+	sql($sql);
+	die;
 	//} catch (Exceptione $e2) {
-		//echo $e2;
+	//echo $e2;
 	//}
 }
 
@@ -72,7 +72,7 @@ function therpErrorHandler($errno, $errstr)
 	if ($errno == E_NOTICE || $errno == E_STRICT)
 		return;
 	$isError = ($errno == E_USER_ERROR || $errno == E_CORE_ERROR
-	    || $errno == E_COMPILE_ERROR || $errno == E_USER_ERROR);
+		|| $errno == E_COMPILE_ERROR || $errno == E_USER_ERROR);
 	if ($isError) {
 		echo "<h1>Technical error</h1>";
 		echo "<pre>";
@@ -80,7 +80,7 @@ function therpErrorHandler($errno, $errstr)
 		echo "</pre>";
 	}
 	$ex = $errno . ": " . str_replace('\"', '', $errstr);
-	$sql ="insert into logger (loggtext, loggtime, username)
+	$sql = "insert into logger (loggtext, loggtime, username)
 	     values (\"$ex\", now(), '" . getUser() . "')";
 	sql($sql);
 	if ($isError)
@@ -92,7 +92,7 @@ function serverErrorHandler($errno, $errstr)
 	if ($errno == E_NOTICE || $errno == E_STRICT)
 		return;
 	$isError = ($errno == E_USER_ERROR || $errno == E_CORE_ERROR
-	    || $errno == E_COMPILE_ERROR || $errno == E_USER_ERROR);
+		|| $errno == E_COMPILE_ERROR || $errno == E_USER_ERROR);
 	if ($isError) {
 		echo "ERROR:$errstr";
 	}
@@ -300,7 +300,7 @@ function head($title)
 function oscommerce()
 {
 	$rs = query("show tables like 'products'");
-	return (num_rows($rs) > 0);	
+	return (num_rows($rs) > 0);
 }
 
 function getCurrentPeriod()
@@ -311,5 +311,3 @@ function getCurrentPeriod()
 	order by payperiod.starttime limit 1";
 	return findValue($sql);
 }
-
-?>

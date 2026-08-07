@@ -154,5 +154,3 @@ function rs2array($rs)
     }
     return $result;
 }
-
-?>
