@@ -227,7 +227,7 @@ function upgrade51()
 		primary key (rangesetid)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 	sql("
-	create table range (
+	create table `range` (
 		rangesetid integer not null,
 		rangeid integer not null,
 		ceiling double,
