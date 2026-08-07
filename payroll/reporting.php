@@ -15,26 +15,28 @@ $rs = query($sql);
 
 <html>
 <?php head("Reporting") ?>
+
 <body>
 
-<?php
-top("reporting.php", "Reporting");
-?>
+    <?php
+    top("reporting.php", "Reporting");
+    ?>
 
-<form action="daily_forms.php" method="POST">
-<ul>
-<li><a href='inout.php'><?php etr("In/Out") ?></a></li>
-<?php
-while ($row = fetch($rs)) {
-    echo "<li>";
-	$href = "attendence_day.php?formid=$row->formid";
-    echo "<a href='$href'>";
-    echo $row->description;
-    echo "</a>";
-    echo "</li>";
-}
-?>
-</ul>
-<?php bottom() ?>
+    <form action="daily_forms.php" method="POST">
+        <ul>
+            <li><a href='inout.php'><?php etr("In/Out") ?></a></li>
+            <?php
+            while ($row = fetch($rs)) {
+                echo "<li>";
+                $href = "attendence_day.php?formid=$row->formid";
+                echo "<a href='$href'>";
+                echo $row->description;
+                echo "</a>";
+                echo "</li>";
+            }
+            ?>
+        </ul>
+        <?php bottom() ?>
 </body>
+
 </html>

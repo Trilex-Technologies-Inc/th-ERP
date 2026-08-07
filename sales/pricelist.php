@@ -1,14 +1,14 @@
 <?php
-	define('public', 1);
-	include('include.php');
+define('public', 1);
+include('include.php');
 
-    $model = getParam('model');
-    $locationid = getParam('locationid');
+$model = getParam('model');
+$locationid = getParam('locationid');
 
-	$locationSQL = '';
-	if (!isEmpty($locationid))
-		$locationSQL = " and locationid=$locationid ";
-	$selectSQL = "
+$locationSQL = '';
+if (!isEmpty($locationid))
+	$locationSQL = " and locationid=$locationid ";
+$selectSQL = "
 	select
 	    p.productid,
 	    model,
@@ -21,56 +21,61 @@
 	where model like '$model%'
 	and active=1
 	";
-	$orderid = getParam('orderid');
+$orderid = getParam('orderid');
 
-	$locations = rs2array(query("select locationid, name from location"));
-	$caption_exvat = findValue("select description from pricelist where listid=1");
-	$caption_incvat = findValue("select description from pricelist where listid=2");
+$locations = rs2array(query("select locationid, name from location"));
+$caption_exvat = findValue("select description from pricelist where listid=1");
+$caption_incvat = findValue("select description from pricelist where listid=2");
 
 ?>
 
 <?php head("Products") ?>
+
 <body>
 
-<?php menubar('index.php') ?>
-<?php title(tr("Price list")) ?>
+	<?php menubar('index.php') ?>
+	<?php title(tr("Price list")) ?>
 
-<form action="pricelist.php" method="GET" name=searchform>
-<div class="border">
-<table>
-<tr>
-	<td><?php etr("Model") ?>:</td><td><?php textbox('model', $model) ?></td><td width=20/>
-	<td><?php etr("Location") ?>:</td><td><?php combobox('locationid', $locations, $locationid, true) ?></td><td width=20/>
-	<td>
-	<?php searchButton() ?>
-	</td>
-</tr>
-</table>
-</div>
-</form>
+	<form action="pricelist.php" method="GET" name=searchform>
+		<div class="border">
+			<table>
+				<tr>
+					<td><?php etr("Model") ?>:</td>
+					<td><?php textbox('model', $model) ?></td>
+					<td width=20 />
+					<td><?php etr("Location") ?>:</td>
+					<td><?php combobox('locationid', $locations, $locationid, true) ?></td>
+					<td width=20 />
+					<td>
+						<?php searchButton() ?>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</form>
 
-<table width='100%'>
-<th><?php etr("Productno") ?></th>
-<th width='50%'><?php etr("Product") ?></th>
-<?php
-echo "<th>$caption_incvat</th>";
-echo "<th>$caption_exvat</th>";
-echo "<th>" . tr("Quantity") . "</th>";
+	<table width='100%'>
+		<th><?php etr("Productno") ?></th>
+		<th width='50%'><?php etr("Product") ?></th>
+		<?php
+		echo "<th>$caption_incvat</th>";
+		echo "<th>$caption_exvat</th>";
+		echo "<th>" . tr("Quantity") . "</th>";
 
-$rs = query($selectSQL);
-$class = "odd";
-while ($row = fetch_object($rs)) {
-	echo "<tr class='$class'>";
-	echo "<td>$row->productid</td>";
-	echo "<td>$row->model</td>";
-	echo "<td align=right>". formatMoney($row->price_incvat) . "</td>";
-	echo "<td align=right>". formatMoney($row->price_exvat) . "</td>";
-	echo "<td align=right>$row->quantity</td>";
-	echo "</tr>";
-	$class = ($class == "odd" ? "even" : "odd");
-}
-?>
-</table>
-<br/>
-<?php bottom() ?>
+		$rs = query($selectSQL);
+		$class = "odd";
+		while ($row = fetch_object($rs)) {
+			echo "<tr class='$class'>";
+			echo "<td>$row->productid</td>";
+			echo "<td>$row->model</td>";
+			echo "<td align=right>" . formatMoney($row->price_incvat) . "</td>";
+			echo "<td align=right>" . formatMoney($row->price_exvat) . "</td>";
+			echo "<td align=right>$row->quantity</td>";
+			echo "</tr>";
+			$class = ($class == "odd" ? "even" : "odd");
+		}
+		?>
+	</table>
+	<br />
+	<?php bottom() ?>
 </body>

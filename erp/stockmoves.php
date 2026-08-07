@@ -1,19 +1,19 @@
 <?php
-	include('include.php');
+include('include.php');
 
-	$productid = getParam('productid');
-	$locationid = getParam('locationid');
-	$salesorderid = getParam('salesorderid');
-	$purchaseorderid = getParam('purchaseorderid');
-	$movesorderid = getParam('movesorderid');
-	$productionorderid = getParam('productionorderid');
-	$date = getMonthStepperDate();
-	$endtime = addTime($date, TYPE_MONTHS);
-	$locationSQL = '';
-	if (!isEmpty($locationid)) {
-		$locationSQL = " and m.locationid=$locationid ";
-	}	
-	$sql = "
+$productid = getParam('productid');
+$locationid = getParam('locationid');
+$salesorderid = getParam('salesorderid');
+$purchaseorderid = getParam('purchaseorderid');
+$movesorderid = getParam('movesorderid');
+$productionorderid = getParam('productionorderid');
+$date = getMonthStepperDate();
+$endtime = addTime($date, TYPE_MONTHS);
+$locationSQL = '';
+if (!isEmpty($locationid)) {
+	$locationSQL = " and m.locationid=$locationid ";
+}
+$sql = "
 	select
 	    moveid,
 		m.productid,
@@ -30,57 +30,57 @@
 	join location l on l.locationid=m.locationid
 	left outer join transaction t on t.transactionid=m.transactionid
 	";
-	if (!isEmpty($salesorderid))
-		$sql .= "join salesorder so on so.orderid=m.salesorderid and so.orderid=$salesorderid ";
-	if (!isEmpty($purchaseorderid))
-		$sql .= "join purchaseorder po on po.orderid=m.purchaseorderid and po.orderid=$purchaseorderid ";
-	if (!isEmpty($movesorderid))
-		$sql .= "join movesorder po on po.orderid=m.movesorderid and po.orderid=$movesorderid ";
-	if (!isEmpty($productionorderid))
-		$sql .= "join productionorder pro on pro.orderid=m.productionorderid and pro.orderid=$productionorderid ";
-	if (!isEmpty($productid)) {
-		$sql .= "where p.productid=$productid ";
-		$sql .= "and transtime between from_unixtime($date) and from_unixtime($endtime) ";
-		
-		$startBalance = findValue("select sum(diff)
+if (!isEmpty($salesorderid))
+	$sql .= "join salesorder so on so.orderid=m.salesorderid and so.orderid=$salesorderid ";
+if (!isEmpty($purchaseorderid))
+	$sql .= "join purchaseorder po on po.orderid=m.purchaseorderid and po.orderid=$purchaseorderid ";
+if (!isEmpty($movesorderid))
+	$sql .= "join movesorder po on po.orderid=m.movesorderid and po.orderid=$movesorderid ";
+if (!isEmpty($productionorderid))
+	$sql .= "join productionorder pro on pro.orderid=m.productionorderid and pro.orderid=$productionorderid ";
+if (!isEmpty($productid)) {
+	$sql .= "where p.productid=$productid ";
+	$sql .= "and transtime between from_unixtime($date) and from_unixtime($endtime) ";
+
+	$startBalance = findValue("select sum(diff)
 		                           from stockmove m
 		                           join transaction t on t.transactionid=m.transactionid
 		                           where productid=$productid and t.transtime < from_unixtime($date) $locationSQL");
-		$endBalance = findValue("select sum(diff)
+	$endBalance = findValue("select sum(diff)
 		                           from stockmove m
 		                           join transaction t on t.transactionid=m.transactionid
 		                           where productid=$productid and t.transtime < from_unixtime($endtime) $locationSQL");
-	}
-	$sql .= $locationSQL;
-	$sql .= "order by moveid desc";
-    $rs = query($sql);
+}
+$sql .= $locationSQL;
+$sql .= "order by moveid desc";
+$rs = query($sql);
 
-	$products = rs2array(query("select productid, model from product"));
-	$locations = rs2array(query("select locationid, name from location"));	
+$products = rs2array(query("select productid, model from product"));
+$locations = rs2array(query("select locationid, name from location"));
 
 ?>
 
 <head>
-<title>thERP - <?php etr("Stock moves") ?></title>
-<?php styleSheet() ?>
+	<title>thERP - <?php etr("Stock moves") ?></title>
+	<?php styleSheet() ?>
 </head>
 
 <body>
 
-<?php include("menubar.php") ?>
-<?php
-$title = '';
-if (!isEmpty($salesorderid))
-	$title = tr("Sales orders") . " > <a href='salesorder.php?orderid=$salesorderid'>$salesorderid</a> > ";
-else if (!isEmpty($productid)) {
-	$model = findValue("select model from product where productid=$productid");
-	$title = tr("Products") . " > <a href='product.php?productid=$productid'>$model</a> > ";
-}
-$title .= tr("Stock moves");
-title($title);
-?>
+	<?php include("menubar.php") ?>
+	<?php
+	$title = '';
+	if (!isEmpty($salesorderid))
+		$title = tr("Sales orders") . " > <a href='salesorder.php?orderid=$salesorderid'>$salesorderid</a> > ";
+	else if (!isEmpty($productid)) {
+		$model = findValue("select model from product where productid=$productid");
+		$title = tr("Products") . " > <a href='product.php?productid=$productid'>$model</a> > ";
+	}
+	$title .= tr("Stock moves");
+	title($title);
+	?>
 
-<?php
+	<?php
 	echo "<form action='stockmoves.php' method=GET>";
 	echo "<div class=border>";
 	if (!isEmpty($productid))
@@ -114,66 +114,66 @@ title($title);
 	echo "</center>";
 	echo "</div>";
 	echo "</form>";
-?>
-&nbsp;
+	?>
+	&nbsp;
 
-<center>
-<?php
-if (!isEmpty($productid)) {
-	echo "<font>" . tr("Starting quantity") . ": $startBalance</font><br><br>";
-}
-?>
-<table>
-<th><?php etr("Id") ?></th>
-<th><?php etr("Narrative") ?></th>
-<th><?php etr("Product") ?></th>
-<th><?php etr("Diff") ?></th>
-<th><?php etr("Location") ?></th>
-<th><?php etr("Date") ?></th>
-<th><?php etr("Transaction") ?></th>
-<?php
-	if (!isEmpty($productid)) {
-		echo "<th>" . tr("Order") . "</th>";
-	}
-
-    $class = "odd";
-    $i = 0;
-    while ($row = fetch_object($rs)) {
-        echo "<tr class='$class'>";
-		echo "<td>$row->moveid</td>";
-        echo "<td>$row->narrative</td>";
-		echo "<td>$row->model</td>";
-		echo "<td align=right>$row->diff</td>";
-		echo "<td align=right>$row->location</td>";
-        echo "<td>";
-       	echo formatDate($row->transtime);
-        echo "</td>";
-        echo "<td align=right><a href='../accounting/transaction.php?transactionid=$row->transactionid'>$row->transactionid</a></td>";
+	<center>
+		<?php
 		if (!isEmpty($productid)) {
-			$href = '';
-			$label = '';
-			if ($row->salesorderid != null)  {
-				$href = "salesorder.php?orderid=$row->salesorderid";
-				$label = tr("Sales order ") . $row->salesorderid;
-			} else if ($row->purchaseorderid != null)  {
-				$href = "purchaseorder.php?orderid=$row->purchaseorderid";
-				$label = tr("Purchase order ") . $row->purchaseorderid;
-			}
-			echo "<td><a href='$href'>$label</a></td>";
+			echo "<font>" . tr("Starting quantity") . ": $startBalance</font><br><br>";
 		}
-        echo "</tr>";
-        $class = ($class == "odd" ? "even" : "odd");
-        $i++;
-    }
-?>
-</table>
-<?php
-if (!isEmpty($productid)) {
-	echo "<br><font>" . tr("Final quantity") . ": $endBalance</font><br><br>";
-}
-?>
-<br/>
-</form>
-</center>
-<?php bottom() ?>
+		?>
+		<table>
+			<th><?php etr("Id") ?></th>
+			<th><?php etr("Narrative") ?></th>
+			<th><?php etr("Product") ?></th>
+			<th><?php etr("Diff") ?></th>
+			<th><?php etr("Location") ?></th>
+			<th><?php etr("Date") ?></th>
+			<th><?php etr("Transaction") ?></th>
+			<?php
+			if (!isEmpty($productid)) {
+				echo "<th>" . tr("Order") . "</th>";
+			}
+
+			$class = "odd";
+			$i = 0;
+			while ($row = fetch_object($rs)) {
+				echo "<tr class='$class'>";
+				echo "<td>$row->moveid</td>";
+				echo "<td>$row->narrative</td>";
+				echo "<td>$row->model</td>";
+				echo "<td align=right>$row->diff</td>";
+				echo "<td align=right>$row->location</td>";
+				echo "<td>";
+				echo formatDate($row->transtime);
+				echo "</td>";
+				echo "<td align=right><a href='../accounting/transaction.php?transactionid=$row->transactionid'>$row->transactionid</a></td>";
+				if (!isEmpty($productid)) {
+					$href = '';
+					$label = '';
+					if ($row->salesorderid != null) {
+						$href = "salesorder.php?orderid=$row->salesorderid";
+						$label = tr("Sales order ") . $row->salesorderid;
+					} else if ($row->purchaseorderid != null) {
+						$href = "purchaseorder.php?orderid=$row->purchaseorderid";
+						$label = tr("Purchase order ") . $row->purchaseorderid;
+					}
+					echo "<td><a href='$href'>$label</a></td>";
+				}
+				echo "</tr>";
+				$class = ($class == "odd" ? "even" : "odd");
+				$i++;
+			}
+			?>
+		</table>
+		<?php
+		if (!isEmpty($productid)) {
+			echo "<br><font>" . tr("Final quantity") . ": $endBalance</font><br><br>";
+		}
+		?>
+		<br />
+		</form>
+	</center>
+	<?php bottom() ?>
 </body>
