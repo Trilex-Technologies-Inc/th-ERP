@@ -53,21 +53,33 @@ function select_db($dbname)
 
 function fetch_row($query)
 {
+    if (!($query instanceof mysqli_result)) {
+        throw new RuntimeException('Database fetch expected a mysqli_result, got a null/invalid result.');
+    }
     return mysqli_fetch_row($query);
 }
 
 function fetch_assoc($query)
 {
+    if (!($query instanceof mysqli_result)) {
+        throw new RuntimeException('Database fetch expected a mysqli_result, got a null/invalid result.');
+    }
     return mysqli_fetch_assoc($query);
 }
 
 function fetch_array($query)
 {
+    if (!($query instanceof mysqli_result)) {
+        throw new RuntimeException('Database fetch expected a mysqli_result, got a null/invalid result.');
+    }
     return mysqli_fetch_array($query);
 }
 
 function fetch_object($query)
 {
+    if (!($query instanceof mysqli_result)) {
+        throw new RuntimeException('Database fetch expected a mysqli_result, got a null/invalid result.');
+    }
     return mysqli_fetch_object($query);
 }
 
