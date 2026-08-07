@@ -47,7 +47,7 @@ while ($row = fetch($rs)) {
 		$pdf->KeepTogether_begin();
 		$pdf->setFont('Arial', 'B', 10);
 		$pdf->Cell(25, ROWHEIGHT, $row->transactionid, 'T', 0);
-		$pdf->Cell(80, ROWHEIGHT, utf8_decode($row->narrative), 'T', 0);
+		$pdf->Cell(80, ROWHEIGHT, utf8ToLatin1($row->narrative), 'T', 0);
 		$pdf->Cell(40, ROWHEIGHT, formatDate($row->transtime), 'T', 0, 'R');
 		$pdf->Cell(40, ROWHEIGHT, $row->createdby, 'T', 1, 'R');
 		$lastTransid = $row->transactionid;
@@ -55,7 +55,7 @@ while ($row = fetch($rs)) {
 	$pdf->setFont('Arial', '', 10);
 	$pdf->Cell(10, ROWHEIGHT, '', 0, 0);
 	$pdf->Cell(15, ROWHEIGHT, $row->accountid, 0, 0);
-	$pdf->Cell(80, ROWHEIGHT, utf8_decode($row->name), 0, 0);
+	$pdf->Cell(80, ROWHEIGHT, utf8ToLatin1($row->name), 0, 0);
 	$pdf->setFont('Courier', '', 10);
 	$pdf->Cell(40, ROWHEIGHT, $row->amount, 0, 1, 'R');
 }

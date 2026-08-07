@@ -5,7 +5,7 @@ define('HEIGHT', 6);
 
 function ccs($str)
 {
-	return utf8_decode($str);	
+	return utf8ToLatin1($str);	
 }
 
 class MyFPDF extends FPDF

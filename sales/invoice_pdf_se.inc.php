@@ -2,7 +2,7 @@
 
 function ccs($str)
 {
-	return utf8_decode($str);	
+	return utf8ToLatin1($str);	
 }
 
 function setHeaderFont($pdf)

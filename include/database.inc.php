@@ -1,81 +1,103 @@
 <?php
+
+/** @var mysqli|null $db_connection */
+$db_connection = null;
+
+function db_connection()
+{
+    global $db_connection;
+    if (!($db_connection instanceof mysqli)) {
+        throw new RuntimeException('Database connection has not been established.');
+    }
+    return $db_connection;
+}
+
 function query($sql)
 {
-	$q = mysql_query($sql);
-	$err = mysql_error();
-	if (strlen($err) > 0) {
-		$mess = "SQL error: " . $err . "\n";
-		$mess .= "SQL errno: " . mysql_errno() . "\n";
-		$mess .= "<br/>";
-		$mess .= "SQL: " . $sql . "\n";
-		//echo $mess;
-		rollback();
-		trigger_error($mess, E_USER_ERROR);
-	}
-	return $q;
+    $connection = db_connection();
+    $q = mysqli_query($connection, $sql);
+    if ($q === false) {
+        $err = mysqli_error($connection);
+        $mess = "SQL error: " . $err . "\n";
+        $mess .= "SQL errno: " . mysqli_errno($connection) . "\n";
+        $mess .= "<br/>";
+        $mess .= "SQL: " . $sql . "\n";
+        rollback();
+        trigger_error($mess, E_USER_ERROR);
+    }
+    return $q;
 }
 
 function connect($host, $dbuser, $password)
 {
-	mysql_connect($host, $dbuser, $password);
+    global $db_connection;
 
-	// set for utf8
-	sql("SET NAMES 'utf8'");
-	//sql("SET CHARACTER_SET 'utf8'");
+    mysqli_report(MYSQLI_REPORT_OFF);
+    $db_connection = @mysqli_connect($host, $dbuser, $password);
+    if ($db_connection === false) {
+        throw new RuntimeException(
+            'Database connection failed. Please ensure MySQL/MariaDB is running and that the credentials in conf/config.php are correct. ' . mysqli_connect_error()
+        );
+    }
+
+    if (!mysqli_set_charset($db_connection, 'utf8')) {
+        throw new RuntimeException('Failed to set database charset to UTF-8: ' . mysqli_error($db_connection));
+    }
+    return $db_connection;
 }
 
 function select_db($dbname)
 {
-	return mysql_select_db($dbname);
+    return mysqli_select_db(db_connection(), $dbname);
 }
 
 function fetch_row($query)
 {
-	return mysql_fetch_row($query);
+    return mysqli_fetch_row($query);
 }
 
 function fetch_assoc($query)
 {
-	return mysql_fetch_assoc($query);
+    return mysqli_fetch_assoc($query);
 }
 
 function fetch_array($query)
 {
-	return mysql_fetch_array($query);
+    return mysqli_fetch_array($query);
 }
 
 function fetch_object($query)
 {
-	return mysql_fetch_object($query);
+    return mysqli_fetch_object($query);
 }
 
 function num_rows($rs)
 {
-	return mysql_num_rows($rs);
+    return mysqli_num_rows($rs);
 }
 
 function affected_rows()
 {
-	return mysql_affected_rows();
+    return mysqli_affected_rows(db_connection());
 }
 
 function find($sql, $dummy = false)
 {
-	$q = query($sql);
-	if (num_rows($q) == 0) {
-		if ($dummy)
-			return new Dummy();
-		else
-			return null;
-	}
-	return fetch_object($q);
+    $q = query($sql);
+    if (num_rows($q) == 0) {
+        if ($dummy)
+            return new Dummy();
+        else
+            return null;
+    }
+    return fetch_object($q);
 }
 
 function select_value($sql)
 {
     $q = query($sql);
-	if (num_rows($q) == 0)
-		return null;
+    if (num_rows($q) == 0)
+        return null;
     $row = fetch_array($q);
     return $row[0];
 }
@@ -92,25 +114,25 @@ function fetch($rs)
 
 function begin()
 {
-	sql("set autocommit=0");
-	sql("begin");
+    mysqli_begin_transaction(db_connection());
 }
 
 function commit()
 {
-	sql("commit");
-	sql("set autocommit=1");
+    mysqli_commit(db_connection());
 }
 
 function rollback()
 {
-	sql("rollback");
-	sql("set autocommit=1");
+    global $db_connection;
+    if ($db_connection instanceof mysqli) {
+        @mysqli_rollback($db_connection);
+    }
 }
 
 function insert_id()
 {
-    return mysql_insert_id();
+    return mysqli_insert_id(db_connection());
 }
 
 function findValue($sql, $default = null)
@@ -118,9 +140,9 @@ function findValue($sql, $default = null)
     $rs = query($sql);
     $row = fetch_array($rs);
     if ($row == null)
-    	return $default;
+        return $default;
     if ($row[0] == null)
-    	return $default;
+        return $default;
     return $row[0];
 }
 

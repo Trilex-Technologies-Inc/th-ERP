@@ -12,8 +12,17 @@ else {
 	defineIfNotDefined('DBUSER', 'therp');
 	defineIfNotDefined('DBPWD', 'abc123');
 	defineIfNotDefined('VENDOR', 'mysql');
-	connect(DBHOST, DBUSER, DBPWD);
-	select_db(getDBName()) or die('Could not select database');
+	try {
+		connect(DBHOST, DBUSER, DBPWD);
+		if (!select_db(getDBName())) {
+			throw new RuntimeException('Could not select database "' . getDBName() . '". Please create it and import sql/therp.sql.');
+		}
+	} catch (Throwable $e) {
+		echo '<h1>Database setup required</h1>';
+		echo '<p>' . htmlspecialchars($e->getMessage()) . '</p>';
+		echo '<p>Please make sure MySQL/MariaDB is running, create the database, import <code>sql/therp.sql</code>, and verify the settings in <code>conf/config.php</code>.</p>';
+		die;
+	}
 }
 defineIfNotDefined('CHARSET', 'UTF-8');
 header("Content-type: text/html; charset=" . CHARSET);
@@ -62,7 +71,19 @@ function minutes2hours($minutes)
 
 function isEmpty($str)
 {
+	if ($str === null)
+		return true;
+	$str = (string)$str;
 	return (strlen(trim($str)) == 0) || ($str == "null");
+}
+
+function utf8ToLatin1($str)
+{
+	if ($str === null)
+		return '';
+	$str = (string)$str;
+	$converted = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $str);
+	return $converted === false ? $str : $converted;
 }
 
 function getParam($name, $default = null)
@@ -88,26 +109,22 @@ function formatCase($str)
 
 function field_name($rs, $i)
 {
-    return mysql_field_name($rs, $i);
+    return mysqli_fetch_field_direct($rs, $i)->name;
 }
 
 function num_fields($rs)
 {
-    return mysql_num_fields($rs);
+    return mysqli_num_fields($rs);
 }
 
 
 function buttonRow($buttons)
 {
-    echo "<table class='buttonrow'>";
-    echo "<tr>";
+    echo "<div class='buttonrow d-flex flex-wrap gap-2 align-items-center'>";
     for ($i = 0; $i < count($buttons); $i++) {
-        echo "<td>";
         echo $buttons[$i];
-        echo "</td>";
     }
-    echo "</tr>\n";
-    echo "</table>";
+    echo "</div>";
 }
 
 function button($caption, $name, $url = null, $accesskey = null)
@@ -565,8 +582,7 @@ function image($name)
 
 function getUser()
 {
-	return $_SESSION['username'];
-
+	return array_key_exists('username', $_SESSION) ? $_SESSION['username'] : '';
 }
 
 function metatag()
@@ -576,20 +592,15 @@ function metatag()
 
 function getLanguage()
 {
-	return $_SESSION['language'];
+	return array_key_exists('language', $_SESSION) ? $_SESSION['language'] : '';
 }
 
 function title($title)
 {
-	echo "<center>";
-	echo "<table cellspacing='0' cellspacing='5'>";
-	echo "<tr height='3'/>";
-	echo "<tr class='title'>";
-	echo "<td class=title>&nbsp;$title</td>";
-	echo "</tr>";
-	echo "<tr height='5'/>";
-	echo "</table>";
-	echo "</center>\n";
+	echo "<div class='container-fluid pt-4 pb-2'>";
+	echo "<div class='d-flex align-items-center justify-content-between border-bottom pb-2'>";
+	echo "<h1 class='h4 mb-0 fw-semibold'>$title</h1>";
+	echo "</div></div>\n";
 }
 
 function tr($text)

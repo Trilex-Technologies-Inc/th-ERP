@@ -134,7 +134,10 @@ function styleSheet($file = 'therp')
 	$suffix = '';
 	if (getLanguage() == 'th' && $file == 'therp')
 		$suffix = '_th';
+	echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
+	echo "<link href='../include/bootstrap.min.css' rel='stylesheet'>";
 	echo "<LINK REL=StyleSheet HREF='../include/$file$suffix.css' TYPE='text/css'>";
+	echo "<link rel='stylesheet' href='../include/therp_modern.css'>";
 }
 
 function hasPermission($permissionid)
@@ -160,17 +163,13 @@ function checkPermission($permissionid)
 
 function menupage_begin()
 {
-	echo "<br>";
-	echo "<div class=border>";
-	echo "<center>";
-	echo "<table><tr><td>";
+	echo "<main class='container-fluid py-4'>";
+	echo "<div class='card shadow-sm border-0'><div class='card-body'>";
 }
 
 function menupage_end()
 {
-	echo "</td></tr></table>";
-	echo "</center>";
-	echo "</div>";
+	echo "</div></div></main>";
 	bottom();
 }
 
@@ -180,68 +179,44 @@ function top($currentHRef, $title, $path = null, $help = "help")
 	if ($path != null)
 		title($path);
 	else
-		echo "<br>";
+		echo "<div class='mb-3'></div>";
 }
 
 function top0($module = null)
 {
-	echo "<table cellpadding=0 cellspacing=0 width='100%' border=0>";
-	echo "<tr>";
-	echo "<td width=20><img src='../images/tl.png'></td>";
-	echo "<td rowspan=2 bgColor='#CCCCE5'>";
 	$title = tr("Switch module");
-	$thERP = '$thERP';
-	$thERP = findValue("select companyname from companyinfo");
-	echo "<span style='font-size: 14pt;'>";
-	echo "<a class=logo href='../common/modules.php' title='$title'>$thERP</a></span>";
+	$company = findValue("select companyname from companyinfo");
+	if (isEmpty($company))
+		$company = '$thERP';
+
+	echo "<header class='app-header navbar navbar-expand-lg bg-white border-bottom shadow-sm px-3 py-2'>";
+	echo "<div class='container-fluid px-0'>";
+	echo "<a class='navbar-brand fw-bold text-primary' href='../common/modules.php' title='$title'>$company</a>";
 	if ($module != null) {
-		echo "<span style='font-size: 12pt;'>&nbsp;-&nbsp;";
-		$onMouseOver = "document.getElementById(\"down\").src=\"../images/down_hover.gif\"";
-		$onMouseOut = "document.getElementById(\"down\").src=\"../images/down.gif\"";
-		echo "<a class=logo href='../common/modules.php' title='$title' ";
-		echo "onMouseOver='$onMouseOver' onMouseOut='$onMouseOut'>";
-		echo tr($module);
-		echo "&nbsp;<img id=down src='../images/down.gif' border=0 style='position: relative; top: -2'>";
-		echo "</a>";
-		echo "</span>";
+		echo "<span class='badge text-bg-light border me-auto'>" . tr($module) . "</span>";
+	} else {
+		echo "<span class='me-auto'></span>";
 	}
-	echo "</td>";
-	echo "<td align=right valign=bottom rowspan=2 bgColor='#CCCCE5' style='padding: 3'>";
-	echo "<span class=username>";
 	$href = '../payroll/selfservice_settings.php';
-	echo tr("User") . ": <a href='$href'>" . getUser() . "</a> | <a href='../common/modules.php?logout=true' class=logo>";
-	echo tr("Logout") . "</a>";
-	echo "</span>\n";
-	echo "</td>";
-	echo "<td width=20><img src='../images/tr.png'></td>";
-	echo "</tr>";
-	echo "<tr bgColor='#CCCCE5'>";
-	echo "<td>&nbsp;</td>";
-	echo "<td>&nbsp;</td>";
-	echo "</tr>";
-	echo "</table>\n";
+	echo "<div class='d-flex align-items-center gap-2 small'>";
+	echo "<span class='text-secondary'>" . tr("User") . ": <a class='fw-semibold' href='$href'>" . getUser() . "</a></span>";
+	echo "<a class='btn btn-outline-secondary btn-sm' href='../common/modules.php?logout=true'>" . tr("Logout") . "</a>";
+	echo "</div></div></header>\n";
 }
 
 function bottom()
 {
-	echo "<br>";
-	echo "<table cellpadding=0 cellspacing=0 width='100%' border=0>";
-	echo "<tr>";
-	echo "<td width=20><img src='../images/bl.png'></td>";
-	echo "<td bgColor='#CCCCE5' align=center><a href='http://www.therpsoft.com' class=logo>www.therpsoft.com</a></td>";
-	echo "<td width=20><img src='../images/br.png'></td>";
-	echo "</tr>";
-	echo "</table>";
+	echo "<footer class='app-footer container-fluid py-4 mt-4 border-top text-center text-secondary small'>";
+	echo "<a href='http://www.therpsoft.com' class='text-decoration-none'>www.therpsoft.com</a>";
+	echo "</footer>";
+	echo "<script src='../include/bootstrap.bundle.min.js'></script>";
 }
 
 function menu($href, $text, $width, $hasNext, $currentHref)
 {
 	$current = $href == $currentHref;
 	$class = $current ? 'menubar_current' : 'menubar';
-	echo "<td width='$width%' align='center'><a class=$class href='$href'>" . tr($text) . "</a></td>\n";
-	if ($hasNext)
-		echo "<td>|</td>";
-
+	echo "<td class='app-nav-item' style='width:$width%'><a class='$class' href='$href'>" . tr($text) . "</a></td>\n";
 }
 
 function showUpgrade()

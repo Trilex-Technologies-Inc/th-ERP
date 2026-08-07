@@ -7,7 +7,7 @@ function ccs($text)
 	if ($lang == 'en')
 		return $text;
 	if ($lang == 'sv')
-		return utf8_decode($text);
+		return utf8ToLatin1($text);
 	if ($lang == 'cn'){
 		return iconv("UTF-8","GB2312//IGNORE",$text);
 	}

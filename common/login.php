@@ -33,65 +33,41 @@ function onLoad()
 </script>
 </head>
 
-<body onLoad="onLoad()">
-<center>
-<form name=postform method="POST" action='<?php echo $action ?>'>
-<table height='100%'>
-<tr height='100%'><td valign=center>
+<body onLoad="onLoad()" class="bg-light">
+<div class="container min-vh-100 d-flex align-items-center justify-content-center py-5">
+    <div class="card border-0 shadow-sm login-card w-100" style="max-width: 440px;">
+        <div class="card-body p-4 p-md-5">
+            <div class="text-center mb-4">
+                <div class="login-mark mx-auto mb-3">ERP</div>
+                <h1 class="h4 mb-1"><?php echo $companyname ?></h1>
+                <p class="text-secondary mb-0"><?php etr("Login") ?></p>
+            </div>
 
-<table cellspacing=0 cellpadding=0>
-<tr>
-<td width=20 class=login><img src='../images/tl.png'></td>
-<td class=login></td>
-<td width=20 class=login><img src='../images/tr.png'></td>
-</tr>
-<tr class=menubar height=20>
-<td colspan=3 align=center>
-<?php echo $companyname ?>
-</td>
-</tr>
-<tr class=login>
-	<td class=login></td>
-	<td class=login>
-		<table>
-		<?php
-		if ($mess != null) {
-			echo "<tr><td colspan=2 align=center class=error>$mess</td></tr>";
-		}
-		?>
-		<tr>
-			<td><?php etr("Username") ?>:</td>
-			<td><input type=text name=username></td>
-		</tr>
-		<tr>
-			<td><?php etr("Password") ?>:</td>
-			<td><input type=password name=pwd></td>
-		</tr>
-		<?php
-		if (count($dbs) > 1) {
-			echo "<tr>";
-			echo "<td>" . tr("Database") . ":</td>";
-			echo "<td>";
-			combobox('dbname', $dbs, null, false);
-			echo "</td>";
-			echo "</tr>";
-		}
-		?>
-		<tr>
-			<td><input type=submit name=login value='<?php etr("Login") ?>'></td>	
-		</tr>
-		</table>
-	</td>
-	<td class=login></td>
-</tr>
-<tr>
-<td width=20 class=login><img src='../images/bl.png'></td>
-<td class=login></td>
-<td width=20 class=login><img src='../images/br.png'></td>
-</tr>
-</table>
+            <form name="postform" method="POST" action="<?php echo $action ?>">
+                <?php if ($mess != null) { ?>
+                    <div class="alert alert-danger py-2" role="alert"><?php echo $mess ?></div>
+                <?php } ?>
 
-</td></tr></table>
-</form>
-</center>
-</body>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold"><?php etr("Username") ?></label>
+                    <input type="text" name="username" class="form-control" autocomplete="username">
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold"><?php etr("Password") ?></label>
+                    <input type="password" name="pwd" class="form-control" autocomplete="current-password">
+                </div>
+
+                <?php if (count($dbs) > 1) { ?>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold"><?php etr("Database") ?></label>
+                        <?php combobox('dbname', $dbs, null, false); ?>
+                    </div>
+                <?php } ?>
+
+                <button type="submit" name="login" class="btn btn-primary w-100"><?php etr("Login") ?></button>
+            </form>
+        </div>
+    </div>
+</div>
+<script src="../include/bootstrap.bundle.min.js"></script>

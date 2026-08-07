@@ -17,7 +17,7 @@
 	        $sql .= " (description, recur_type, recur_interval) ";
 	        $sql .= " values ('$description', $recur_type, $recur_interval) ";
             sql($sql);
-            $scheduleid = mysql_insert_id();
+            $scheduleid = insert_id();
 	    } else {
 	        $sql = "update schedule ";
 	        $sql .= "set description='$description', ";
@@ -53,7 +53,7 @@
             $sql .= "(starttime, endtime) ";
             $sql .= "values (from_unixtime($starttime), from_unixtime($endtime)) ";
             sql($sql);
-            $shiftid = mysql_insert_id();
+            $shiftid = insert_id();
             $sql = "insert into schedule_shift (scheduleid, shiftid) ";
             $sql .= "values ($scheduleid, $shiftid)";
             sql($sql);
