@@ -35,7 +35,6 @@ while ($row = fetch($rs)) {
 }
 ?>
 </ul>
-</form>
 <?php bottom() ?>
 </body>
 </html>

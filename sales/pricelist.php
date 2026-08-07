@@ -49,8 +49,6 @@
 </div>
 </form>
 
-<form action="pricelist.php" method=POST>
-<input type=hidden name=orderid value='<?php echo $orderid ?>'/>
 <table width='100%'>
 <th><?php etr("Productno") ?></th>
 <th width='50%'><?php etr("Product") ?></th>
@@ -74,6 +72,5 @@ while ($row = fetch_object($rs)) {
 ?>
 </table>
 <br/>
-</form>
 <?php bottom() ?>
 </body>

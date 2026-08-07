@@ -118,7 +118,6 @@ title($title);
 &nbsp;
 
 <center>
-<form action="stockmoves.php" method=POST>
 <?php
 if (!isEmpty($productid)) {
 	echo "<font>" . tr("Starting quantity") . ": $startBalance</font><br><br>";
