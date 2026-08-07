@@ -1,27 +1,27 @@
 <?php
-	include('include.php');
-	include('salesorder.inc.php');
+include('include.php');
+include('salesorder.inc.php');
 
-    $customerid = getParam('customerid');
-    $unpaid = getParam('unpaid');
-	$overdue = getParam('overdue');
-	$uninvoiced = getParam('uninvoiced');
-	$productid = getParam('productid');
-	$credit_orgid = getParam('credit_orgid');
+$customerid = getParam('customerid');
+$unpaid = getParam('unpaid');
+$overdue = getParam('overdue');
+$uninvoiced = getParam('uninvoiced');
+$productid = getParam('productid');
+$credit_orgid = getParam('credit_orgid');
 
-	$starttime = parseDate(getParam('starttime'));
-	if (isEmpty($starttime))
-		$starttime = roundTime(time(), TYPE_MONTHS);
-	$endtime = parseDate(getParam('endtime'));
-	if (isEmpty($endtime))
-		$endtime = addTime($starttime, TYPE_MONTHS);
-		
-	$del_orderid = getParam("del_orderid");
-	if (!isEmpty($del_orderid)) {
-		cancel_order($del_orderid);
-	}
+$starttime = parseDate(getParam('starttime'));
+if (isEmpty($starttime))
+	$starttime = roundTime(time(), TYPE_MONTHS);
+$endtime = parseDate(getParam('endtime'));
+if (isEmpty($endtime))
+	$endtime = addTime($starttime, TYPE_MONTHS);
 
-	$sql = "
+$del_orderid = getParam("del_orderid");
+if (!isEmpty($del_orderid)) {
+	cancel_order($del_orderid);
+}
+
+$sql = "
 	select 
 		so.orderid,
 		so.no,
@@ -42,123 +42,123 @@
 	and orderdate between from_unixtime($starttime) and from_unixtime($endtime)
 	and cancelled=0
 	";
-	if ($unpaid)
-		$sql .= " and invoice_transid is not null ";
-	if ($uninvoiced)
-		$sql .= " and invoice_transid is null ";
-	if ($overdue)
-		$sql .= " and duedate < now() ";
-	if (!isEmpty($productid)) {
-		$sql .= " and exists (select * from salesorder_item soi2 where soi2.orderid=so.orderid and soi2.productid=$productid) ";
-	}
-	if (!isEmpty($credit_orgid)) 
-		$sql .= " and credit_orgid=$credit_orgid ";
-	$sql .= "group by orderid ";
-	if ($unpaid)
-		$sql .= " having total > 0 and (total > allocated or allocated is null) ";
-	$sql .= "order by orderid desc";
+if ($unpaid)
+	$sql .= " and invoice_transid is not null ";
+if ($uninvoiced)
+	$sql .= " and invoice_transid is null ";
+if ($overdue)
+	$sql .= " and duedate < now() ";
+if (!isEmpty($productid)) {
+	$sql .= " and exists (select * from salesorder_item soi2 where soi2.orderid=so.orderid and soi2.productid=$productid) ";
+}
+if (!isEmpty($credit_orgid))
+	$sql .= " and credit_orgid=$credit_orgid ";
+$sql .= "group by orderid ";
+if ($unpaid)
+	$sql .= " having total > 0 and (total > allocated or allocated is null) ";
+$sql .= "order by orderid desc";
 
-    $rs = query($sql);
-	$customers = rs2array(query("select customerid, name from customer"));
+$rs = query($sql);
+$customers = rs2array(query("select customerid, name from customer"));
 ?>
 
 <head>
-<title>thERP - <?php etr("Sales") ?></title>
-<?php
-styleSheet();
-include_datebox();
-?>
+	<title>thERP - <?php etr("Sales") ?></title>
+	<?php
+	styleSheet();
+	include_datebox();
+	?>
 </head>
 
 <body>
 
-<?php 
-menubar('index.php');
-?>
-<br>
-<form action="sales.php" method="GET">
-<div class="border p-3 mb-4">
-	<div class="row g-3 align-items-end">
-		<div class="col-md-4">
-			<label class="form-label"><?php etr("Customer") ?></label>
-			<?php comboBox('customerid', $customers, $customerid, true) ?>
-		</div>
-		<div class="col-md-8">
-			<label class="form-label d-block"><?php etr("Only show") ?></label>
-			<div class="d-flex flex-wrap gap-3">
-				<?php checkbox('uninvoiced', $uninvoiced, 'Not invoiced') ?>
-				<?php checkbox('unpaid', $unpaid, 'Unpaid') ?>
-				<?php checkbox('overdue', $overdue, 'Overdue') ?>
+	<?php
+	menubar('index.php');
+	?>
+	<br>
+	<form action="sales.php" method="GET">
+		<div class="border p-3 mb-4">
+			<div class="row g-3 align-items-end">
+				<div class="col-md-4">
+					<label class="form-label"><?php etr("Customer") ?></label>
+					<?php comboBox('customerid', $customers, $customerid, true) ?>
+				</div>
+				<div class="col-md-8">
+					<label class="form-label d-block"><?php etr("Only show") ?></label>
+					<div class="d-flex flex-wrap gap-3">
+						<?php checkbox('uninvoiced', $uninvoiced, 'Not invoiced') ?>
+						<?php checkbox('unpaid', $unpaid, 'Unpaid') ?>
+						<?php checkbox('overdue', $overdue, 'Overdue') ?>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<label class="form-label"><?php etr("Interval") ?></label>
+					<div class="d-flex gap-2 flex-wrap align-items-center">
+						<?php datebox("starttime", formatDate($starttime)) ?>
+						<?php datebox("endtime", formatDate($endtime)) ?>
+					</div>
+				</div>
+				<div class="col-auto">
+					<input type="submit" name="search" value="<?php etr("Search") ?>" class="btn btn-primary" />
+				</div>
 			</div>
 		</div>
-		<div class="col-md-4">
-			<label class="form-label"><?php etr("Interval") ?></label>
-			<div class="d-flex gap-2 flex-wrap align-items-center">
-				<?php datebox("starttime", formatDate($starttime)) ?>
-				<?php datebox("endtime", formatDate($endtime)) ?>
-			</div>
-		</div>
-		<div class="col-auto">
-			<input type="submit" name="search" value="<?php etr("Search") ?>" class="btn btn-primary" />
-		</div>
-	</div>
-</div>
-</form>
+	</form>
 
-<form action="sales.php" method=POST>
-<div class="table-responsive">
-<table class="table table-sm table-striped table-hover align-middle w-100">
-<thead>
-<tr>
-<th><?php etr("Cancel") ?></th>
-<th><?php etr("No") ?></th>
-<th><?php etr("Customer") ?></th>
-<th><?php etr("Order date") ?></th>
-<th><?php etr("Invoiced") ?></th>
-<th><?php etr("Payed") ?></th>
-<th><?php etr("Recurring") ?></th>
-</tr>
-</thead>
-<tbody>
-<?php
-    $class = "odd";
-    $i = 0;
-    while ($row = fetch_object($rs)) {
-        echo "<tr class='$class'>";
-		deleteColumn("sales.php?del_orderid=$row->orderid");
-    	$script = "salesorder.php";
-    	if ($row->credit_orgid != null)
-    		$script = "credit_salesorder.php";
-    	$href = "$script?orderid=$row->orderid";    	
-        echo "<td class='text-end'><a href='$href'>";
-        if ($row->no == null)
-        	printf("(%06d)", $row->orderid);
-        else
-        	printf("%06d", $row->no);
-        echo "</a></td>";
-        echo "<td>$row->customername</td>";
-        echo "<td class='text-center'>" . date(DATE_PATTERN, $row->orderdate) . "</td>";
-        if (isEmpty($row->invoice_transid))
-        	echo "<td class='text-center'></td>";
-        else
-        	echo "<td class='text-center'>X</td>";
-        if ($row->total > $row->allocated || $row->total == 0)
-        	echo "<td class='text-center'></td>";
-        else
-        	echo "<td class='text-center'>X</td>";
-		echo "<td class='text-center'>";
-		echo $row->recur != null ? 'X' : '';
-		echo "</td>";
-        echo "</tr>";
-        $class = ($class == "odd" ? "even" : "odd");
-        $i++;
-    }
-?>
-</tbody>
-</table>
-</div>
-<br/>
-<?php newButton("customers.php?mode=createorder") ?>
-</form>
-<?php bottom() ?>
+	<form action="sales.php" method=POST>
+		<div class="table-responsive">
+			<table class="table table-sm table-striped table-hover align-middle w-100">
+				<thead>
+					<tr>
+						<th><?php etr("Cancel") ?></th>
+						<th><?php etr("No") ?></th>
+						<th><?php etr("Customer") ?></th>
+						<th><?php etr("Order date") ?></th>
+						<th><?php etr("Invoiced") ?></th>
+						<th><?php etr("Payed") ?></th>
+						<th><?php etr("Recurring") ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					$class = "odd";
+					$i = 0;
+					while ($row = fetch_object($rs)) {
+						echo "<tr class='$class'>";
+						deleteColumn("sales.php?del_orderid=$row->orderid");
+						$script = "salesorder.php";
+						if ($row->credit_orgid != null)
+							$script = "credit_salesorder.php";
+						$href = "$script?orderid=$row->orderid";
+						echo "<td class='text-end'><a href='$href'>";
+						if ($row->no == null)
+							printf("(%06d)", $row->orderid);
+						else
+							printf("%06d", $row->no);
+						echo "</a></td>";
+						echo "<td>$row->customername</td>";
+						echo "<td class='text-center'>" . date(DATE_PATTERN, $row->orderdate) . "</td>";
+						if (isEmpty($row->invoice_transid))
+							echo "<td class='text-center'></td>";
+						else
+							echo "<td class='text-center'>X</td>";
+						if ($row->total > $row->allocated || $row->total == 0)
+							echo "<td class='text-center'></td>";
+						else
+							echo "<td class='text-center'>X</td>";
+						echo "<td class='text-center'>";
+						echo $row->recur != null ? 'X' : '';
+						echo "</td>";
+						echo "</tr>";
+						$class = ($class == "odd" ? "even" : "odd");
+						$i++;
+					}
+					?>
+				</tbody>
+			</table>
+		</div>
+		<br />
+		<?php newButton("customers.php?mode=createorder") ?>
+	</form>
+	<?php bottom() ?>
 </body>

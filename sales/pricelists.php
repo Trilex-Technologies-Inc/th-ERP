@@ -44,60 +44,63 @@ $rs = query($sql);
 ?>
 
 <html>
+
 <head>
-<?php metatag() ?>
-<title>thERP - <?php echo tr("Price lists") ?></title>
-<?php styleSheet() ?>
+	<?php metatag() ?>
+	<title>thERP - <?php echo tr("Price lists") ?></title>
+	<?php styleSheet() ?>
 </head>
+
 <body>
 
-<?php
-menubar("configuration.php");
-title(tr("Price lists"))
-?>
+	<?php
+	menubar("configuration.php");
+	title(tr("Price lists"))
+	?>
 
-<form action="pricelists.php" method="POST">
-<div class="table-responsive">
-<table class="table table-sm table-striped table-hover align-middle w-100">
-<thead>
-<tr>
-<th><?php echo tr("Delete") ?></th>
-<th><?php echo tr("Id") ?></th>
-<th><?php echo tr("Description") ?></th>
-</tr>
-</thead>
-<tbody>
-<?php
-$class = "odd";
-$i = 0;
-while ($row = fetch($rs)) {
-	echo "<input type=hidden name=listid_$i value='$row->listid'/>";
-    echo "<tr class='$class'>";
-    echo "<td class='text-center'>";
-	deleteIcon("pricelists.php?del_listid=$row->listid");
-    echo "</td>";
-    echo "<td>$row->listid</td>";
-    echo "<td>";
-    textBox("description_$i", $row->description);
-    echo "</td>";
-    hidden("old_description_$i", $row->description);
-    echo "</tr>";
-    $class = ($class == "odd" ? "even" : "odd");
-    $i++;
-}
-hidden('count', $i);
-?>
-<tr>
-<td></td>
-<td><?php textBox('listid_new', '', 6) ?></td>
-<td><?php textBox('description_new', '') ?></td>
-</tr>
-</tbody>
-</table>
-</div>
-<br/>
-<?php saveButton() ?>
-</form>
-<?php bottom() ?>
+	<form action="pricelists.php" method="POST">
+		<div class="table-responsive">
+			<table class="table table-sm table-striped table-hover align-middle w-100">
+				<thead>
+					<tr>
+						<th><?php echo tr("Delete") ?></th>
+						<th><?php echo tr("Id") ?></th>
+						<th><?php echo tr("Description") ?></th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php
+					$class = "odd";
+					$i = 0;
+					while ($row = fetch($rs)) {
+						echo "<input type=hidden name=listid_$i value='$row->listid'/>";
+						echo "<tr class='$class'>";
+						echo "<td class='text-center'>";
+						deleteIcon("pricelists.php?del_listid=$row->listid");
+						echo "</td>";
+						echo "<td>$row->listid</td>";
+						echo "<td>";
+						textBox("description_$i", $row->description);
+						echo "</td>";
+						hidden("old_description_$i", $row->description);
+						echo "</tr>";
+						$class = ($class == "odd" ? "even" : "odd");
+						$i++;
+					}
+					hidden('count', $i);
+					?>
+					<tr>
+						<td></td>
+						<td><?php textBox('listid_new', '', 6) ?></td>
+						<td><?php textBox('description_new', '') ?></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<br />
+		<?php saveButton() ?>
+	</form>
+	<?php bottom() ?>
 </body>
+
 </html>
