@@ -27,7 +27,7 @@
 
 <head>
 <title>thERP - <?php etr("Purchase orders") ?></title>
-<LINK REL=StyleSheet HREF="therp.css" TYPE="text/css">
+<?php styleSheet() ?>
 </head>
 
 <body>

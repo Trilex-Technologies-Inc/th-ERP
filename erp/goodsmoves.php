@@ -33,7 +33,7 @@
 
 <head>
 <title>thERP - <?php etr("Stock move order") ?></title>
-<LINK REL=StyleSheet HREF="therp.css" TYPE="text/css">
+<?php styleSheet() ?>
 </head>
 
 <body>

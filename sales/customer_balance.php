@@ -15,7 +15,7 @@ $selectSQL = "
 
 <head>
 	<title>thERP - <?php etr("Customer  balance") ?></title>
-	<LINK REL=StyleSheet HREF="therp.css" TYPE="text/css">
+	<?php styleSheet() ?>
 </head>
 
 <body>

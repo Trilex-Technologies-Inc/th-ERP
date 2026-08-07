@@ -5,7 +5,7 @@
 ?>
 <head>
 <title>thERP - <?php etr("Receive goods") ?></title>
-<LINK REL=StyleSheet HREF="therp.css" TYPE="text/css">
+<?php styleSheet() ?>
 </head>
 
 <body>

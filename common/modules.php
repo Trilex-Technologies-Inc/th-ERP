@@ -14,11 +14,25 @@ metatag();
 <?php
 top0();
 ?>
-<table width="100%" cellspacing=0 cellpadding=0>
-<tr class=menubar><td style="padding: 2">&nbsp;<?php etr("Select module") ?></td></tr>
+<table width="100%" cellspacing="0" cellpadding="0" class="menubar module-sidebar">
+<tr>
+<?php
+menu('../sales/index.php', 'Sales', 14, true, null);
+menu('../erp/index.php', 'Stock/Inventory', 14, true, null);
+menu('../manufacturing/index.php', 'Manufacturing', 14, true, null);
+menu('../payroll/employees.php', 'Payroll', 14, true, null);
+menu('../project/projects.php', 'Project', 14, true, null);
+menu('../accounting/index.php', 'General ledger', 14, true, null);
+menu('security.php', 'Common', 16, false, null);
+?>
+</tr>
 </table>
 
 <?php menupage_begin() ?>
+<div class="module-heading">
+<span class="module-eyebrow"><?php etr("Dashboard") ?></span>
+<h1><?php etr("Select module") ?></h1>
+</div>
 <ul>
 <li class=menupage>
 <a href='../sales/index.php' class=menupage>

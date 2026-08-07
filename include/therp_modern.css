@@ -45,26 +45,29 @@ body:not(:has(table.menubar .app-nav-item)) .app-header .navbar-brand { display:
 /* Convert each module's legacy navigation table into the SB Admin sidebar. */
 table.menubar:has(.app-nav-item) {
   position: fixed; inset: 0 auto 0 0; z-index: 1030;
-  display: block; width: var(--sb-sidebar) !important; margin: 0 !important; padding-top: 82px;
+  display: block; width: var(--sb-sidebar) !important; margin: 0 !important; padding: 88px 14px 24px;
   overflow-y: auto; border: 0; background: linear-gradient(180deg, var(--sb-primary) 10%, #224abe 100%) !important;
-  box-shadow: 0 0 18px rgba(34,74,190,.2);
+  box-shadow: 0 0 22px rgba(34,74,190,.18);
+  box-sizing: border-box;
 }
 table.menubar:has(.app-nav-item)::before {
-  content: "thERP"; position: absolute; top: 0; left: 16px; right: 16px; height: 68px;
-  display: flex; align-items: center; justify-content: center; color: #fff; border-bottom: 1px solid rgba(255,255,255,.15);
-  font-size: 18px; font-weight: 800; letter-spacing: .08em;
+  content: "thERP"; position: absolute; top: 0; left: 14px; right: 14px; height: 72px;
+  display: flex; align-items: center; justify-content: center; color: #fff; border-bottom: 1px solid rgba(255,255,255,.16);
+  font-family: "Segoe UI", sans-serif; font-size: 17px; font-weight: 800; letter-spacing: .1em;
 }
 table.menubar:has(.app-nav-item) tbody,
 table.menubar:has(.app-nav-item) tr { display: block; }
-.app-nav-item { display: block; width: 100% !important; padding: 0 16px !important; }
+.app-nav-item { display: block; width: 100% !important; padding: 3px 0 !important; background: transparent !important; font-family: inherit !important; }
 .app-nav-item > a {
-  display: flex; align-items: center; gap: 12px; min-height: 54px; padding: 10px 12px;
-  color: rgba(255,255,255,.72) !important; border-bottom: 1px solid rgba(255,255,255,.08);
-  font-weight: 600; transition: .15s ease;
+  display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 9px 11px;
+  color: rgba(255,255,255,.72) !important; background: transparent !important; border: 0; border-radius: 7px;
+  font-family: inherit !important; font-size: 13px; font-weight: 600; transition: color .15s ease, background .15s ease, transform .15s ease;
 }
-.app-nav-item > a:hover, .app-nav-item > a.menubar_current { color: #fff !important; }
-.app-nav-item > a.menubar_current { font-weight: 800; }
-.nav-icon { width: 20px; text-align: center; color: rgba(255,255,255,.45); font-size: 16px; }
+.app-nav-item > a:hover { color: #fff !important; background: rgba(255,255,255,.08) !important; transform: translateX(2px); }
+.app-nav-item > a.menubar_current { color: #fff !important; background: rgba(255,255,255,.14) !important; box-shadow: inset 3px 0 0 #fff; font-weight: 700; }
+.app-nav-item > a:visited { color: rgba(255,255,255,.72) !important; }
+.app-nav-item > a.menubar_current:visited { color: #fff !important; }
+.nav-icon { width: 19px; text-align: center; color: rgba(255,255,255,.48); font-family: "Segoe UI Symbol", sans-serif; font-size: 15px; font-weight: 400; }
 .menubar_current .nav-icon, .app-nav-item a:hover .nav-icon { color: #fff; }
 
 .container-fluid.pt-4.pb-2 { padding: 0 0 12px !important; }
@@ -105,6 +108,10 @@ input[type=submit]:hover, input[type=button]:hover, button:not(.sidebar-toggle):
 li.menupage { display: inline-block; width: calc(25% - 16px); min-width: 180px; margin: 8px; vertical-align: top; list-style: none; }
 li.menupage a { display: flex; align-items: center; min-height: 94px; padding: 18px; color: #5a5c69; background: #fff; border-left: .25rem solid var(--sb-primary); border-radius: .35rem; box-shadow: 0 .15rem 1.75rem rgba(58,59,69,.12); font-size: 15px; font-weight: 800; text-transform: uppercase; }
 li.menupage a:hover { color: var(--sb-primary); transform: translateY(-2px); }
+.module-heading { margin: 4px 8px 18px; }
+.module-heading h1 { margin: 2px 0 0; color: #5a5c69; font-size: 1.75rem; font-weight: 400; }
+.module-eyebrow { color: var(--sb-primary); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
+.module-sidebar::before { content: "thERP Dashboard" !important; }
 .login-card { border-radius: .5rem !important; max-width: 440px; }
 .login-mark { width: 60px; height: 60px; display: grid; place-items: center; margin: auto; color: #fff; background: linear-gradient(135deg,var(--sb-primary),var(--sb-primary-dark)); border-radius: 50%; font-weight: 800; }
 .login-card .form-control, .login-card select { width: 100%; }

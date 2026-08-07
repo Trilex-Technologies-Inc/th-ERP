@@ -98,7 +98,7 @@
 
 <head>
 <title>thERP - <?php etr("Payment") ?></title>
-<LINK REL=StyleSheet HREF="therp.css" TYPE="text/css">
+<?php styleSheet() ?>
 </head>
 
 <body>

@@ -138,6 +138,7 @@ function styleSheet($file = 'therp')
 	echo "<link href='../include/bootstrap.min.css' rel='stylesheet'>";
 	echo "<LINK REL=StyleSheet HREF='../include/$file$suffix.css' TYPE='text/css'>";
 	echo "<link rel='stylesheet' href='../include/therp_modern.css'>";
+	echo "<script defer src='../include/therp_modern.js'></script>";
 }
 
 function hasPermission($permissionid)
@@ -212,7 +213,6 @@ function bottom()
 	echo "<a href='http://www.therpsoft.com' class='text-decoration-none'>www.therpsoft.com</a>";
 	echo "</footer>";
 	echo "<script src='../include/bootstrap.bundle.min.js'></script>";
-	echo "<script src='../include/therp_modern.js'></script>";
 }
 
 function menu($href, $text, $width, $hasNext, $currentHref)
@@ -223,7 +223,9 @@ function menu($href, $text, $width, $hasNext, $currentHref)
 		'Products' => '&#9638;', 'Purchase' => '&#128722;', 'Stock move' => '&#8644;',
 		'Configuration' => '&#9881;', 'Help' => '?', 'Employees' => '&#9787;',
 		'Reporting' => '&#9636;', 'End of period' => '&#10003;', 'Security' => '&#128274;',
-		'Languages' => 'A', 'Company info' => '&#9635;', 'Sales' => '$',
+		'Languages' => 'A', 'Company info' => '&#9635;', 'Sales' => '$', 'Stock/Inventory' => '&#9638;',
+		'Manufacturing' => '&#9881;', 'Payroll' => '&#9636;', 'Project' => '&#10003;',
+		'General ledger' => '&#8644;', 'Common' => '&#9635;',
 		'Customers' => '&#9787;', 'Transactions' => '&#8644;', 'Accounts' => '&#9636;'
 	);
 	$icon = array_key_exists($text, $icons) ? $icons[$text] : '&#9679;';
