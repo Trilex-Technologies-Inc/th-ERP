@@ -61,42 +61,67 @@ function printReport()
 <?php menubar('products.php') ?>
 <?php title(tr("Products")) ?>
 
-<form action="products.php" method="GET" name=searchform>
-<div class="border">
-<div class="container-fluid px-0 erp-form-layout">
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Model") ?>:</div><div class="col-12 col-md-auto"><?php textbox('model', $model) ?></div></div>
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Barcode") ?>:</div><div class="col-12 col-md-auto"><?php textbox('barcode', $barcode) ?></div></div>
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Supplier") ?>:</div><div class="col-12 col-md-auto"><?php combobox('supplierid', $suppliers, $supplierid, true) ?></div></div>
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Location") ?>:</div><div class="col-12 col-md-auto"><?php combobox('locationid', $locations, $locationid, true) ?></div></div>
-<div class="row g-3 align-items-center mb-2">
-	<div class="col-12 col-md-auto">
-	<?php searchButton() ?>
-	<?php button("Print", "print", "javascript:printReport()") ?>
+<form action="products.php" method="GET" name="searchform" class="products-filter mb-4">
+<div class="card border-0 shadow-sm">
+	<div class="card-body">
+		<div class="d-flex justify-content-between align-items-center mb-3">
+			<h2 class="h6 fw-bold mb-0"><?php etr("Search") ?></h2>
+			<span class="text-secondary small"><?php etr("Products") ?></span>
+		</div>
+		<div class="row g-3">
+			<div class="col-12 col-md-6 col-xl-3">
+				<label class="form-label fw-semibold"><?php etr("Model") ?></label>
+				<div class="w-100"><?php textbox('model', $model) ?></div>
+			</div>
+			<div class="col-12 col-md-6 col-xl-3">
+				<label class="form-label fw-semibold"><?php etr("Barcode") ?></label>
+				<div class="w-100"><?php textbox('barcode', $barcode) ?></div>
+			</div>
+			<div class="col-12 col-md-6 col-xl-3">
+				<label class="form-label fw-semibold"><?php etr("Supplier") ?></label>
+				<div class="w-100"><?php combobox('supplierid', $suppliers, $supplierid, true) ?></div>
+			</div>
+			<div class="col-12 col-md-6 col-xl-3">
+				<label class="form-label fw-semibold"><?php etr("Location") ?></label>
+				<div class="w-100"><?php combobox('locationid', $locations, $locationid, true) ?></div>
+			</div>
+		</div>
+		<div class="d-flex flex-wrap gap-2 mt-3 pt-3 border-top">
+			<?php searchButton() ?>
+			<?php button("Print", "print", "javascript:printReport()") ?>
+		</div>
 	</div>
 </div>
-</div>
-</div>
 </form>
-&nbsp;
 
-<form action="products.php" method=POST>
-<input type=hidden name=mode value='<?php echo $mode ?>'/>
-<input type=hidden name=orderid value='<?php echo $orderid ?>'/>
-<table>
-<th><?php etr("Delete") ?></th>
-<th><?php etr("Productno") ?></th>
-<th><?php etr("Product") ?></th>
+<form action="products.php" method="POST">
+<input type="hidden" name="mode" value="<?php echo htmlspecialchars($mode) ?>"/>
+<input type="hidden" name="orderid" value="<?php echo htmlspecialchars($orderid) ?>"/>
+<div class="card border-0 shadow-sm overflow-hidden">
+	<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+		<h2 class="h6 fw-bold mb-0"><?php etr("Products") ?></h2>
+		<?php button("Add product", "add", "product.php") ?>
+	</div>
+	<div class="overflow-auto">
+		<div class="products-grid">
+			<div class="products-grid-header d-flex align-items-center gap-3 px-3 py-3 border-bottom fw-bold small text-uppercase">
+				<div class="product-actions text-center"><?php etr("Delete") ?></div>
+				<div class="product-number"><?php etr("Productno") ?></div>
+				<div class="product-name flex-grow-1"><?php etr("Product") ?></div>
+				<?php if (isEmpty($mode)) { ?>
+					<div class="product-quantity text-end"><?php etr("Quantity") ?></div>
+					<div class="product-quantity text-end"><?php etr("Ordered qty, sales") ?></div>
+					<div class="product-quantity text-end"><?php etr("Ordered qty, purchase") ?></div>
+				<?php } ?>
+				<div class="product-barcode text-end"><?php etr("Barcode") ?></div>
+			</div>
 <?php
-if (isEmpty($mode)) {
-	echo "<th>" . tr("Quantity") . "</th>";
-	echo "<th>" . tr("Ordered qty, sales") . "</th>";
-	echo "<th>" . tr("Ordered qty, purchase") . "</th>";
-}
-	echo "<th>" . tr("Barcode") . "</th>";
 
 $rs = query($selectSQL);
 $class = "odd";
+$productCount = 0;
 while ($row = fetch_object($rs)) {
+	$productCount++;
 	$href = "product.php?productid=$row->productid";
 	if ($mode == 'selectproduct')
 		$href = "../sales/salesorder.php?orderid=$orderid&productid=$row->productid";
@@ -106,26 +131,31 @@ while ($row = fetch_object($rs)) {
 		$href = "goodsmove.php?orderid=$orderid&productid=$row->productid";
 	else if ($mode == 'selectproduction')
 		$href = "../manufacturing/productionorder.php?orderid=$orderid&productid=$row->productid";
-	echo "<tr class='$class'>";
-	deleteColumn("products.php?del_productid=$row->productid");
-	echo "<td>$row->productid</td>";
-	echo "<td><a href='$href'>$row->model</a></td>";
+	echo "<div class='products-grid-row d-flex align-items-center gap-3 px-3 py-3 border-bottom $class'>";
+	echo "<div class='product-actions text-center'>";
+	deleteIcon("products.php?del_productid=$row->productid");
+	echo "</div>";
+	echo "<div class='product-number text-secondary'>" . htmlspecialchars($row->productid) . "</div>";
+	echo "<div class='product-name flex-grow-1'><a class='fw-semibold' href='$href'>" . htmlspecialchars($row->model) . "</a></div>";
 	if (isEmpty($mode)) {
 		$href = "stockmoves.php?productid=$row->productid&locationid=$locationid";
-		echo "<td align=right><a href='$href' class=sum>$row->quantity</a></td>";
+		echo "<div class='product-quantity text-end'><a href='$href' class='sum badge text-bg-light border'>" . htmlspecialchars($row->quantity) . "</a></div>";
 		$href = "sales.php?productid=$row->productid&uninvoiced=1";
-		echo "<td align=right><a href='$href' class=sum>$row->so_quantity</a></td>";
+		echo "<div class='product-quantity text-end'><a href='$href' class='sum badge text-bg-light border'>" . htmlspecialchars($row->so_quantity) . "</a></div>";
 		$href = "purchaseorders.php?productid=$row->productid";
-		echo "<td align=right><a href='$href' class=sum>$row->po_quantity</a></td>";
+		echo "<div class='product-quantity text-end'><a href='$href' class='sum badge text-bg-light border'>" . htmlspecialchars($row->po_quantity) . "</a></div>";
 	}
-		echo "<td align=right>$row->barcode</td>";
-	echo "</tr>";
+	echo "<div class='product-barcode text-end font-monospace small'>" . htmlspecialchars($row->barcode) . "</div>";
+	echo "</div>";
 	$class = ($class == "odd" ? "even" : "odd");
 }
+if ($productCount == 0) {
+	echo "<div class='text-center text-secondary py-5'>" . tr("No products found") . "</div>";
+}
 ?>
-</table>
-<br/>
-<?php button("Add product", "add", "product.php") ?>
+		</div>
+	</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>

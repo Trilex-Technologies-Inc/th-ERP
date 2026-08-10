@@ -92,6 +92,18 @@ body:not(:has(.app-sidebar .app-nav-item)) .app-header .navbar-brand { display: 
 .erp-form-layout { margin-bottom: .75rem; }
 .erp-form-layout .row > div:first-child:not(:only-child) { color: #5a5c69; font-weight: 700; }
 
+/* Product catalogue */
+.products-filter input[type=text], .products-filter select { width: 100%; }
+.products-grid { min-width: 920px; }
+.products-grid-header { color: var(--sb-heading); background: var(--bs-light); }
+.products-grid-row { transition: background-color .15s ease; }
+.products-grid-row:hover { background: rgba(78,115,223,.05); }
+.products-grid .product-actions { width: 72px; flex: 0 0 72px; }
+.products-grid .product-number { width: 110px; flex: 0 0 110px; }
+.products-grid .product-name { min-width: 190px; }
+.products-grid .product-quantity { width: 135px; flex: 0 0 135px; }
+.products-grid .product-barcode { width: 150px; flex: 0 0 150px; }
+
 input[type=text], input[type=password], input[type=email], input[type=number], input[type=date], input[type=time], select, textarea {
   min-height: 38px; padding: .55rem .75rem !important; color: #6e707e; background: #fff;
   border: 1px solid #d1d3e2 !important; border-radius: .35rem !important; max-width: 100%;
@@ -113,9 +125,15 @@ li.menupage a:hover { color: var(--sb-primary); transform: translateY(-2px); }
 .module-heading h1 { margin: 2px 0 0; color: #5a5c69; font-size: 1.75rem; font-weight: 400; }
 .module-eyebrow { color: var(--sb-primary); font-size: .72rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; }
 .module-sidebar::before { content: "thERP Dashboard" !important; }
-.login-card { border-radius: .5rem !important; max-width: 440px; }
-.login-mark { width: 60px; height: 60px; display: grid; place-items: center; margin: auto; color: #fff; background: linear-gradient(135deg,var(--sb-primary),var(--sb-primary-dark)); border-radius: 50%; font-weight: 800; }
+.login-page { padding: 0 24px !important; background: radial-gradient(circle at 10% 10%,rgba(78,115,223,.12),transparent 34%),radial-gradient(circle at 90% 90%,rgba(34,74,190,.1),transparent 36%),#f8f9fc; }
+.login-card { border-radius: .85rem !important; max-width: 900px; }
+.login-shell { box-shadow: 0 1rem 3rem rgba(34,74,190,.18) !important; }
+.login-brand-panel { min-height: 560px; background: linear-gradient(145deg,var(--sb-primary),var(--sb-primary-dark)); position: relative; isolation: isolate; }
+.login-brand-panel::after { content: ""; position: absolute; width: 260px; height: 260px; right: -100px; bottom: -100px; z-index: -1; border: 45px solid rgba(255,255,255,.08); border-radius: 50%; }
+.login-mark { width: 64px; height: 64px; display: grid; place-items: center; margin: 0; color: var(--sb-primary); background: #fff; border-radius: 18px; box-shadow: 0 .5rem 1.5rem rgba(0,0,0,.12); font-weight: 900; letter-spacing: .04em; }
 .login-card .form-control, .login-card select { width: 100%; }
+.login-card .password-toggle { min-width: 76px; color: #6c757d !important; background: #fff !important; border-color: #d1d3e2 !important; }
+.login-card .password-toggle:hover { color: #fff !important; background: #6c757d !important; }
 
 @media (max-width: 900px) {
   body, body:has(.app-sidebar .app-nav-item) { padding-left: 14px !important; padding-right: 14px !important; }
@@ -129,6 +147,9 @@ li.menupage a:hover { color: var(--sb-primary); transform: translateY(-2px); }
   .user-label { display: none; }
   .app-footer { margin-left: -14px; margin-right: -14px; }
   li.menupage { width: calc(50% - 20px); }
+}
+@media (max-width: 991.98px) {
+  .login-brand-panel { min-height: auto; }
 }
 @media (max-width: 520px) {
   .logout-link { padding: .35rem .5rem !important; }

@@ -7,6 +7,7 @@
 	$orderid = getParam('orderid');
 	$new = true;
 	$locationid = getParam('locationid');
+	$toid = getParam('toid');
 	$orderdate = time();
 
 	$sent = 0;
@@ -17,11 +18,25 @@
 	$mess = null;
 
 	if (getParam("action") == "create") {
-		$locationid = findValue("select locationid from user where username='" . getUser() . "'", 1);
+		$locationid = findValue("select locationid from user where username='" . getUser() . "'");
+		if (isEmpty($locationid))
+			$locationid = findValue("select locationid from location order by locationid limit 1");
+		if (isEmpty($locationid) || !is_numeric($locationid)) {
+			echo tr("No location configured");
+			die;
+		}
+
+		$locationid = (int) $locationid;
+		$requestedToid = getParam('toid');
+		$toid = !isEmpty($requestedToid) && is_numeric($requestedToid)
+			? (int) $requestedToid
+			: $locationid;
 		$sql = "insert into movesorder (orderdate,  createdby, locationid,toid)
-		        values (now(), '" . getUser() . "', $locationid, $locationid)";
+		        values (now(), '" . getUser() . "', $locationid, $toid)";
 		sql($sql);
 		$orderid = insert_id();
+		header("Location: goodsmove.php?orderid=$orderid");
+		die;
 	}
 
 	if (isSave()) {
@@ -72,6 +87,7 @@
 	$createdby = null;
 	$paymentCount = 0;
 	$payment_transid = null;
+	$cancel_transid = null;
 	$locationid = null;
 	if (!isEmpty($orderid)) {
 	    $sql =
@@ -94,7 +110,7 @@
 			$cancelled = $rec->cancelled;
 			$sent = $rec->sent;
 			$received = $rec->received;
-			$addable = (sent==0);
+			$addable = ($sent == 0);
 			$createdby = $rec->createdby;
 			$locationid = $rec->locationid;
 			$new = false;
@@ -240,9 +256,7 @@ if ($addable)
 		$href = "goodsmove.php?orderid=$orderid&del_no=$row->no";
 		if ($addable)
 			deleteColumn($href);
-		$text = $row->productid - $row->model;
-		if (!isEmpty($row->supplier_productcode)) 
-			$text .= " ($row->supplier_productcode)";
+		$text = $row->productid . ' - ' . $row->model;
 		echo "<td><a href='product.php?productid=$row->productid'>$text</a></td>";
 		echo "<td align=right>$row->quantity</td>";
 		echo "<td align=right>$row->quantity</td>";
@@ -258,7 +272,7 @@ if ($addable) {
 	echo "<td/>";
 	echo "<td>";
 	numberbox('productid_new', $productid);
-	$href = "products.php?mode=selectgoodsmove&orderid=$orderid&supplierid=$supplierid";
+	$href = "products.php?mode=selectgoodsmove&orderid=$orderid";
 	button("Search", "search", $href);
 	echo "</td>";
 	echo "<td align=right>";
