@@ -6,6 +6,19 @@
     return !!table.querySelector('.app-nav-item') || table.classList.contains('menubar');
   }
   document.addEventListener('DOMContentLoaded', function () {
+	document.querySelectorAll('input[type="text"], input[type="password"], input[type="email"], input[type="number"], input[type="date"], input[type="time"], textarea').forEach(function (control) {
+		control.classList.add('form-control');
+	});
+	document.querySelectorAll('select').forEach(function (control) {
+		control.classList.add('form-select');
+	});
+	document.querySelectorAll('input[type="checkbox"], input[type="radio"]').forEach(function (control) {
+		control.classList.add('form-check-input');
+	});
+	document.querySelectorAll('input[type="submit"], input[type="button"]').forEach(function (control) {
+		control.classList.add('btn', 'btn-primary');
+	});
+
     var toggle = document.querySelector('.sidebar-toggle');
     if (toggle) {
       toggle.addEventListener('click', function () {
