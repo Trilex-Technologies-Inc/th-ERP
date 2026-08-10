@@ -78,6 +78,7 @@
 	}
 	
 	$rec = new Dummy();
+	$phoneNumbers = null;
 	if (!isEmpty($supplierid)) {
 	    $selectSQL =
   		"select supplierid,
@@ -125,77 +126,101 @@
 <body>
 <?php 
 menubar('purchase.php');
-$title = $rec->name;
+$title = htmlspecialchars($rec->name);
 if ($new)
 	$title = tr("Create");
-title("<a href='suppliers.php'>Suppliers</a> > $title");
+title("<a href='suppliers.php?mode=" . htmlspecialchars($mode) . "'>" . tr("Suppliers") . "</a> > $title");
 ?>
 
-<form action="supplier.php" method="POST">
-<input type=hidden name=mode value='<?php echo $mode ?>'/>
-<table>
-<tr><td class=label>Id:</td>
-<td>
-<?php
-	if ($new) {	
-	} else {
-		echo $supplierid;
-		echo "<input type='hidden' name='supplierid' value='$supplierid'/>";
-	}
-?>
-</td>
-<tr><td class=label><?php echo tr("Name") ?>:</td><td><input type="text" name="name" value="<?php echo $rec->name ?>"/></td>
-<tr><td class=label><?php echo tr("Street address") ?>:</td><td><?php textbox("streetaddress", $rec->streetaddress, 30) ?></td></tr>
-<tr><td class=label><?php echo tr("City") ?>:</td><td><?php textbox("city", $rec->city) ?></td></tr>
-<tr><td class=label><?php echo tr("Zip code") ?>:</td><td><?php textbox("zipcode", $rec->zipcode) ?></td></tr>
-<tr><td class=label><?php echo tr("Country") ?>:</td><td><?php combobox("countrycode", $countries, $rec->countrycode, true) ?></td></tr>
-<tr><td class=label><?php echo tr("Contact") ?>:</td><td><?php textbox("contact", $rec->contact, 30) ?></td></tr>
-<tr><td class=label><?php echo tr("E-mail") ?>:</td><td><?php textbox("email", $rec->email, 30) ?></td></tr>
-<tr>
-<td class=label><?php etr("Telephone numbers") ?></td>
-</tr>
-<?php
-while ($row = fetch($phoneNumbers)) {
-	echo "<tr>";
-	echo "<td>$row->description</td>";
-	echo "<td>";
-	echo $row->telephoneno;
-	echo "&nbsp;";
-	deleteIcon("supplier.php?supplierid=$supplierid&del_telephoneno=$row->telephoneno");
-	echo "</td>";
-	echo "</tr>";
-}
-echo "<tr>";
-echo "<td>";
-combobox('phonecatid_new', $phonecats, null, true);
-echo "</td>";
-echo "<td>";
-textbox('telephoneno_new', '');
-echo "</td>";
-echo "</tr>";
-?>
-<tr><td class=label><?php echo tr("VAT number") ?>:</td><td><?php textbox("vatnumber", $rec->vatnumber, 20) ?></td></tr>
-<tr>
-<td class=label><?php etr("Credit account") ?>:</td>
-<td><?php combobox('credit_account', $creditAccounts, $rec->credit_account, true) ?></td>
-</tr>
-<tr>
-<td class=label><?php etr("Credit length") ?>:</td>
-<td>
-<?php 
-numberbox('credit_length', $rec->credit_length);
-echo "&nbsp;" . tr("days")
-?>
-</td>
-</tr>
-</table>
-<br/>
-<?php 
-saveButton();
-echo "&nbsp;";
-if (!$new)
-	button("Add supplier", "add", "supplier.php");
-?>
+<form action="supplier.php" method="POST" class="supplier-editor">
+<input type="hidden" name="mode" value="<?php echo htmlspecialchars($mode) ?>"/>
+
+<header class="supplier-editor-intro">
+	<div class="supplier-editor-icon" aria-hidden="true">
+		<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM19 8v6M16 11h6"/></svg>
+	</div>
+	<div>
+		<span class="supplier-editor-eyebrow"><?php echo $mode == 'createorder' ? tr("Purchase order setup") : tr("Supplier directory") ?></span>
+		<h1><?php echo $new ? tr("Create supplier") : htmlspecialchars($rec->name) ?></h1>
+		<p><?php echo $mode == 'createorder' ? tr("Add the supplier details needed for your new purchase order.") : tr("Maintain supplier contact and purchasing information.") ?></p>
+	</div>
+	<?php if ($mode == 'createorder') { ?>
+		<div class="supplier-editor-step"><span>1</span><div><small><?php etr("Purchase order") ?></small><strong><?php etr("New supplier") ?></strong></div></div>
+	<?php } else if (!$new) { ?>
+		<span class="supplier-editor-id"><?php etr("Supplier") ?> #<?php echo htmlspecialchars($supplierid) ?></span>
+	<?php } ?>
+</header>
+
+<section class="card border-0 shadow-sm supplier-editor-card">
+	<div class="card-body">
+		<div class="supplier-editor-section-heading">
+			<div><span><?php etr("Company") ?></span><h2><?php etr("Supplier information") ?></h2></div>
+			<?php if (!$new) { ?><span class="supplier-inline-id">#<?php echo htmlspecialchars($supplierid) ?></span><?php } ?>
+		</div>
+		<?php if (!$new) { ?><input type="hidden" name="supplierid" value="<?php echo htmlspecialchars($supplierid) ?>"/><?php } ?>
+		<div class="row g-4">
+			<div class="col-12">
+				<label class="form-label fw-semibold" for="supplier-name"><?php etr("Name") ?></label>
+				<input id="supplier-name" type="text" name="name" value="<?php echo htmlspecialchars($rec->name) ?>"/>
+			</div>
+		</div>
+	</div>
+</section>
+
+<div class="row g-4 supplier-editor-columns">
+	<div class="col-12 col-lg-6">
+		<section class="card border-0 shadow-sm h-100 supplier-editor-card">
+			<div class="card-body">
+				<div class="supplier-editor-section-heading"><div><span><?php etr("Address") ?></span><h2><?php etr("Location details") ?></h2></div></div>
+				<div class="supplier-editor-fields">
+					<div><label class="form-label fw-semibold"><?php etr("Street address") ?></label><div class="supplier-editor-field"><?php textbox("streetaddress", $rec->streetaddress, 30) ?></div></div>
+					<div class="row g-3">
+						<div class="col-7"><label class="form-label fw-semibold"><?php etr("City") ?></label><div class="supplier-editor-field"><?php textbox("city", $rec->city) ?></div></div>
+						<div class="col-5"><label class="form-label fw-semibold"><?php etr("Zip code") ?></label><div class="supplier-editor-field"><?php textbox("zipcode", $rec->zipcode) ?></div></div>
+					</div>
+					<div><label class="form-label fw-semibold"><?php etr("Country") ?></label><div class="supplier-editor-field"><?php combobox("countrycode", $countries, $rec->countrycode, true) ?></div></div>
+				</div>
+			</div>
+		</section>
+	</div>
+	<div class="col-12 col-lg-6">
+		<section class="card border-0 shadow-sm h-100 supplier-editor-card">
+			<div class="card-body">
+				<div class="supplier-editor-section-heading"><div><span><?php etr("Contact") ?></span><h2><?php etr("Primary contact") ?></h2></div></div>
+				<div class="supplier-editor-fields">
+					<div><label class="form-label fw-semibold"><?php etr("Contact") ?></label><div class="supplier-editor-field"><?php textbox("contact", $rec->contact, 30) ?></div></div>
+					<div><label class="form-label fw-semibold"><?php etr("E-mail") ?></label><div class="supplier-editor-field"><?php textbox("email", $rec->email, 30) ?></div></div>
+					<div><label class="form-label fw-semibold"><?php etr("Telephone numbers") ?></label>
+						<?php if ($phoneNumbers != null) { while ($row = fetch($phoneNumbers)) { ?>
+							<div class="supplier-phone-item"><span><small><?php echo htmlspecialchars($row->description) ?></small><?php echo htmlspecialchars($row->telephoneno) ?></span><?php deleteIcon("supplier.php?supplierid=$supplierid&mode=" . urlencode($mode) . "&del_telephoneno=" . urlencode($row->telephoneno)) ?></div>
+						<?php } } ?>
+						<div class="supplier-phone-new"><div class="supplier-editor-field"><?php combobox('phonecatid_new', $phonecats, null, true) ?></div><div class="supplier-editor-field"><?php textbox('telephoneno_new', '') ?></div></div>
+						<small class="form-text"><?php etr("Select a telephone type to add this number when saving.") ?></small>
+					</div>
+				</div>
+			</div>
+		</section>
+	</div>
+</div>
+
+<section class="card border-0 shadow-sm supplier-editor-card supplier-purchasing-card">
+	<div class="card-body">
+		<div class="supplier-editor-section-heading"><div><span><?php etr("Purchasing") ?></span><h2><?php etr("Tax and credit settings") ?></h2></div></div>
+		<div class="row g-4">
+			<div class="col-12 col-md-4"><label class="form-label fw-semibold"><?php etr("VAT number") ?></label><div class="supplier-editor-field"><?php textbox("vatnumber", $rec->vatnumber, 20) ?></div></div>
+			<div class="col-12 col-md-5"><label class="form-label fw-semibold"><?php etr("Credit account") ?></label><div class="supplier-editor-field"><?php combobox('credit_account', $creditAccounts, $rec->credit_account, true) ?></div></div>
+			<div class="col-12 col-md-3"><label class="form-label fw-semibold"><?php etr("Credit length") ?></label><div class="supplier-credit-length"><div class="supplier-editor-field"><?php numberbox('credit_length', $rec->credit_length) ?></div><span><?php etr("days") ?></span></div></div>
+		</div>
+	</div>
+</section>
+
+<div class="supplier-editor-actions">
+	<div class="d-flex flex-wrap gap-2">
+		<?php saveButton() ?>
+		<?php if (!$new) button("Add supplier", "add", "supplier.php?mode=$mode") ?>
+	</div>
+	<a class="supplier-editor-back" href="suppliers.php?mode=<?php echo urlencode($mode) ?>">&#8592; <?php etr("Back to suppliers") ?></a>
+</div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
 <?php bottom() ?>
