@@ -119,71 +119,71 @@ title(tr("Payable"));
 
 <form action="payable.php" method="POST">
 <input type=hidden name=supplierid value='<?php echo $supplierid ?>'/>
-<table>
-<tr><td class=label>Id:</td>
-<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto">Id:</div>
+<div class="col-12 col-md-auto">
 <?php
 	if (!$new) {
 		echo $payableid;
 		echo "<input type='hidden' name='payableid' value='$payableid'/>";
 	}
 ?>
-</td>
-<tr><td class=label><?php echo tr("Supplier") ?>:</td><td><?php echo $suppliername ?></td></tr>
-<tr>
-	<td class=label><?php echo tr("Description") ?>:</td>
-	<td><?php textbox('description', $description, 60) ?></td>
-</tr>
-<tr>
-	<td class=label><?php echo tr("Amount") ?>:</td>
-	<td>
+</div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php echo tr("Supplier") ?>:</div><div class="col-12 col-md-auto"><?php echo $suppliername ?></div></div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php echo tr("Description") ?>:</div>
+	<div class="col-12 col-md-auto"><?php textbox('description', $description, 60) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php echo tr("Amount") ?>:</div>
+	<div class="col-12 col-md-auto">
 	<?php
 		if ($new)
 			moneybox('amount', $amount);
 		else
 			echo $amount;
 	?>
-	</td>
-</tr>
-<tr>
-	<td class=label><?php echo tr("VAT") ?>:</td>
-	<td>
+	</div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php echo tr("VAT") ?>:</div>
+	<div class="col-12 col-md-auto">
 	<?php
 	if ($new)
 		moneybox('vat', $vat);
 	else
 		echo $vat;
 	?>
-	</td>
-</tr>
-<tr>
-	<td class=label><?php echo tr("Due date") ?>:</td>
-	<td>
+	</div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php echo tr("Due date") ?>:</div>
+	<div class="col-12 col-md-auto">
 	<?php datebox('duedate', formatDate($duedate)) ?>
-	</td>
-</tr>
-<tr>
-	<td class=label><?php etr("Debit account") ?>:</td>
-	<td>
+	</div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Debit account") ?>:</div>
+	<div class="col-12 col-md-auto">
 	<?php
 	if ($new)
 		comboBox("accountid", $accounts, $accountid, false);
 	else
 		echo getDescription($accountid, $accounts);
 	?>
-	</td>
-</tr>
+	</div>
+</div>
 <?php
 	if (!$new) {
-		echo "<tr>";
-		echo "<td class=label>" . tr("Transaction") . ":</td>";
-		echo "<td><a href='../accounting/transaction.php?transactionid=$transid'>Show transaction</a></td>";
-		echo "</tr>";
+		echo "<div class='row g-3 align-items-center mb-2'>";
+		echo "<div class='col-12 col-md-auto'>" . tr("Transaction") . ":</div>";
+		echo "<div class='col-12 col-md-auto'><a href='../accounting/transaction.php?transactionid=$transid'>Show transaction</a></div>";
+		echo "</div>";
 	}
 ?>
-<tr>
-<td class=label><?php etr("Payment") ?>:</td>
-<td>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php etr("Payment") ?>:</div>
+<div class="col-12 col-md-auto">
 <?php
 	if ($payed == $amount && $payed > 0)
 		etr("Fully paid");
@@ -197,18 +197,18 @@ title(tr("Payable"));
 			echo "<a href='../accounting/transaction.php?transactionid=$payment_transid'>" . tr("Show transaction") . "</a>";
 	}
 ?>
-</td>
-</tr>
+</div>
+</div>
 <?php
 if ($cancel_transid != null) {
-	echo "<tr>";
-	echo "<td colspan=2>";
+	echo "<div class='row g-3 align-items-center mb-2'>";
+	echo "<div class='col-12 col-md-auto'>";
 	echo tr("This payable is cancelled") . " <a href='transaction.php?transactionid=$cancel_transid'>" . tr("Show transaction") . "</a>";
-	echo "</td>";
-	echo "</tr>";
+	echo "</div>";
+	echo "</div>";
 }
 ?>
-</table>
+</div>
 <br/>
 <?php
 button('Register', 'save');

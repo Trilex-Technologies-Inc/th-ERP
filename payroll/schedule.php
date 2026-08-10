@@ -97,20 +97,20 @@ include_datebox();
 <?php newbox() ?>
 <input type=hidden name=scheduleid value='<?php echo $scheduleid ?>'/>
 <div class="border">
-<table>
-<tr><td><?php etr("Id") ?>:</td><td><?php echo $scheduleid ?></td></tr>
-<tr>
-<td><?php etr("Description") ?>:</td><td><?php textbox("description", $description) ?></td>
-</tr>
-<tr>
-<td><?php etr("Recur") ?>:</td>
-<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Id") ?>:</div><div class="col-12 col-md-auto"><?php echo $scheduleid ?></div></div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><?php textbox("description", $description) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php etr("Recur") ?>:</div>
+<div class="col-12 col-md-auto">
 <?php checkbox('recur', $recur) ?>
 <input type=text name=recur_interval value='<?php echo $recur_interval ?>' size=4/>
 (<?php etr("number of days") ?>)
-</td>
-</tr>
-</table>
+</div>
+</div>
+</div>
 </div>
 &nbsp;
 
@@ -164,12 +164,12 @@ SQL;
 <td><?php timebox("endtime_new") ?></td>
 </tr>
 </table>
-<table>
-<tr>
-<td><?php saveButton() ?></td>
-<td><?php button("View calendar", "View", "schedule_calendar.php?scheduleid=$scheduleid") ?></td>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php saveButton() ?></div>
+<div class="col-12 col-md-auto"><?php button("View calendar", "View", "schedule_calendar.php?scheduleid=$scheduleid") ?></div>
+</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>

@@ -76,21 +76,21 @@ title("<a href='users.php'>" . tr("Users") . "</a> > $title")
 ?>
 
 <form action="user.php" method="POST">
-<table>
-<tr>
-	<td><?php etr("Username") ?>:</td>
-	<td><?php textbox('uname', $rec->username) ?></td>
-</tr>
-<tr><td><?php etr("Name") ?>:</td><td><?php textbox("full_name", $rec->full_name) ?></td>
-<tr>
-	<td><?php etr("Password") ?>:</td>
-	<td><input type=password name='password0'/></td>
-</tr>
-<tr>
-	<td><?php etr("Language") ?>:</td>
-	<td><?php combobox('language', $languages, $rec->language, false) ?></td>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Username") ?>:</div>
+	<div class="col-12 col-md-auto"><?php textbox('uname', $rec->username) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Name") ?>:</div><div class="col-12 col-md-auto"><?php textbox("full_name", $rec->full_name) ?></div>
+</div><div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Password") ?>:</div>
+	<div class="col-12 col-md-auto"><input type=password name='password0'/></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Language") ?>:</div>
+	<div class="col-12 col-md-auto"><?php combobox('language', $languages, $rec->language, false) ?></div>
+</div>
+</div>
 <?php
 if ($roles != null) {
 	echo "<br/>";

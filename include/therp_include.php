@@ -229,7 +229,7 @@ function menu($href, $text, $width, $hasNext, $currentHref)
 		'Customers' => '&#9787;', 'Transactions' => '&#8644;', 'Accounts' => '&#9636;'
 	);
 	$icon = array_key_exists($text, $icons) ? $icons[$text] : '&#9679;';
-	echo "<td class='app-nav-item' style='width:$width%'><a class='$class' href='$href'><span class='nav-icon' aria-hidden='true'>$icon</span><span>" . tr($text) . "</span></a></td>\n";
+	echo "<div class='app-nav-item'><a class='$class' href='$href'><span class='nav-icon' aria-hidden='true'>$icon</span><span>" . tr($text) . "</span></a></div>\n";
 }
 
 function showUpgrade()

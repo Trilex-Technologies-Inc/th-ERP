@@ -54,15 +54,15 @@ title("<a href='formulas.php'>" . tr("Pay accounts") . "</a> > $title")
 ?>
 
 <form action="formula.php" method="POST">
-<table>
-<tr>
-	<td class=label><?php etr("Id") ?>:</td>
-	<td><?php numberbox('formulaid', $formulaid, 5) ?></td>
-</tr>
-<tr><td class=label><?php etr("Name") ?>:</td><td><input type="text" name="name" value="<?php echo $row->name ?>" size='40' /></td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Id") ?>:</div>
+	<div class="col-12 col-md-auto"><?php numberbox('formulaid', $formulaid, 5) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Name") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="name" value="<?php echo $row->name ?>" size='40' /></div>
 <?php hidden('old_name', $row->name) ?>
-<tr><td class=label valign=top><?php etr("Expression") ?>:</td><td><textarea name='expression' cols=60 rows=5><?php echo $row->expression ?></textarea></td>
-</table>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Expression") ?>:</div><div class="col-12 col-md-auto"><textarea name='expression' cols=60 rows=5><?php echo $row->expression ?></textarea></div>
+</div></div>
 <br/>
 <?php saveButton() ?>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>

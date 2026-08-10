@@ -14,8 +14,8 @@ metatag();
 <?php
 top0();
 ?>
-<table width="100%" cellspacing="0" cellpadding="0" class="menubar module-sidebar">
-<tr>
+<nav class="app-sidebar module-sidebar" aria-label="<?php etr("Module navigation") ?>">
+<div class="app-nav-list">
 <?php
 menu('../sales/index.php', 'Sales', 14, true, null);
 menu('../erp/index.php', 'Stock/Inventory', 14, true, null);
@@ -25,8 +25,8 @@ menu('../project/projects.php', 'Project', 14, true, null);
 menu('../accounting/index.php', 'General ledger', 14, true, null);
 menu('security.php', 'Common', 16, false, null);
 ?>
-</tr>
-</table>
+</div>
+</nav>
 
 <?php menupage_begin() ?>
 <div class="module-heading">

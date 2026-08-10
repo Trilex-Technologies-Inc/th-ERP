@@ -87,30 +87,30 @@ $locations = rs2array(query("select locationid, name from location"));
 		monthStepper($date);
 	echo "<center>";
 
-	echo "<table>";
+	echo "<div class='container-fluid px-0 erp-form-layout'>";
 
 	if (!isEmpty($salesorderid)) {
-		echo "<tr><td>" . tr("Sales order") . ":</td><td><a href='salesorder.php?orderid=$salesorderid'>$salesorderid</a></td></tr>";
+		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'>" . tr("Sales order") . ":</div><div class='col-12 col-md-auto'><a href='salesorder.php?orderid=$salesorderid'>$salesorderid</a></div></div>";
 	} else if (!isEmpty($purchaseorderid)) {
-		echo "<tr><td>" . tr("Purchase order") . ":</td><td><a href='purchaseorder.php?orderid=$purchaseorderid'>$purchaseorderid</a></td></tr>";
+		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'>" . tr("Purchase order") . ":</div><div class='col-12 col-md-auto'><a href='purchaseorder.php?orderid=$purchaseorderid'>$purchaseorderid</a></div></div>";
 	} else if (!isEmpty($movesorderid)) {
-		echo "<tr><td>" . tr("Stock Move order") . ":</td><td><a href='goodsmove.php?orderid=$movesorderid'>$movesorderid</a></td></tr>";
+		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'>" . tr("Stock Move order") . ":</div><div class='col-12 col-md-auto'><a href='goodsmove.php?orderid=$movesorderid'>$movesorderid</a></div></div>";
 	} else {
-		echo "<tr><td>" . tr("Product") . ":</td>";
-		echo "<td>";
+		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'>" . tr("Product") . ":</div>";
+		echo "<div class='col-12 col-md-auto'>";
 		combobox('productid', $products, $productid, true);
-		echo "</td>";
-		echo "</tr>";
-		echo "<tr><td>";
-		echo tr("Location") . ":</td>";
-		echo "<td>";
+		echo "</div>";
+		echo "</div>";
+		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'>";
+		echo tr("Location") . ":</div>";
+		echo "<div class='col-12 col-md-auto'>";
 		combobox('locationid', $locations, $locationid, true);
-		echo "</td></tr>";
-		echo "<tr><td align=center colspan=2>";
+		echo "</div></div>";
+		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'>";
 		searchButton();
-		echo "</td></tr>";
+		echo "</div></div>";
 	}
-	echo "</table>";
+	echo "</div>";
 	echo "</center>";
 	echo "</div>";
 	echo "</form>";

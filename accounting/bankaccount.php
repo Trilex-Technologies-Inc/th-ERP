@@ -62,26 +62,26 @@ title("<a href='bankaccounts.php'>" . tr("Bank accounts") . "</a> > $title")
 ?>
 
 <form action="bankaccount.php" method="POST">
-<table>
-<tr>
-	<td><?php etr("Number") ?>:</td>
-	<td>
-	<input type=text name='number' value='<?php echo $number ?>'/></td>
-</tr>
-<tr><td><?php etr("Name") ?>:</td><td><input type="text" name="name" value="<?php echo $name ?>"/></td>
-<tr>
-	<td><?php etr("General ledger account") ?>:</td>
-	<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Number") ?>:</div>
+	<div class="col-12 col-md-auto">
+	<input type=text name='number' value='<?php echo $number ?>'/></div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Name") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="name" value="<?php echo $name ?>"/></div>
+</div><div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("General ledger account") ?>:</div>
+	<div class="col-12 col-md-auto">
 	<?php comboBox("glaccountid", $glaccounts, $glaccountid, false)?>
-	</td>
-</tr>
-<tr>
-<td colspan=2>
+	</div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
 <?php saveButton() ?>
 &nbsp;
-</td>
-</tr>
-</table>
+</div>
+</div>
+</div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
 

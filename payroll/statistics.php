@@ -25,30 +25,30 @@ top("endofperiod.php", "Statistics");
 
 <form action='statistics.php'>
 <?php
-echo "<table>";
+echo "<div class='container-fluid px-0 erp-form-layout'>";
 th("Payaccount group");
 th("Period sum");
 for ($i=0; $i < $count; $i++) {
 	$groupid = getParam("groupid$i");
 	if (isEmpty($groupid))
 		continue;
-	echo "<tr>";
-	echo "<td>";
+	echo "<div class='row g-3 align-items-center mb-2'>";
+	echo "<div class='col-12 col-md-auto'>";
 	$periodSum = periodSum($groupid);
 	combobox("groupid$i", $groups, $groupid, true);
-	echo "</td>";
-	echo "<td align=right>$periodSum</td>";
-	echo "</tr>";
+	echo "</div>";
+	echo "<div class='col-12 col-md-auto'>$periodSum</div>";
+	echo "</div>";
 }
-echo "<tr>";
-echo "<td>";
+echo "<div class='row g-3 align-items-center mb-2'>";
+echo "<div class='col-12 col-md-auto'>";
 combobox("groupid$i", $groups, null, true);
-echo "</td>";
-echo "</tr>";
+echo "</div>";
+echo "</div>";
 if (!isEmpty(getParam("groupid$count")))
 	$count++;
 hidden('count', $count);
-echo "</table>";
+echo "</div>";
 ?>
 <br>
 <?php button("Refresh", "save") ?>

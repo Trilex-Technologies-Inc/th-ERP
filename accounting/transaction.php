@@ -57,29 +57,29 @@ if (!isEmpty($salesorderid)) {
 
 <form action="transaction.php" method="POST">
 <input type=hidden name=transactionid value='<?php echo $transactionid ?>'/>
-<table>
-<tr><td class=label><?php etr("Id") ?>:</td><td><?php echo $trans->transactionid ?></td>
-<tr><td class=label><?php etr("Narrative") ?>:</td><td><?php echo $trans->narrative ?></td>
-<tr><td class=label><?php etr("Time") ?>:</td><td><?php echo formatDate($trans->transtime) . ' ' . date('H:i', $trans->transtime) ?></td></tr>
-<tr><td class=label><?php etr("Created by") ?>:</td><td><?php echo $trans->createdby ?></td></tr>
-<tr>
-<td colspan=2>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Id") ?>:</div><div class="col-12 col-md-auto"><?php echo $trans->transactionid ?></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Narrative") ?>:</div><div class="col-12 col-md-auto"><?php echo $trans->narrative ?></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Time") ?>:</div><div class="col-12 col-md-auto"><?php echo formatDate($trans->transtime) . ' ' . date('H:i', $trans->transtime) ?></div></div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Created by") ?>:</div><div class="col-12 col-md-auto"><?php echo $trans->createdby ?></div></div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
 <?php
 if (!$trans->valid)
 	echo tr("This transaction is invalid, because it doesn't balance.");
 ?>
-</td>
-</tr>
+</div>
+</div>
 <?php
 	if ($cancel_transid != null) {
-		echo "<tr>";
-		echo "<td colspan=2>";
+		echo "<div class='row g-3 align-items-center mb-2'>";
+		echo "<div class='col-12 col-md-auto'>";
 		echo tr("This transaction is cancelled") . "  <a href='transaction.php?transactionid=$cancel_transid'>" . tr("Show transaction") . "</a>";
-		echo "</td>";
-		echo "</tr>";
+		echo "</div>";
+		echo "</div>";
 	}
 ?>
-</table>
+</div>
 <?php
 if (count($dims) > 1) {
 	echo "<div id=header>";

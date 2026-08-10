@@ -51,13 +51,13 @@ $yymm = date("ym", $date);
 <center>
 
 <form action="schedule_calendar.php" method="GET">
-	<table>
-		<tr>
-		<td><input type="submit" name="prev" value=" < "/></td>
-		<td><?= date("Y M", $date) ?></td>
-		<td><input type="submit" name="next" value=" > "/></td>
-		</tr>
-	</table>
+	<div class="container-fluid px-0 erp-form-layout">
+		<div class="row g-3 align-items-center mb-2">
+		<div class="col-12 col-md-auto"><input type="submit" name="prev" value=" < "/></div>
+		<div class="col-12 col-md-auto"><?= date("Y M", $date) ?></div>
+		<div class="col-12 col-md-auto"><input type="submit" name="next" value=" > "/></div>
+		</div>
+	</div>
 	<input type="hidden" name="scheduleid" value="<?= $scheduleid ?>"/>
 	<input type="hidden" name="year" value="<?= $year ?>"/>
 	<input type="hidden" name="month" value="<?= $month ?>"/>
@@ -89,26 +89,26 @@ $date = strtotime("last sunday", $date);
 echo "<tr height='70'>";
 while (true) {
 	echo "<td class='calendar' valign='top' width='14%'>";
-	echo "<table width='100%'>";
-	echo "<tr>";
+	echo "<div class='container-fluid px-0 erp-form-layout'>";
+	echo "<div class='row g-3 align-items-center mb-2'>";
 	if (date("m", $date) == $month) {
-		echo "<td>";
+		echo "<div class='col-12 col-md-auto'>";
 		echo "<b>";
 		echo date("d", $date);
 		echo "</b>";
-		echo "</td>";
+		echo "</div>";
 	}
-	echo "</tr>";
+	echo "</div>";
 	$day = date("yMd", $date);
 	if (array_key_exists($day, $shiftMap)) {
 		$label = $shiftMap[$day];
-		echo "<tr>";
-		echo "<td>";
+		echo "<div class='row g-3 align-items-center mb-2'>";
+		echo "<div class='col-12 col-md-auto'>";
 		echo $label;
-		echo "</td>";
-		echo "</tr>";
+		echo "</div>";
+		echo "</div>";
 	}
-	echo "</table>";
+	echo "</div>";
 	echo "</td>";
 	if (date("w", $date) == 6) {
 		echo "</tr>";

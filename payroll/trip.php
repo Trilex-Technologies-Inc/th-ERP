@@ -7,7 +7,7 @@ if ($employeeid0 == 'current') {
 	checkPermission(PERMISSION_SELF_SERVICE);
 	$employeeid = getCurrentEmployee();
 	$selfservice = true;
-	$_REQUEST['selfservice'] = 1;	
+	$_REQUEST['selfservice'] = 1;
 } else {
 	checkPermission(PERMISSION_ADMINISTRATE_EMPLOYEES);
 	$employeeid = $employeeid0;
@@ -27,7 +27,7 @@ if (isSave()) {
 	$destination = getParam("destination");
 	$distance = prepParam("distance");
 	$purpuse = getParam('purpuse');
-	$starttime = parseDate(getParam("starttime"));	
+	$starttime = parseDate(getParam("starttime"));
 	$endtime = parseDate(getParam("endtime"));
 	$endtime = strtotime("+1 day", $endtime);
 	$date = $starttime;
@@ -35,7 +35,7 @@ if (isSave()) {
 	if (!isEmpty($tripid)) {
 		$sql = "
 		update trip
-		set 
+		set
 			origin='$origin',
 			destination='$destination',
 			purpuse='$purpuse',
@@ -60,20 +60,20 @@ if (isDelete()) {
 if (array_key_exists('confirm', $_POST)) {
 	begin();
 	$productid = findValue("
-	select carcompensation_productid from travelconf");	
+	select carcompensation_productid from travelconf");
 	$price = findValue("
 	select price from sales_price
 	where listid=1 and productid='$productid'");
 	$debitaccountid = findValue("
-	select expense_accountid 
+	select expense_accountid
 	from category c
 	join product p on p.categoryid=c.categoryid
 	where p.productid='$productid'");
-		
+
 	$cashaccountid = findValue("
 	select default_cash from accountconf");
 	$trip = find("
-	select 
+	select
 		unix_timestamp(endtime) as endtime,
 		unix_timestamp(starttime) as starttime,
 		origin,
@@ -92,7 +92,7 @@ if (array_key_exists('confirm', $_POST)) {
 	insert into transaction (transactionid, narrative, transtime, createdby, valid, createdtime)
 	values ($transactionid, '$narrative', from_unixtime($trip->endtime), '$user', 1, now())");
 	$amount = $trip->distance * $price;
-	$sum = $amount;	 	
+	$sum = $amount;
 	sql("
 	insert into transaction_part (transactionid, dimid, accountid, amount)
 	values ($transactionid, 1, $debitaccountid, $amount)");
@@ -101,10 +101,10 @@ if (array_key_exists('confirm', $_POST)) {
 		$perdiem_productid = findValue("
 		select perdiem_productid from travelconf");
 		$perdiem_price = findValue("
-		select price from sales_price 
+		select price from sales_price
 		where listid=1 and productid='$perdiem_productid'");
 		$perdiem_accountid = findValue("
-		select expense_accountid 
+		select expense_accountid
 		from category c
 		join product p on p.categoryid=c.categoryid
 		where p.productid='$perdiem_productid'");
@@ -112,39 +112,39 @@ if (array_key_exists('confirm', $_POST)) {
 		sql("
 		insert into transaction_part (transactionid, dimid, accountid, amount)
 		values ($transactionid, 1, $perdiem_accountid, $amount)");
-		$sum += $amount;	
+		$sum += $amount;
 	}
 	if ($trip->night_allowance && $days > 1) {
 		$night_productid = findValue("
 		select night_productid from travelconf");
 		$night_price = findValue("
-		select price from sales_price 
+		select price from sales_price
 		where listid=1 and productid='$night_productid'");
 		$night_accountid = findValue("
-		select expense_accountid 
+		select expense_accountid
 		from category c
 		join product p on p.categoryid=c.categoryid
 		where p.productid='$night_productid'");
 		$days--;
-		$amount = $days * $night_price;	
+		$amount = $days * $night_price;
 		if ($night_accountid == $perdiem_accountid) {
 			sql("
-			update transaction_part set amount=amount+$amount 
-			where transactionid=$transactionid and dimid=1 and accountid=$night_accountid");					
+			update transaction_part set amount=amount+$amount
+			where transactionid=$transactionid and dimid=1 and accountid=$night_accountid");
 		} else {
 			sql("
 			insert into transaction_part (transactionid, dimid, accountid, amount)
 			values ($transactionid, 1, $night_accountid, $amount)");
 		}
-		$sum += $amount;	
+		$sum += $amount;
 	}
-	
+
 	sql("
 	insert into transaction_part (transactionid, dimid, accountid, amount)
 	values ($transactionid, 1, $cashaccountid, (-1) * $sum)");
 	sql("
-	update trip set transactionid=$transactionid 
-	where tripid=$tripid");	 	
+	update trip set transactionid=$transactionid
+	where tripid=$tripid");
 	commit();
 }
 
@@ -162,11 +162,11 @@ if (!isEmpty($tripid)) {
 	    distance,
 	    transactionid,
 	    night_allowance
-    from trip 
+    from trip
     where tripid=$tripid", true);
 	$employeeid = $row->employeeid;
 	$starttime = $row->starttime;
-	$employeeid0 = $row->employeeid;	
+	$employeeid0 = $row->employeeid;
 }
 $ro = $row->transactionid != null;
 
@@ -176,14 +176,14 @@ $ro = $row->transactionid != null;
 
 <body>
 
-<?php 
+<?php
 top("employees.php", "Trip");
 ?>
 <?php
 $title = tr("Trip");
 if (!isEmpty($tripid))
-	$title .= " > $tripid"; 
-title($title); 
+	$title .= " > $tripid";
+title($title);
 ?>
 
 <form action="trip.php" method=POST name='form1' class="border">
@@ -191,84 +191,84 @@ title($title);
 <input type=hidden name=periodid value="<?php echo $periodid ?>"/>
 <input type=hidden name=tripid value="<?php echo $tripid ?>"/>
 <input type=hidden name=back value="<?php echo $back ?>"/>
-<table>
-<tr>
-  <td class=label><?php etr("Name") ?>:</td>
-  <td><?php displayEmployee($employeeid) ?></td>
-</tr>
-<tr>
-  <td class=label><?php etr("Period") ?>:</td>
-  <td><?php displayPeriod($periodid) ?></td>
-</tr>
-<tr>
-	<td class=label><?php etr("Starttime") ?>:</td>
-	<td><?php
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+  <div class="col-12 col-md-auto"><?php etr("Name") ?>:</div>
+  <div class="col-12 col-md-auto"><?php displayEmployee($employeeid) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+  <div class="col-12 col-md-auto"><?php etr("Period") ?>:</div>
+  <div class="col-12 col-md-auto"><?php displayPeriod($periodid) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Starttime") ?>:</div>
+	<div class="col-12 col-md-auto"><?php
 	if ($ro)
 		echo formatDate($row->starttime);
-	else 
-		datebox('starttime', $row->starttime) 
-	?></td>
-	<td width=20/>
-	<td class=label><?php etr("Endtime") ?>:</td>
-	<td><?php 
+	else
+		datebox('starttime', $row->starttime)
+	?></div>
+	<div class="col-12 col-md-auto">
+	</div><div class="col-12 col-md-auto"><?php etr("Endtime") ?>:</div>
+	<div class="col-12 col-md-auto"><?php
 	if ($ro)
 		echo formatDate(addTime($row->endtime, TYPE_DAYS, -1));
 	else
-		datebox('endtime', addTime($row->endtime, TYPE_DAYS, -1)); 
-	?></td>
-</tr>
-<tr>
-	<td class=label><?php etr("Origin") ?>:</td>
-	<td><?php
+		datebox('endtime', addTime($row->endtime, TYPE_DAYS, -1));
+	?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Origin") ?>:</div>
+	<div class="col-12 col-md-auto"><?php
 	if ($ro)
 		echo $row->origin;
-	else 
-		textbox('origin', $row->origin) 
-	?></td>
-	<td width=20/>
-	<td class=label><?php etr("Destination") ?>:</td>
-	<td><?php
+	else
+		textbox('origin', $row->origin)
+	?></div>
+	<div class="col-12 col-md-auto">
+	</div><div class="col-12 col-md-auto"><?php etr("Destination") ?>:</div>
+	<div class="col-12 col-md-auto"><?php
 	if ($ro)
 		echo $row->destination;
-	else 
-		textbox('destination', $row->destination) 
-	?></td>
-</tr>
-<tr>
-	<td class=label><?php etr("Purpose") ?>:</td>
-	<td colspan=4><?php 
+	else
+		textbox('destination', $row->destination)
+	?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Purpose") ?>:</div>
+	<div class="col-12 col-md-auto"><?php
 	if ($ro)
 		echo $row->purpuse;
 	else
-		textbox('purpuse', $row->purpuse, 80); 
-	?></td>
-</tr>
-<tr>
-	<td class=label><?php etr("Distance") ?>:</td>
-	<td><?php
+		textbox('purpuse', $row->purpuse, 80);
+	?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Distance") ?>:</div>
+	<div class="col-12 col-md-auto"><?php
 	if ($ro)
 		echo $row->distance;
-	else 
-		numberbox('distance', $row->distance) 
-	?></td>
-	<td/>
-	<td class=label><?php etr("Night allowance") ?>:</td>
-	<td><?php checkbox('night_allowance', $row->night_allowance) ?></td>
-</tr>
+	else
+		numberbox('distance', $row->distance)
+	?></div>
+	<div class="col-12 col-md-auto">
+	</div><div class="col-12 col-md-auto"><?php etr("Night allowance") ?>:</div>
+	<div class="col-12 col-md-auto"><?php checkbox('night_allowance', $row->night_allowance) ?></div>
+</div>
 <?php
 if ($row->transactionid != null) {
-	echo "<tr>";
-	echo "<td class=label>" . tr("Transaction") . ":</td>";
-	echo "<td>";
+	echo "<div class='row g-3 align-items-center mb-2'>";
+	echo "<div class='col-12 col-md-auto'>" . tr("Transaction") . ":</div>";
+	echo "<div class='col-12 col-md-auto'>";
 	echo "<a href='../accounting/transaction.php?transactionid=$row->transactionid'>$row->transactionid</a>";
-	echo "</td>";
-	echo "</tr>";	
+	echo "</div>";
+	echo "</div>";
 }
 ?>
-</table>
-<table>
-<tr>
-<td>
+</div>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
 <?php
 $label = isEmpty($tripid) ? 'Submit' : 'Save';
 button($label, "save");
@@ -276,8 +276,8 @@ echo "&nbsp;&nbsp;";
 $href = "trip_report.php?tripid=$tripid";
 button("Print", "print", $href);
 ?>
-</td>
-<td>
+</div>
+<div class="col-12 col-md-auto">
 <?php
 if (!isEmpty($tripid) && !$ro) {
 	button("Confirm", "confirm");
@@ -285,11 +285,11 @@ if (!isEmpty($tripid) && !$ro) {
 	deleteButton();
 }
 ?>
-</td>
-<td>
-</td>
-</tr>
-</table>
+</div>
+<div class="col-12 col-md-auto">
+</div>
+</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>

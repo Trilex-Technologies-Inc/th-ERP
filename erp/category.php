@@ -89,9 +89,9 @@
 <?php title("<a href='categories.php'>" . tr("Categories") . "</a> > $rec->description") ?>
 
 <form action="category.php" method="POST">
-<table>
-<tr><td>Id:</td>
-<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto">Id:</div>
+<div class="col-12 col-md-auto">
 <?php
 	if ($new) {
 	} else {
@@ -99,29 +99,29 @@
 		echo "<input type='hidden' name='categoryid' value='$categoryid'/>";
 	}
 ?>
-</td>
-<tr><td><?php etr("Description") ?>:</td><td><input type="text" name="description" value="<?php echo $rec->description ?>"/></td>
-<tr><td><?php etr("Revenue account") ?>:</td><td><?php comboBox("revenue_accountid", $revenue_accounts, $rec->revenue_accountid, false) ?></td>
-<tr><td><?php etr("Expense account") ?>:</td><td><?php comboBox("expense_accountid", $expense_accounts, $rec->expense_accountid, true) ?></td>
-<tr><td><?php etr("Inventory account") ?>:</td><td><?php comboBox("inventory_accountid", $assets_accounts, $rec->inventory_accountid, true) ?></td>
-<tr><td><?php etr("VAT category") ?>:</td><td><?php comboBox("vatcatid", $vatcategories, $rec->vatcatid, false) ?></td></tr>
-<tr><td><?php etr("Stock count") ?>:</td><td><?php checkBox("stock", $rec->stock) ?></td></tr>
-<tr><td><?php etr("Consignment") ?>:</td><td><?php checkBox("consignment", $rec->consignment) ?></td></tr>
-<tr>
-	<td><?php etr("Units of measure") ?>:</td>
-	<td><?php combobox('unittype', $unittypes, $rec->unittype, true) ?></td>
-</tr>
-<tr>
-<td colspan=2>
+</div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="description" value="<?php echo $rec->description ?>"/></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Revenue account") ?>:</div><div class="col-12 col-md-auto"><?php comboBox("revenue_accountid", $revenue_accounts, $rec->revenue_accountid, false) ?></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Expense account") ?>:</div><div class="col-12 col-md-auto"><?php comboBox("expense_accountid", $expense_accounts, $rec->expense_accountid, true) ?></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Inventory account") ?>:</div><div class="col-12 col-md-auto"><?php comboBox("inventory_accountid", $assets_accounts, $rec->inventory_accountid, true) ?></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("VAT category") ?>:</div><div class="col-12 col-md-auto"><?php comboBox("vatcatid", $vatcategories, $rec->vatcatid, false) ?></div></div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Stock count") ?>:</div><div class="col-12 col-md-auto"><?php checkBox("stock", $rec->stock) ?></div></div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Consignment") ?>:</div><div class="col-12 col-md-auto"><?php checkBox("consignment", $rec->consignment) ?></div></div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Units of measure") ?>:</div>
+	<div class="col-12 col-md-auto"><?php combobox('unittype', $unittypes, $rec->unittype, true) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
 <?php
 saveButton();
 echo "&nbsp;&nbsp;";
 deleteButton();
 ?>
 &nbsp;
-</td>
-</tr>
-</table>
+</div>
+</div>
+</div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
 <?php bottom() ?>

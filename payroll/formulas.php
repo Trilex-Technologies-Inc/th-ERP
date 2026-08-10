@@ -28,15 +28,15 @@
 
 <form action="formulas.php" method="GET">
 <div class="border">
-<table>
-<tr>
-	<td><?php etr("Name") ?>:</td>
-	<td><?php textbox('name', $name) ?></td>
-	<tr>
-		<td><input type="submit" name="search" value="<?php etr("Search") ?>" /></td>
-	</tr>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Name") ?>:</div>
+	<div class="col-12 col-md-auto"><?php textbox('name', $name) ?></div>
+	</div><div class="row g-3 align-items-center mb-2">
+		<div class="col-12 col-md-auto"><input type="submit" name="search" value="<?php etr("Search") ?>" /></div>
+	</div>
+
+</div>
 </div>
 </form>
 &nbsp;
@@ -61,11 +61,11 @@
     }
 ?>
 </table>
-<table>
-<tr>
-<td><?php newButton("formula.php") ?></td>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php newButton("formula.php") ?></div>
+</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>

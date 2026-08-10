@@ -39,18 +39,18 @@ include_datebox();
 <br>
 <form action="transactions.php" method="GET">
 <div class="border">
-<table>
-<tr><td><?php etr("Narrative") ?>:</td><td><?php textbox("narrative", $narrative) ?></td>
-<tr>
-	<td><?php etr("Interval") ?>:</td>
-	<td><?php datebox("starttime", formatDate($starttime)) ?></td>
-	<td><?php datebox("endtime", formatDate($endtime)) ?></td>
-</tr>
-<tr>
-<td><input type="submit" name="search" value="<?php etr("Search") ?>" /></td>
-</tr>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Narrative") ?>:</div><div class="col-12 col-md-auto"><?php textbox("narrative", $narrative) ?></div>
+</div><div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Interval") ?>:</div>
+	<div class="col-12 col-md-auto"><?php datebox("starttime", formatDate($starttime)) ?></div>
+	<div class="col-12 col-md-auto"><?php datebox("endtime", formatDate($endtime)) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><input type="submit" name="search" value="<?php etr("Search") ?>" /></div>
+</div>
+
+</div>
 </div>
 </form>
 &nbsp;

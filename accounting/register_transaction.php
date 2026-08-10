@@ -152,28 +152,28 @@ if ($errmess != null)
 hidden('transactionid', $transactionid);
 hidden('dimid', $dimid);
 ?>
-<table>
-<tr><td class=label><?php etr("Narrative") ?>:</td>
-<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Narrative") ?>:</div>
+<div class="col-12 col-md-auto">
 <?php
 if ($locked)
 	echo $narrative;
 else
 	textbox('narrative', $narrative, 80);
 ?>
-</td>
-<tr>
-	<td class=label><?php etr("Time") ?>:</td>
-	<td>
+</div>
+</div><div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Time") ?>:</div>
+	<div class="col-12 col-md-auto">
 	<?php
 	if ($locked)
 		formatDate($transtime);
 	else
 		datebox('transtime', formatDate($transtime));
 	?>
-	</td>
-</tr>
-</table>
+	</div>
+</div>
+</div>
 <?php
 if ($parts != null) {
 	if (count($dims) > 1) {

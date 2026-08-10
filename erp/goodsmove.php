@@ -165,19 +165,19 @@ if ($mess != null) {
 ?>
 
 <form name=postform action="goodsmove.php" method="POST">
-<table>
+<div class="container-fluid px-0 erp-form-layout">
 <?php
 	if (!$new) {
-		echo "<tr><td><b>" . tr("Order id") . ":</b></td>";
-		echo "<td>";
+		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'><b>" . tr("Order id") . ":</b></div>";
+		echo "<div class='col-12 col-md-auto'>";
 		echo $orderid;
 		hidden('orderid', $orderid);
-		echo "</td>";
+		echo "</div>";
 	}
 ?>
-<tr>
-	<td class=label><?php etr("From Location") ?>:</td>
-	<td>
+</div><div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("From Location") ?>:</div>
+	<div class="col-12 col-md-auto">
 	<?php
 	if ($sent == 0)
 		combobox('locationid', $locations, $locationid, false, 'saveForm()');
@@ -186,9 +186,9 @@ if ($mess != null) {
 		echo $location;
 	}
 	?>
-	</td>
-</tr>
-<tr><td><b><?php etr("To Location") ?>:</b></td><td>
+	</div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><b><?php etr("To Location") ?>:</b></div><div class="col-12 col-md-auto">
 	<?php
 	if ($sent == 0)
 		combobox('toid', $locations, $toid, false, 'saveForm()');
@@ -197,11 +197,11 @@ if ($mess != null) {
 		echo $toid;
 	}
 	?>
-</td>
-<tr><td><b><?php etr("Order date") ?>:</b></td><td><?php echo date(DATE_PATTERN, $orderdate) ?></td></tr>
-<tr>
-<td class=label><?php etr("State") ?>:</td>
-<td>
+</div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><b><?php etr("Order date") ?>:</b></div><div class="col-12 col-md-auto"><?php echo date(DATE_PATTERN, $orderdate) ?></div></div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php etr("State") ?>:</div>
+<div class="col-12 col-md-auto">
 <?php
 	if ($cancelled) {
 		echo tr("This order is cancelled");
@@ -213,13 +213,13 @@ if ($mess != null) {
 		else echo tr("Not Register");
 	}
 ?>
-</td>
-</tr>
-<tr>
-<td class=label><?php etr("Created by") ?>:</td>
-<td><?php echo $createdby ?></td>
-</tr>
-</table>
+</div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php etr("Created by") ?>:</div>
+<div class="col-12 col-md-auto"><?php echo $createdby ?></div>
+</div>
+</div>
 <br/>
 <?php if ($items != null) { ?>
 <div class='border'>

@@ -77,14 +77,14 @@ title("<a href='advanced_percents.php'>" . tr("Advanced percent") . "</a> > $tit
 ?>
 
 <form action="advanced_percent.php" method="POST">
-<table>
-<tr>
-	<td><?php etr("Id") ?>:</td>
-	<td><input type=text name='apid' value='<?php echo $apid ?>'/></td>
-</tr>
-<tr><td><?php etr("Name") ?>:</td><td><input type="text" name="name" value="<?php echo $rec->name ?>"/></td>
-<tr><td><?php etr("Description") ?>:</td><td><input type="text" name="description" value="<?php echo $rec->description ?>"/></td>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Id") ?>:</div>
+	<div class="col-12 col-md-auto"><input type=text name='apid' value='<?php echo $apid ?>'/></div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Name") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="name" value="<?php echo $rec->name ?>"/></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="description" value="<?php echo $rec->description ?>"/></div>
+</div></div>
 <br/>
 <?php
 if ($bracketids != null) {

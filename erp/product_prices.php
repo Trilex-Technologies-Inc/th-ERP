@@ -18,9 +18,9 @@
     	$osclistid = null;
 		if (!isEmpty($oscommerceid)) {
 			$osclistid = findValue("
-			select listid from pricelist 
+			select listid from pricelist
 			where vat_included=1
-			order by listid");		
+			order by listid");
 		}
 		$rs = sql("select listid from pricelist");
 		while ($row = fetch($rs)) {
@@ -69,8 +69,8 @@
 	$rec = new Dummy();
 	if (!isEmpty($productid)) {
 	    $selectSQL =
-  		"select p.productid,
-  		       model,
+		"select p.productid,
+		       model,
 		       p.description,
 		       purchase_price
 		from product p
@@ -109,10 +109,10 @@ buildHeader($productid);
 
 <form name=postform action="product_prices.php" method="POST">
 <?php hidden('productid', $productid) ?>
-<table>
-<tr>
-	<td><?php etr("Sales price") ?>:</td>
-	<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Sales price") ?>:</div>
+	<div class="col-12 col-md-auto">
 		<table>
 		<?php
 		$productid2 = isEmpty($productid) ? 0 : $productid;
@@ -132,11 +132,11 @@ buildHeader($productid);
 		}
 		?>
 		</table>
-	</td>
-</tr>
-<tr>
-	<td><?php etr("Purchase price") ?>:</td>
-	<td>
+	</div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Purchase price") ?>:</div>
+	<div class="col-12 col-md-auto">
 		<table>
 		<?php
 		$productid2 = isEmpty($productid) ? 0 : $productid;
@@ -170,10 +170,10 @@ buildHeader($productid);
 		?>
 		</table>
 
-  	</td>
-</tr>
+	</div>
+</div>
 
-</table>
+</div>
 <br/>
 <?php
 button("Save product", "save");

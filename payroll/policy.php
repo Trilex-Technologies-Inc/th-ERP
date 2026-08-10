@@ -81,9 +81,9 @@ title("<a href='policies.php'>" . tr("Policies") . "</a> > $policy->description"
 	<div id="main">
 		<div id="contents">
 <form action="policy.php" method="POST">
-<table>
-<tr><td><?php echo tr("Policyid") ?>:</td>
-<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php echo tr("Policyid") ?>:</div>
+<div class="col-12 col-md-auto">
 <?php
 	if (!isEmpty($policyid)) {
 		echo $policyid;
@@ -93,27 +93,27 @@ title("<a href='policies.php'>" . tr("Policies") . "</a> > $policy->description"
 		echo "<input type='hidden' name='new' value='1'/>";
 	}
 ?>
-</td>
+</div>
 
-<tr>
-<td><?php echo tr("Description") ?>:</td>
-<td><input type='text' name='description' value='<?php echo $policy->description ?>'/></td>
-</tr>
+</div><div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php echo tr("Description") ?>:</div>
+<div class="col-12 col-md-auto"><input type='text' name='description' value='<?php echo $policy->description ?>'/></div>
+</div>
 <?php hidden('old_description', $policy->description) ?>
-<tr>
-<td><?php echo tr("GL Account") ?>:</td>
-<td><?php combobox('glaccountid', $accounts, $policy->glaccountid, true) ?></td>
-</tr>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php echo tr("GL Account") ?>:</div>
+<div class="col-12 col-md-auto"><?php combobox('glaccountid', $accounts, $policy->glaccountid, true) ?></div>
+</div>
 
 
-<tr height='10'/>
-<tr>
-<td colspan='2'>
+<div class="row g-3 align-items-center mb-2">
+</div><div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
   <input type="submit" name="save" value="<?php echo tr("Save") ?>"/>
   <input type="submit" name="delete" value="<?php echo tr("Delete") ?>"/>
-</td>
-</tr>
-</table>
+</div>
+</div>
+</div>
 
 </form>
 		</div>

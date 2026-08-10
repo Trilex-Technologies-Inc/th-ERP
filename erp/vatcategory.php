@@ -54,9 +54,9 @@
 <?php title("<a href='vatcategories.php'>" . tr("VAT categories") . "</a> > $rec->description") ?>
 
 <form action="vatcategory.php" method="POST">
-<table>
-<tr><td>Id:</td>
-<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto">Id:</div>
+<div class="col-12 col-md-auto">
 <?php
 	if ($new) {
 	} else {
@@ -64,21 +64,21 @@
 		echo "<input type='hidden' name='vatcatid' value='$vatcatid'/>";
 	}
 ?>
-</td>
-<tr><td><?php etr("Description") ?>:</td><td><input type="text" name="description" value="<?php echo $rec->description ?>"/></td>
-<tr><td><?php etr("Percent") ?>:</td><td><?php numberbox("percent", $rec->percent) ?></td>
+</div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="description" value="<?php echo $rec->description ?>"/></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Percent") ?>:</div><div class="col-12 col-md-auto"><?php numberbox("percent", $rec->percent) ?></div>
 
-<tr>
-<td colspan=2>
+</div><div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
 <?php 
 saveButton();
 echo "&nbsp;";
 deleteButton();
 ?>
 &nbsp;
-</td>
-</tr>
-</table>
+</div>
+</div>
+</div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
 <?php bottom() ?>

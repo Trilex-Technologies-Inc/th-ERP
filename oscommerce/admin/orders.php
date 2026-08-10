@@ -111,121 +111,121 @@
 <!-- header_eof //-->
 
 <!-- body //-->
-<table border="0" width="100%" cellspacing="2" cellpadding="2">
-  <tr>
-    <td width="<?php echo BOX_WIDTH; ?>" valign="top"><table border="0" width="<?php echo BOX_WIDTH; ?>" cellspacing="1" cellpadding="1" class="columnLeft">
+<div class="container-fluid px-0 erp-form-layout">
+  <div class="row g-3 align-items-center mb-2">
+    <div class="col-12 col-md-auto">" valign="top"><div class="container-fluid px-0 erp-form-layout">" cellspacing="1" cellpadding="1" class="columnLeft">
 <!-- left_navigation //-->
 <?php require(DIR_WS_INCLUDES . 'column_left.php'); ?>
 <!-- left_navigation_eof //-->
-    </table></td>
+    </div></div>
 <!-- body_text //-->
-    <td width="100%" valign="top"><table border="0" width="100%" cellspacing="0" cellpadding="2">
+    <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
 <?php
   if (($action == 'edit') && ($order_exists == true)) {
     $order = new order($oID);
 ?>
-      <tr>
-        <td width="100%"><table border="0" width="100%" cellspacing="0" cellpadding="0">
-          <tr>
-            <td class="pageHeading"><?php echo HEADING_TITLE; ?></td>
-            <td class="pageHeading" align="right"><?php echo tep_draw_separator('pixel_trans.gif', 1, HEADING_IMAGE_HEIGHT); ?></td>
-            <td class="pageHeading" align="right"><?php echo '<a href="' . tep_href_link(FILENAME_ORDERS, tep_get_all_get_params(array('action'))) . '">' . tep_image_button('button_back.gif', IMAGE_BACK) . '</a>'; ?></td>
-          </tr>
-        </table></td>
-      </tr>
-      <tr>
-        <td><table width="100%" border="0" cellspacing="0" cellpadding="2">
-          <tr>
-            <td colspan="3"><?php echo tep_draw_separator(); ?></td>
-          </tr>
-          <tr>
-            <td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="2">
-              <tr>
-                <td class="main" valign="top"><b><?php echo ENTRY_CUSTOMER; ?></b></td>
-                <td class="main"><?php echo tep_address_format($order->customer['format_id'], $order->customer, 1, '', '<br>'); ?></td>
-              </tr>
-              <tr>
-                <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '5'); ?></td>
-              </tr>
-              <tr>
-                <td class="main"><b><?php echo ENTRY_TELEPHONE_NUMBER; ?></b></td>
-                <td class="main"><?php echo $order->customer['telephone']; ?></td>
-              </tr>
-              <tr>
-                <td class="main"><b><?php echo ENTRY_EMAIL_ADDRESS; ?></b></td>
-                <td class="main"><?php echo '<a href="mailto:' . $order->customer['email_address'] . '"><u>' . $order->customer['email_address'] . '</u></a>'; ?></td>
-              </tr>
-            </table></td>
-            <td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="2">
-              <tr>
-                <td class="main" valign="top"><b><?php echo ENTRY_SHIPPING_ADDRESS; ?></b></td>
-                <td class="main"><?php echo tep_address_format($order->delivery['format_id'], $order->delivery, 1, '', '<br>'); ?></td>
-              </tr>
-            </table></td>
-            <td valign="top"><table width="100%" border="0" cellspacing="0" cellpadding="2">
-              <tr>
-                <td class="main" valign="top"><b><?php echo ENTRY_BILLING_ADDRESS; ?></b></td>
-                <td class="main"><?php echo tep_address_format($order->billing['format_id'], $order->billing, 1, '', '<br>'); ?></td>
-              </tr>
-            </table></td>
-          </tr>
-        </table></td>
-      </tr>
-      <tr>
-        <td><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
-      </tr>
-      <tr>
-        <td><table border="0" cellspacing="0" cellpadding="2">
-          <tr>
-            <td class="main"><b><?php echo ENTRY_PAYMENT_METHOD; ?></b></td>
-            <td class="main"><?php echo $order->info['payment_method']; ?></td>
-          </tr>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><?php echo HEADING_TITLE; ?></div>
+            <div class="col-12 col-md-auto"><?php echo tep_draw_separator('pixel_trans.gif', 1, HEADING_IMAGE_HEIGHT); ?></div>
+            <div class="col-12 col-md-auto"><?php echo '<a href="' . tep_href_link(FILENAME_ORDERS, tep_get_all_get_params(array('action'))) . '">' . tep_image_button('button_back.gif', IMAGE_BACK) . '</a>'; ?></div>
+          </div>
+        </div></div>
+      </div>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><?php echo tep_draw_separator(); ?></div>
+          </div>
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
+              <div class="row g-3 align-items-center mb-2">
+                <div class="col-12 col-md-auto"><b><?php echo ENTRY_CUSTOMER; ?></b></div>
+                <div class="col-12 col-md-auto"><?php echo tep_address_format($order->customer['format_id'], $order->customer, 1, '', '<br>'); ?></div>
+              </div>
+              <div class="row g-3 align-items-center mb-2">
+                <div class="col-12 col-md-auto"><?php echo tep_draw_separator('pixel_trans.gif', '1', '5'); ?></div>
+              </div>
+              <div class="row g-3 align-items-center mb-2">
+                <div class="col-12 col-md-auto"><b><?php echo ENTRY_TELEPHONE_NUMBER; ?></b></div>
+                <div class="col-12 col-md-auto"><?php echo $order->customer['telephone']; ?></div>
+              </div>
+              <div class="row g-3 align-items-center mb-2">
+                <div class="col-12 col-md-auto"><b><?php echo ENTRY_EMAIL_ADDRESS; ?></b></div>
+                <div class="col-12 col-md-auto"><?php echo '<a href="mailto:' . $order->customer['email_address'] . '"><u>' . $order->customer['email_address'] . '</u></a>'; ?></div>
+              </div>
+            </div></div>
+            <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
+              <div class="row g-3 align-items-center mb-2">
+                <div class="col-12 col-md-auto"><b><?php echo ENTRY_SHIPPING_ADDRESS; ?></b></div>
+                <div class="col-12 col-md-auto"><?php echo tep_address_format($order->delivery['format_id'], $order->delivery, 1, '', '<br>'); ?></div>
+              </div>
+            </div></div>
+            <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
+              <div class="row g-3 align-items-center mb-2">
+                <div class="col-12 col-md-auto"><b><?php echo ENTRY_BILLING_ADDRESS; ?></b></div>
+                <div class="col-12 col-md-auto"><?php echo tep_address_format($order->billing['format_id'], $order->billing, 1, '', '<br>'); ?></div>
+              </div>
+            </div></div>
+          </div>
+        </div></div>
+      </div>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></div>
+      </div>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><b><?php echo ENTRY_PAYMENT_METHOD; ?></b></div>
+            <div class="col-12 col-md-auto"><?php echo $order->info['payment_method']; ?></div>
+          </div>
 <?php
     if (tep_not_null($order->info['cc_type']) || tep_not_null($order->info['cc_owner']) || tep_not_null($order->info['cc_number'])) {
 ?>
-          <tr>
-            <td colspan="2"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
-          </tr>
-          <tr>
-            <td class="main"><?php echo ENTRY_CREDIT_CARD_TYPE; ?></td>
-            <td class="main"><?php echo $order->info['cc_type']; ?></td>
-          </tr>
-          <tr>
-            <td class="main"><?php echo ENTRY_CREDIT_CARD_OWNER; ?></td>
-            <td class="main"><?php echo $order->info['cc_owner']; ?></td>
-          </tr>
-          <tr>
-            <td class="main"><?php echo ENTRY_CREDIT_CARD_NUMBER; ?></td>
-            <td class="main"><?php echo $order->info['cc_number']; ?></td>
-          </tr>
-          <tr>
-            <td class="main"><?php echo ENTRY_CREDIT_CARD_EXPIRES; ?></td>
-            <td class="main"><?php echo $order->info['cc_expires']; ?></td>
-          </tr>
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></div>
+          </div>
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><?php echo ENTRY_CREDIT_CARD_TYPE; ?></div>
+            <div class="col-12 col-md-auto"><?php echo $order->info['cc_type']; ?></div>
+          </div>
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><?php echo ENTRY_CREDIT_CARD_OWNER; ?></div>
+            <div class="col-12 col-md-auto"><?php echo $order->info['cc_owner']; ?></div>
+          </div>
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><?php echo ENTRY_CREDIT_CARD_NUMBER; ?></div>
+            <div class="col-12 col-md-auto"><?php echo $order->info['cc_number']; ?></div>
+          </div>
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><?php echo ENTRY_CREDIT_CARD_EXPIRES; ?></div>
+            <div class="col-12 col-md-auto"><?php echo $order->info['cc_expires']; ?></div>
+          </div>
 <?php
     }
 ?>
-        </table></td>
-      </tr>
-      <tr>
-        <td><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
-      </tr>
-      <tr>
-        <td><table border="0" width="100%" cellspacing="0" cellpadding="2">
-          <tr class="dataTableHeadingRow">
-            <td class="dataTableHeadingContent" colspan="2"><?php echo TABLE_HEADING_PRODUCTS; ?></td>
-            <td class="dataTableHeadingContent"><?php echo TABLE_HEADING_PRODUCTS_MODEL; ?></td>
-            <td class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_TAX; ?></td>
-            <td class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_PRICE_EXCLUDING_TAX; ?></td>
-            <td class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_PRICE_INCLUDING_TAX; ?></td>
-            <td class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_TOTAL_EXCLUDING_TAX; ?></td>
-            <td class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_TOTAL_INCLUDING_TAX; ?></td>
-          </tr>
+        </div></div>
+      </div>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></div>
+      </div>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><?php echo TABLE_HEADING_PRODUCTS; ?></div>
+            <div class="col-12 col-md-auto"><?php echo TABLE_HEADING_PRODUCTS_MODEL; ?></div>
+            <div class="col-12 col-md-auto"><?php echo TABLE_HEADING_TAX; ?></div>
+            <div class="col-12 col-md-auto"><?php echo TABLE_HEADING_PRICE_EXCLUDING_TAX; ?></div>
+            <div class="col-12 col-md-auto"><?php echo TABLE_HEADING_PRICE_INCLUDING_TAX; ?></div>
+            <div class="col-12 col-md-auto"><?php echo TABLE_HEADING_TOTAL_EXCLUDING_TAX; ?></div>
+            <div class="col-12 col-md-auto"><?php echo TABLE_HEADING_TOTAL_INCLUDING_TAX; ?></div>
+          </div>
 <?php
     for ($i=0, $n=sizeof($order->products); $i<$n; $i++) {
-      echo '          <tr class="dataTableRow">' . "\n" .
-           '            <td class="dataTableContent" valign="top" align="right">' . $order->products[$i]['qty'] . '&nbsp;x</td>' . "\n" .
-           '            <td class="dataTableContent" valign="top">' . $order->products[$i]['name'];
+      echo '          <div class="row g-3 align-items-center mb-2">' . "\n" .
+           '            <div class="col-12 col-md-auto">' . $order->products[$i]['qty'] . '&nbsp;x</div>' . "\n" .
+           '            <div class="col-12 col-md-auto">' . $order->products[$i]['name'];
 
       if (isset($order->products[$i]['attributes']) && (sizeof($order->products[$i]['attributes']) > 0)) {
         for ($j = 0, $k = sizeof($order->products[$i]['attributes']); $j < $k; $j++) {
@@ -235,35 +235,35 @@
         }
       }
 
-      echo '            </td>' . "\n" .
-           '            <td class="dataTableContent" valign="top">' . $order->products[$i]['model'] . '</td>' . "\n" .
-           '            <td class="dataTableContent" align="right" valign="top">' . tep_display_tax_value($order->products[$i]['tax']) . '%</td>' . "\n" .
-           '            <td class="dataTableContent" align="right" valign="top"><b>' . $currencies->format($order->products[$i]['final_price'], true, $order->info['currency'], $order->info['currency_value']) . '</b></td>' . "\n" .
-           '            <td class="dataTableContent" align="right" valign="top"><b>' . $currencies->format(tep_add_tax($order->products[$i]['final_price'], $order->products[$i]['tax'], true), true, $order->info['currency'], $order->info['currency_value']) . '</b></td>' . "\n" .
-           '            <td class="dataTableContent" align="right" valign="top"><b>' . $currencies->format($order->products[$i]['final_price'] * $order->products[$i]['qty'], true, $order->info['currency'], $order->info['currency_value']) . '</b></td>' . "\n" .
-           '            <td class="dataTableContent" align="right" valign="top"><b>' . $currencies->format(tep_add_tax($order->products[$i]['final_price'], $order->products[$i]['tax'], true) * $order->products[$i]['qty'], true, $order->info['currency'], $order->info['currency_value']) . '</b></td>' . "\n";
-      echo '          </tr>' . "\n";
+      echo '            </div>' . "\n" .
+           '            <div class="col-12 col-md-auto">' . $order->products[$i]['model'] . '</div>' . "\n" .
+           '            <div class="col-12 col-md-auto">' . tep_display_tax_value($order->products[$i]['tax']) . '%</div>' . "\n" .
+           '            <div class="col-12 col-md-auto"><b>' . $currencies->format($order->products[$i]['final_price'], true, $order->info['currency'], $order->info['currency_value']) . '</b></div>' . "\n" .
+           '            <div class="col-12 col-md-auto"><b>' . $currencies->format(tep_add_tax($order->products[$i]['final_price'], $order->products[$i]['tax'], true), true, $order->info['currency'], $order->info['currency_value']) . '</b></div>' . "\n" .
+           '            <div class="col-12 col-md-auto"><b>' . $currencies->format($order->products[$i]['final_price'] * $order->products[$i]['qty'], true, $order->info['currency'], $order->info['currency_value']) . '</b></div>' . "\n" .
+           '            <div class="col-12 col-md-auto"><b>' . $currencies->format(tep_add_tax($order->products[$i]['final_price'], $order->products[$i]['tax'], true) * $order->products[$i]['qty'], true, $order->info['currency'], $order->info['currency_value']) . '</b></div>' . "\n";
+      echo '          </div>' . "\n";
     }
 ?>
-          <tr>
-            <td align="right" colspan="8"><table border="0" cellspacing="0" cellpadding="2">
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
 <?php
     for ($i = 0, $n = sizeof($order->totals); $i < $n; $i++) {
-      echo '              <tr>' . "\n" .
-           '                <td align="right" class="smallText">' . $order->totals[$i]['title'] . '</td>' . "\n" .
-           '                <td align="right" class="smallText">' . $order->totals[$i]['text'] . '</td>' . "\n" .
-           '              </tr>' . "\n";
+      echo '              <div class="row g-3 align-items-center mb-2">' . "\n" .
+           '                <div class="col-12 col-md-auto">' . $order->totals[$i]['title'] . '</div>' . "\n" .
+           '                <div class="col-12 col-md-auto">' . $order->totals[$i]['text'] . '</div>' . "\n" .
+           '              </div>' . "\n";
     }
 ?>
-            </table></td>
-          </tr>
-        </table></td>
-      </tr>
-      <tr>
-        <td><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
-      </tr>
-      <tr>
-        <td class="main"><table border="1" cellspacing="0" cellpadding="5">
+            </div></div>
+          </div>
+        </div></div>
+      </div>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></div>
+      </div>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><table border="1" cellspacing="0" cellpadding="5">
           <tr>
             <td class="smallText" align="center"><b><?php echo TABLE_HEADING_DATE_ADDED; ?></b></td>
             <td class="smallText" align="center"><b><?php echo TABLE_HEADING_CUSTOMER_NOTIFIED; ?></b></td>
@@ -292,62 +292,62 @@
              '          </tr>' . "\n";
     }
 ?>
-        </table></td>
-      </tr>
-      <tr>
-        <td class="main"><br><b><?php echo TABLE_HEADING_COMMENTS; ?></b></td>
-      </tr>
-      <tr>
-        <td><?php echo tep_draw_separator('pixel_trans.gif', '1', '5'); ?></td>
-      </tr>
-      <tr><?php echo tep_draw_form('status', FILENAME_ORDERS, tep_get_all_get_params(array('action')) . 'action=update_order'); ?>
-        <td class="main"><?php echo tep_draw_textarea_field('comments', 'soft', '60', '5'); ?></td>
-      </tr>
-      <tr>
-        <td><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></td>
-      </tr>
-      <tr>
-        <td><table border="0" cellspacing="0" cellpadding="2">
-          <tr>
-            <td><table border="0" cellspacing="0" cellpadding="2">
-              <tr>
-                <td class="main"><b><?php echo ENTRY_STATUS; ?></b> <?php echo tep_draw_pull_down_menu('status', $orders_statuses, $order->info['orders_status']); ?></td>
-              </tr>
-              <tr>
-                <td class="main"><b><?php echo ENTRY_NOTIFY_CUSTOMER; ?></b> <?php echo tep_draw_checkbox_field('notify', '', true); ?></td>
-                <td class="main"><b><?php echo ENTRY_NOTIFY_COMMENTS; ?></b> <?php echo tep_draw_checkbox_field('notify_comments', '', true); ?></td>
-              </tr>
-            </table></td>
-            <td valign="top"><?php echo tep_image_submit('button_update.gif', IMAGE_UPDATE); ?></td>
-          </tr>
-        </table></td>
-      </form></tr>
-      <tr>
-        <td colspan="2" align="right"><?php echo '<a href="' . tep_href_link(FILENAME_ORDERS_INVOICE, 'oID=' . $HTTP_GET_VARS['oID']) . '" TARGET="_blank">' . tep_image_button('button_invoice.gif', IMAGE_ORDERS_INVOICE) . '</a> <a href="' . tep_href_link(FILENAME_ORDERS_PACKINGSLIP, 'oID=' . $HTTP_GET_VARS['oID']) . '" TARGET="_blank">' . tep_image_button('button_packingslip.gif', IMAGE_ORDERS_PACKINGSLIP) . '</a> <a href="' . tep_href_link(FILENAME_ORDERS, tep_get_all_get_params(array('action'))) . '">' . tep_image_button('button_back.gif', IMAGE_BACK) . '</a>'; ?></td>
-      </tr>
+        </table></div>
+      </div>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><br><b><?php echo TABLE_HEADING_COMMENTS; ?></b></div>
+      </div>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><?php echo tep_draw_separator('pixel_trans.gif', '1', '5'); ?></div>
+      </div>
+      <div class="row g-3 align-items-center mb-2"><?php echo tep_draw_form('status', FILENAME_ORDERS, tep_get_all_get_params(array('action')) . 'action=update_order'); ?>
+        <div class="col-12 col-md-auto"><?php echo tep_draw_textarea_field('comments', 'soft', '60', '5'); ?></div>
+      </div>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><?php echo tep_draw_separator('pixel_trans.gif', '1', '10'); ?></div>
+      </div>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
+              <div class="row g-3 align-items-center mb-2">
+                <div class="col-12 col-md-auto"><b><?php echo ENTRY_STATUS; ?></b> <?php echo tep_draw_pull_down_menu('status', $orders_statuses, $order->info['orders_status']); ?></div>
+              </div>
+              <div class="row g-3 align-items-center mb-2">
+                <div class="col-12 col-md-auto"><b><?php echo ENTRY_NOTIFY_CUSTOMER; ?></b> <?php echo tep_draw_checkbox_field('notify', '', true); ?></div>
+                <div class="col-12 col-md-auto"><b><?php echo ENTRY_NOTIFY_COMMENTS; ?></b> <?php echo tep_draw_checkbox_field('notify_comments', '', true); ?></div>
+              </div>
+            </div></div>
+            <div class="col-12 col-md-auto"><?php echo tep_image_submit('button_update.gif', IMAGE_UPDATE); ?></div>
+          </div>
+        </div></div>
+      </form></div>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><?php echo '<a href="' . tep_href_link(FILENAME_ORDERS_INVOICE, 'oID=' . $HTTP_GET_VARS['oID']) . '" TARGET="_blank">' . tep_image_button('button_invoice.gif', IMAGE_ORDERS_INVOICE) . '</a> <a href="' . tep_href_link(FILENAME_ORDERS_PACKINGSLIP, 'oID=' . $HTTP_GET_VARS['oID']) . '" TARGET="_blank">' . tep_image_button('button_packingslip.gif', IMAGE_ORDERS_PACKINGSLIP) . '</a> <a href="' . tep_href_link(FILENAME_ORDERS, tep_get_all_get_params(array('action'))) . '">' . tep_image_button('button_back.gif', IMAGE_BACK) . '</a>'; ?></div>
+      </div>
 <?php
   } else {
 ?>
-      <tr>
-        <td width="100%"><table border="0" width="100%" cellspacing="0" cellpadding="0">
-          <tr>
-            <td class="pageHeading"><?php echo HEADING_TITLE; ?></td>
-            <td class="pageHeading" align="right"><?php echo tep_draw_separator('pixel_trans.gif', 1, HEADING_IMAGE_HEIGHT); ?></td>
-            <td align="right"><table border="0" width="100%" cellspacing="0" cellpadding="0">
-              <tr><?php echo tep_draw_form('orders', FILENAME_ORDERS, '', 'get'); ?>
-                <td class="smallText" align="right"><?php echo HEADING_TITLE_SEARCH . ' ' . tep_draw_input_field('oID', '', 'size="12"') . tep_draw_hidden_field('action', 'edit'); ?></td>
-              <?php echo tep_hide_session_id(); ?></form></tr>
-              <tr><?php echo tep_draw_form('status', FILENAME_ORDERS, '', 'get'); ?>
-                <td class="smallText" align="right"><?php echo HEADING_TITLE_STATUS . ' ' . tep_draw_pull_down_menu('status', array_merge(array(array('id' => '', 'text' => TEXT_ALL_ORDERS)), $orders_statuses), '', 'onChange="this.form.submit();"'); ?></td>
-              <?php echo tep_hide_session_id(); ?></form></tr>
-            </table></td>
-          </tr>
-        </table></td>
-      </tr>
-      <tr>
-        <td><table border="0" width="100%" cellspacing="0" cellpadding="0">
-          <tr>
-            <td valign="top"><table border="0" width="100%" cellspacing="0" cellpadding="2">
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><?php echo HEADING_TITLE; ?></div>
+            <div class="col-12 col-md-auto"><?php echo tep_draw_separator('pixel_trans.gif', 1, HEADING_IMAGE_HEIGHT); ?></div>
+            <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
+              <div class="row g-3 align-items-center mb-2"><?php echo tep_draw_form('orders', FILENAME_ORDERS, '', 'get'); ?>
+                <div class="col-12 col-md-auto"><?php echo HEADING_TITLE_SEARCH . ' ' . tep_draw_input_field('oID', '', 'size="12"') . tep_draw_hidden_field('action', 'edit'); ?></div>
+              <?php echo tep_hide_session_id(); ?></form></div>
+              <div class="row g-3 align-items-center mb-2"><?php echo tep_draw_form('status', FILENAME_ORDERS, '', 'get'); ?>
+                <div class="col-12 col-md-auto"><?php echo HEADING_TITLE_STATUS . ' ' . tep_draw_pull_down_menu('status', array_merge(array(array('id' => '', 'text' => TEXT_ALL_ORDERS)), $orders_statuses), '', 'onChange="this.form.submit();"'); ?></div>
+              <?php echo tep_hide_session_id(); ?></form></div>
+            </div></div>
+          </div>
+        </div></div>
+      </div>
+      <div class="row g-3 align-items-center mb-2">
+        <div class="col-12 col-md-auto"><div class="container-fluid px-0 erp-form-layout">
+          <div class="row g-3 align-items-center mb-2">
+            <div class="col-12 col-md-auto"><table border="0" width="100%" cellspacing="0" cellpadding="2">
               <tr class="dataTableHeadingRow">
                 <td class="dataTableHeadingContent"><?php echo TABLE_HEADING_CUSTOMERS; ?></td>
                 <td class="dataTableHeadingContent" align="right"><?php echo TABLE_HEADING_ORDER_TOTAL; ?></td>
@@ -388,14 +388,14 @@
     }
 ?>
               <tr>
-                <td colspan="5"><table border="0" width="100%" cellspacing="0" cellpadding="2">
-                  <tr>
-                    <td class="smallText" valign="top"><?php echo $orders_split->display_count($orders_query_numrows, MAX_DISPLAY_SEARCH_RESULTS, $HTTP_GET_VARS['page'], TEXT_DISPLAY_NUMBER_OF_ORDERS); ?></td>
-                    <td class="smallText" align="right"><?php echo $orders_split->display_links($orders_query_numrows, MAX_DISPLAY_SEARCH_RESULTS, MAX_DISPLAY_PAGE_LINKS, $HTTP_GET_VARS['page'], tep_get_all_get_params(array('page', 'oID', 'action'))); ?></td>
-                  </tr>
-                </table></td>
+                <td colspan="5"><div class="container-fluid px-0 erp-form-layout">
+                  <div class="row g-3 align-items-center mb-2">
+                    <div class="col-12 col-md-auto"><?php echo $orders_split->display_count($orders_query_numrows, MAX_DISPLAY_SEARCH_RESULTS, $HTTP_GET_VARS['page'], TEXT_DISPLAY_NUMBER_OF_ORDERS); ?></div>
+                    <div class="col-12 col-md-auto"><?php echo $orders_split->display_links($orders_query_numrows, MAX_DISPLAY_SEARCH_RESULTS, MAX_DISPLAY_PAGE_LINKS, $HTTP_GET_VARS['page'], tep_get_all_get_params(array('page', 'oID', 'action'))); ?></div>
+                  </div>
+                </div></td>
               </tr>
-            </table></td>
+            </table></div>
 <?php
   $heading = array();
   $contents = array();
@@ -423,24 +423,24 @@
   }
 
   if ( (tep_not_null($heading)) && (tep_not_null($contents)) ) {
-    echo '            <td width="25%" valign="top">' . "\n";
+    echo '            <div class="col-12 col-md-auto">' . "\n";
 
     $box = new box;
     echo $box->infoBox($heading, $contents);
 
-    echo '            </td>' . "\n";
+    echo '            </div>' . "\n";
   }
 ?>
-          </tr>
-        </table></td>
-      </tr>
+          </div>
+        </div></div>
+      </div>
 <?php
   }
 ?>
-    </table></td>
+    </div></div>
 <!-- body_text_eof //-->
-  </tr>
-</table>
+  </div>
+</div>
 <!-- body_eof //-->
 
 <!-- footer //-->

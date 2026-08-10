@@ -35,12 +35,12 @@
 
 <form action="schedules.php" method="GET">
 <div class="border">
-<table>
-<tr>
-<td><?php etr("Description") ?>:</td>
-<td><?php textbox("description") ?></td>
-<td><input type="submit" name="search" value="<?php etr("Search") ?>"/>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php etr("Description") ?>:</div>
+<div class="col-12 col-md-auto"><?php textbox("description") ?></div>
+<div class="col-12 col-md-auto"><input type="submit" name="search" value="<?php etr("Search") ?>"/>
+</div></div></div>
 </div>
 </form>
 
@@ -73,12 +73,12 @@ SQL;
     echo "<input type=hidden name=rowcount value='$i'/>";
 ?>
 </table>
-<table>
-<tr>
-<td><?php saveButton() ?></td>
-<td><?php newButton("schedule.php?action=new") ?></td>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php saveButton() ?></div>
+<div class="col-12 col-md-auto"><?php newButton("schedule.php?action=new") ?></div>
+</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>

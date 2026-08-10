@@ -28,9 +28,9 @@
 title("<a href='payables.php'>" . tr("Payables") . "</a> > <a href='payable.php?payableid=$payableid'>$payableid"); 
 ?>
 
-<table>
-<tr><td><b><?php etr("Payable") ?>:</b></td><td><?php echo $payableid ?></td>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><b><?php etr("Payable") ?>:</b></div><div class="col-12 col-md-auto"><?php echo $payableid ?></div>
+</div></div>
 <br/>
 <table>
 <th><?php etr("Payment Id") ?></th>

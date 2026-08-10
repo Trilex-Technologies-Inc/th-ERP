@@ -60,22 +60,22 @@ title("<a href='payaccountgroups.php'>" . tr("Pay account groups") . "</a> > $ti
 ?>
 
 <form action="payaccountgroup.php" method="POST">
-<table>
-<tr>
-	<td><?php etr("Id") ?>:</td>
-	<td><?php numberbox('groupid', $groupid) ?></td>
-</tr>
-<tr><td><?php etr("Name") ?>:</td><td><input type="text" name="name" value="<?php echo $rec->name ?>"/></td>
-<tr><td><?php etr("Description") ?>:</td><td><input type="text" name="description" value="<?php echo $rec->description ?>"/></td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Id") ?>:</div>
+	<div class="col-12 col-md-auto"><?php numberbox('groupid', $groupid) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Name") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="name" value="<?php echo $rec->name ?>"/></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="description" value="<?php echo $rec->description ?>"/></div>
 <?php hidden('old_description', $rec->description) ?>
-<tr><td><?php etr("Show in report") ?>:</td><td><?php checkBox('report', $rec->report) ?></td>
-<tr>
-<td colspan=2>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Show in report") ?>:</div><div class="col-12 col-md-auto"><?php checkBox('report', $rec->report) ?></div>
+</div><div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
 <?php saveButton() ?>
 &nbsp;
-</td>
-</tr>
-</table>
+</div>
+</div>
+</div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
 <?php bottom() ?>

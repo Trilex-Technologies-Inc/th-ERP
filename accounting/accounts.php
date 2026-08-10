@@ -44,24 +44,24 @@ styleSheet();
 
 <form action="accounts.php" method="GET">
 <div class="border">
-<table>
-<tr>
-	<td><?php etr("Dimension") ?>:</td>
-	<td><?php combobox("dimid", $dims, $dimid, false) ?></td>
-	<td width=20/>
-	<td><?php etr("Group") ?>:</td>
-	<td><?php combobox('groupid', $groups, $groupid, true) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Name") ?>:</td>
-	<td><?php textbox("name", $name) ?></td>
-	<td width=20/>
-	<td><?php etr("Accountno") ?>:</td>
-	<td><?php textbox("accountid", $accountid) ?></td>
-</tr>
-<tr><td><?php searchButton() ?></td></tr>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Dimension") ?>:</div>
+	<div class="col-12 col-md-auto"><?php combobox("dimid", $dims, $dimid, false) ?></div>
+	<div class="col-12 col-md-auto">
+	</div><div class="col-12 col-md-auto"><?php etr("Group") ?>:</div>
+	<div class="col-12 col-md-auto"><?php combobox('groupid', $groups, $groupid, true) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Name") ?>:</div>
+	<div class="col-12 col-md-auto"><?php textbox("name", $name) ?></div>
+	<div class="col-12 col-md-auto">
+	</div><div class="col-12 col-md-auto"><?php etr("Accountno") ?>:</div>
+	<div class="col-12 col-md-auto"><?php textbox("accountid", $accountid) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php searchButton() ?></div></div>
+
+</div>
 </div>
 </form>
 
@@ -83,10 +83,10 @@ styleSheet();
     }
 ?>
 </table>
-<table>
-<tr>
-<td><?php newButton("account.php?dimid=$dimid") ?></td>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php newButton("account.php?dimid=$dimid") ?></div>
+</div>
+</div>
 </form>
 </body>

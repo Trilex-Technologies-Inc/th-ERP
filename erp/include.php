@@ -23,22 +23,16 @@ function deleteProduct($productid)
 function menubar($currentHref = null, $helpUrl = 'http://therp.sf.net')
 {
 	top0("Stock/Inventory");
-	echo "<table width='100%' cellspacing=0 cellpadding=0 >";
-	echo "<tr>";
-	echo "<td>";
-	echo "<table width='100%' class=menubar>";
-		echo "<tr>";
+	echo "<nav class='app-sidebar' aria-label='" . tr("Module navigation") . "'>";
+	echo "<div class='app-nav-list'>";
 			$percent = 20;
 			menu('products.php', 'Products', $percent, true, $currentHref);
 			menu('purchase.php', 'Purchase', $percent, true, $currentHref);
 			menu('goodsmoves.php', 'Stock move', $percent, true, $currentHref);
 			menu('configuration.php', 'Configuration', $percent, true, $currentHref);
 			menu($helpUrl, 'Help', $percent, false, $currentHref);
-		echo "</tr>";
-	echo "</table>";
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
+	echo "</div>";
+	echo "</nav>";
 	showUpgrade();
 }
 

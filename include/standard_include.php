@@ -690,13 +690,13 @@ function getMonthStepperDate()
 function monthStepper($date)
 {
 	echo "<center>";
-	echo "<table>";
-	echo "<tr>";
-	echo "<td><input type='submit' name='prev' value=' < '/></td>";
-	echo "<td>" . date("Y M", $date) . "</td>";
-	echo "<td><input type='submit' name='next' value=' > '/></td>";
-	echo "</tr>";
-	echo "</table>";
+	echo "<div class='container-fluid px-0 erp-form-layout'>";
+	echo "<div class='row g-3 align-items-center mb-2'>";
+	echo "<div class='col-12 col-md-auto'><input type='submit' name='prev' value=' < '/></div>";
+	echo "<div class='col-12 col-md-auto'>" . date("Y M", $date) . "</div>";
+	echo "<div class='col-12 col-md-auto'><input type='submit' name='next' value=' > '/></div>";
+	echo "</div>";
+	echo "</div>";
 	echo "</center>";
 	$year = date("Y", $date);
 	$month = date("m", $date);
@@ -720,13 +720,13 @@ function getYearStepperDate()
 function yearStepper($date)
 {
 	echo "<center>";
-	echo "<table>";
-	echo "<tr>";
-	echo "<td><input type='submit' name='prev' value=' < '/></td>";
-	echo "<td>" . date("Y", $date) . "</td>";
-	echo "<td><input type='submit' name='next' value=' > '/></td>";
-	echo "</tr>";
-	echo "</table>";
+	echo "<div class='container-fluid px-0 erp-form-layout'>";
+	echo "<div class='row g-3 align-items-center mb-2'>";
+	echo "<div class='col-12 col-md-auto'><input type='submit' name='prev' value=' < '/></div>";
+	echo "<div class='col-12 col-md-auto'>" . date("Y", $date) . "</div>";
+	echo "<div class='col-12 col-md-auto'><input type='submit' name='next' value=' > '/></div>";
+	echo "</div>";
+	echo "</div>";
 	echo "</center>";
 	$year = date("Y", $date);
 	hidden('year', $year);

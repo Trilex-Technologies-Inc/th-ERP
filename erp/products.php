@@ -63,18 +63,18 @@ function printReport()
 
 <form action="products.php" method="GET" name=searchform>
 <div class="border">
-<table>
-<tr><td><?php etr("Model") ?>:</td><td><?php textbox('model', $model) ?></td></tr>
-<tr><td><?php etr("Barcode") ?>:</td><td><?php textbox('barcode', $barcode) ?></td></tr>
-<tr><td><?php etr("Supplier") ?>:</td><td><?php combobox('supplierid', $suppliers, $supplierid, true) ?></td></tr>
-<tr><td><?php etr("Location") ?>:</td><td><?php combobox('locationid', $locations, $locationid, true) ?></td></tr>
-<tr>
-	<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Model") ?>:</div><div class="col-12 col-md-auto"><?php textbox('model', $model) ?></div></div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Barcode") ?>:</div><div class="col-12 col-md-auto"><?php textbox('barcode', $barcode) ?></div></div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Supplier") ?>:</div><div class="col-12 col-md-auto"><?php combobox('supplierid', $suppliers, $supplierid, true) ?></div></div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Location") ?>:</div><div class="col-12 col-md-auto"><?php combobox('locationid', $locations, $locationid, true) ?></div></div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto">
 	<?php searchButton() ?>
 	<?php button("Print", "print", "javascript:printReport()") ?>
-	</td>
-</tr>
-</table>
+	</div>
+</div>
+</div>
 </div>
 </form>
 &nbsp;

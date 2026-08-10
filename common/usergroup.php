@@ -69,10 +69,10 @@ title("<a href='usergroups.php'>" . tr("User groups") . "</a> > $title")
 ?>
 
 <form action="usergroup.php" method="POST">
-<table>
-<tr>
-	<td><?php etr("Id") ?>:</td>
-	<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Id") ?>:</div>
+	<div class="col-12 col-md-auto">
 	<?php
 	if ($new)
 		textbox('groupid', '');
@@ -81,10 +81,10 @@ title("<a href='usergroups.php'>" . tr("User groups") . "</a> > $title")
 		hidden('groupid', $rec->groupid);
 	}
 	?>
-	</td>
-</tr>
-<tr><td><?php etr("Description") ?>:</td><td><?php  textbox('description', $rec->description, 60) ?></td>
-</table>
+	</div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><?php  textbox('description', $rec->description, 60) ?></div>
+</div></div>
 <?php
 if ($permissions != null) {
 	echo "<br/>";

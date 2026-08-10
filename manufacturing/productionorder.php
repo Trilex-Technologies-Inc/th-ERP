@@ -101,40 +101,40 @@ if ($mess != null) {
 
 <form name=postform action="productionorder.php" method="POST">
 <input type=hidden name=customerid value='<?php echo $customerid ?>'/>
-<table>
+<div class="container-fluid px-0 erp-form-layout">
 <?php
 	if (!$new) {
-		echo "<tr><td><b>" . tr("Order id") . ":</b></td>";
-		echo "<td>";
+		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'><b>" . tr("Order id") . ":</b></div>";
+		echo "<div class='col-12 col-md-auto'>";
 		echo $orderid;
 		echo "<input type='hidden' name='orderid' value='$orderid'/>";
-		echo "</td>";
+		echo "</div>";
 	}
 ?>
-<tr><td><b><?php etr("Created date") ?>:</b></td><td><?php echo date(DATE_PATTERN, $rec->createdtime) ?></td></tr>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><b><?php etr("Created date") ?>:</b></div><div class="col-12 col-md-auto"><?php echo date(DATE_PATTERN, $rec->createdtime) ?></div></div>
 <?php
-echo "<tr>";
-echo "<td class=label>" . tr("Status") . ":</td>";
-echo "<td>";
+echo "<div class='row g-3 align-items-center mb-2'>";
+echo "<div class='col-12 col-md-auto'>" . tr("Status") . ":</div>";
+echo "<div class='col-12 col-md-auto'>";
 if (!isEmpty($rec->transactionid)) {
 	echo tr("Finished") . "&nbsp;&nbsp;<a href='../accounting/transaction.php?transactionid=$rec->transactionid'>Show transaction</a>";
 } else
 	echo tr("Registered");
-echo "</td>";
-echo "</tr>";
+echo "</div>";
+echo "</div>";
 if ($cancelled) {
-	echo "<tr>";
-	echo "<td colspan=2>";
+	echo "<div class='row g-3 align-items-center mb-2'>";
+	echo "<div class='col-12 col-md-auto'>";
 	echo tr("This order is cancelled");
-	echo "</td>";
-	echo "</tr>";
+	echo "</div>";
+	echo "</div>";
 }
 ?>
-<tr>
-<td class=label><?php etr("Created by") ?>:</td>
-<td><?php echo $rec->createdby ?></td>
-</tr>
-</table>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php etr("Created by") ?>:</div>
+<div class="col-12 col-md-auto"><?php echo $rec->createdby ?></div>
+</div>
+</div>
 <br/>
 <?php if ($items != null) { ?>
 <div class='border'>

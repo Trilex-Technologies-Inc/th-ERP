@@ -10,9 +10,9 @@
 
 <?php menubar("configuration.php", "config") ?>
 <?php menupage_begin() ?>
-<table>
-<tr>
-<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
 <ul>
 <li class=menupage><a href="policies.php"><?php echo tr("Policies") ?></a></li>
 <li class=menupage><a href="payaccounts.php"><?php echo tr("Pay accounts") ?></a></li>
@@ -22,8 +22,8 @@
 <li class=menupage><a href="formulas.php"><?php echo tr("Formulas") ?></a></li>
 <li class=menupage><a href="teams.php"><?php echo tr("Teams") ?></a></li>
 </ul>
-</td>
-<td>
+</div>
+<div class="col-12 col-md-auto">
 <ul>
 <li class=menupage><a href="daily_forms.php"><?php echo tr("Daily forms") ?></a></li>
 <li class=menupage><a href="tabs.php"><?php echo tr("Tabs") ?></a></li>
@@ -33,9 +33,9 @@
 <li class=menupage><a href="se_taxtable.php"><?php echo tr("Swedish taxtables") ?></a></li>
 <li class=menupage><a href="setup.php"><?php echo tr("Setup") ?></a></li>
 </ul>
-</td>
-</tr>
-</table>
+</div>
+</div>
+</div>
 <?php menupage_end() ?>
 
 </body>

@@ -72,19 +72,19 @@ title("<a href='accounts.php'>" . tr("Accounts") . "</a> > $title")
 ?>
 
 <form action="account.php" method="POST">
-<table>
-<tr>
-	<td><?php etr("Dimension") ?>:</td>
-	<td><?php combobox('dimid', $dims, $dimid, false) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Accountno") ?>:</td>
-	<td><?php numberbox('accountid', $accountid) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Name") ?>:</td>
-	<td><?php textbox('name', $name) ?></td>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Dimension") ?>:</div>
+	<div class="col-12 col-md-auto"><?php combobox('dimid', $dims, $dimid, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Accountno") ?>:</div>
+	<div class="col-12 col-md-auto"><?php numberbox('accountid', $accountid) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Name") ?>:</div>
+	<div class="col-12 col-md-auto"><?php textbox('name', $name) ?></div>
+</div></div>
 <?php
 if ($groups != null) {
 	echo "<br/>";

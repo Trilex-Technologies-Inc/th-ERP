@@ -81,13 +81,13 @@ if ($mess != null)
 
 <center>
 <form action="employee_paystub.php" method="GET">
-	<table>
-		<tr>
-		<td><input type="submit" name="prev" value=" < "/></td>
-		<td><?php displayPeriod($periodid) ?></td>
-		<td><input type="submit" name="next" value=" > "/></td>
-		</tr>
-	</table>
+	<div class="container-fluid px-0 erp-form-layout">
+		<div class="row g-3 align-items-center mb-2">
+		<div class="col-12 col-md-auto"><input type="submit" name="prev" value=" < "/></div>
+		<div class="col-12 col-md-auto"><?php displayPeriod($periodid) ?></div>
+		<div class="col-12 col-md-auto"><input type="submit" name="next" value=" > "/></div>
+		</div>
+	</div>
 	<input type="hidden" name="employeeid" value="<?php echo $employeeid0 ?>"/>
 	<input type="hidden" name="periodid" value="<?php echo $periodid ?>"/>
 </form>

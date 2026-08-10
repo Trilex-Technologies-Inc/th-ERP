@@ -71,13 +71,13 @@ top("employees.php", "calendar", $emplink);
 <center>
 
 <form action="calendar.php" method="GET">
-	<table>
-		<tr>
-		<td><input type="submit" name="prev" value=" < "/></td>
-		<td><?php echo date("Y", $date) . ' ' . tr(date("M", $date)) ?></td>
-		<td><input type="submit" name="next" value=" > "/></td>
-		</tr>
-	</table>
+	<div class="container-fluid px-0 erp-form-layout">
+		<div class="row g-3 align-items-center mb-2">
+		<div class="col-12 col-md-auto"><input type="submit" name="prev" value=" < "/></div>
+		<div class="col-12 col-md-auto"><?php echo date("Y", $date) . ' ' . tr(date("M", $date)) ?></div>
+		<div class="col-12 col-md-auto"><input type="submit" name="next" value=" > "/></div>
+		</div>
+	</div>
 	<input type="hidden" name="employeeid" value="<?php echo $employeeid0 ?>"/>
 	<input type="hidden" name="year" value="<?php echo $year ?>"/>
 	<input type="hidden" name="month" value="<?php echo $month ?>"/>

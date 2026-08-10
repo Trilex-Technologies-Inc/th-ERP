@@ -79,9 +79,9 @@ title($title);
 
 <form action="attribute.php" method="POST">
 <input type=hidden name=attributeid value='<?php echo $attributeid ?>'/>
-<table>
-<tr><td><?php echo tr("Name") ?>:</td><td><?php textbox('name', $rec->name) ?></td>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php echo tr("Name") ?>:</div><div class="col-12 col-md-auto"><?php textbox('name', $rec->name) ?></div>
+</div></div>
 <?php
 if ($options != null) {
 	echo "<br/>";

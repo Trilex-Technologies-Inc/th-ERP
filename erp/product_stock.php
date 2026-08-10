@@ -165,16 +165,16 @@ echo "<br><br>";
 echo "<a href='stockmoves.php?productid=$productid'>" . tr("Show stock moves") . "</a>";
 ?>
 <br><br>
-<table>
-<tr>
-	<td class=label><?php etr("Re-order level") ?>:</td>
-	<td><?php numberbox('reorder_level', $rec->reorder_level) ?>
-</tr>
-<tr>
-	<td class=label><?php etr("Re-order quantity") ?>:</td>
-	<td><?php numberbox('reorder_qty', $rec->reorder_qty) ?>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Re-order level") ?>:</div>
+	<div class="col-12 col-md-auto"><?php numberbox('reorder_level', $rec->reorder_level) ?>
+</div></div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Re-order quantity") ?>:</div>
+	<div class="col-12 col-md-auto"><?php numberbox('reorder_qty', $rec->reorder_qty) ?>
+</div></div>
+</div>
 <br><br>
 
 <?php saveButton() ?>

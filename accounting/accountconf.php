@@ -79,58 +79,58 @@ title(tr("Configuration") . " > " . tr("Account configuration"))
 ?>
 
 <form action="accountconf.php" method="POST">
-<table>
-<tr>
-	<td><?php etr("Default cash") ?>:</td>
-	<td><?php comboBox("default_cash", $assets_accounts, $row->default_cash, false) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Default sales") ?>:</td>
-	<td><?php comboBox("default_sales", $revenue_accounts, $row->default_sales, false) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Account receivable") ?>:</td>
-	<td><?php comboBox("account_receivable", $assets_accounts, $row->account_receivable, false) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Account payable") ?>:</td>
-	<td><?php comboBox("account_payable", $liabilities_accounts, $row->account_payable, false) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Finished goods inventory") ?>:</td>
-	<td><?php comboBox("finished_goods", $assets_accounts, $row->finished_goods, false) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Raw material inventory") ?>:</td>
-	<td><?php comboBox("raw_material", $assets_accounts, $row->raw_material, false) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Cost of sales") ?>:</td>
-	<td><?php comboBox("cost_of_sales", $expenses_accounts, $row->cost_of_sales, false) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Goods received suspense") ?>:</td>
-	<td><?php comboBox("goods_received_suspense", $liabilities_accounts, $row->goods_received_suspense, false) ?></td>
-</tr>
-<tr>
-	<td><?php etr("VAT payable") ?>:</td>
-	<td><?php comboBox("vat_payable", $liabilities_accounts, $row->vat_payable, false) ?></td>
-</tr>
-<tr>
-	<td><?php etr("VAT recoverable") ?>:</td>
-	<td><?php comboBox("vat_recoverable", $assets_accounts, $row->vat_recoverable, false) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Inventory adjustment") ?>:</td>
-	<td><?php comboBox("inventory_adjustment", $expenses_accounts, $row->inventory_adjustment, false) ?></td>
-</tr>
-<tr>
-<td colspan=2>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Default cash") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox("default_cash", $assets_accounts, $row->default_cash, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Default sales") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox("default_sales", $revenue_accounts, $row->default_sales, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Account receivable") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox("account_receivable", $assets_accounts, $row->account_receivable, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Account payable") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox("account_payable", $liabilities_accounts, $row->account_payable, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Finished goods inventory") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox("finished_goods", $assets_accounts, $row->finished_goods, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Raw material inventory") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox("raw_material", $assets_accounts, $row->raw_material, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Cost of sales") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox("cost_of_sales", $expenses_accounts, $row->cost_of_sales, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Goods received suspense") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox("goods_received_suspense", $liabilities_accounts, $row->goods_received_suspense, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("VAT payable") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox("vat_payable", $liabilities_accounts, $row->vat_payable, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("VAT recoverable") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox("vat_recoverable", $assets_accounts, $row->vat_recoverable, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Inventory adjustment") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox("inventory_adjustment", $expenses_accounts, $row->inventory_adjustment, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
 <input type="submit" name="save" value="Save"/>
 &nbsp;
-</td>
-</tr>
-</table>
+</div>
+</div>
+</div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
 

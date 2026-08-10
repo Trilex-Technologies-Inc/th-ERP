@@ -63,34 +63,34 @@ title("Configuration > Schedules > $schedule_link > $starttime");
 <form action="workshift.php" method="POST">
 <? newbox() ?>
 <input type=hidden name=scheduleid value='<?= $scheduleid ?>'/>
-<table>
-<tr>
-<td>Schedule:</td>
-<td><?= $scheduleid ?> - <?= $schedule_desc ?></td>
-</tr>
-<tr>
-<td>Shift id:</td>
-<td><?= $shiftid ?></td>
-</tr>
-<tr>
-<td>Date:</td>
-<td><? datebox("date") ?></td>
-</tr>
-<tr>
-<td>Start time:</td>
-<td><? timebox("starttime") ?></td>
-</tr>
-<tr>
-<td>End time:</td>
-<td><? timebox("endtime") ?></td>
-</tr>
-</table>
-<table>
-<tr>
-<td><? saveButton() ?></td>
-<td><? newButton() ?></td>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">Schedule:</div>
+<div class="col-12 col-md-auto"><?= $scheduleid ?> - <?= $schedule_desc ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">Shift id:</div>
+<div class="col-12 col-md-auto"><?= $shiftid ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">Date:</div>
+<div class="col-12 col-md-auto"><? datebox("date") ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">Start time:</div>
+<div class="col-12 col-md-auto"><? timebox("starttime") ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">End time:</div>
+<div class="col-12 col-md-auto"><? timebox("endtime") ?></div>
+</div>
+</div>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><? saveButton() ?></div>
+<div class="col-12 col-md-auto"><? newButton() ?></div>
+</div>
+</div>
 
 </form>
 </body>

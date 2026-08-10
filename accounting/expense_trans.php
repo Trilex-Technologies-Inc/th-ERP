@@ -66,31 +66,31 @@ if ($errmess != null)
 hidden('transactionid', $transactionid);
 hidden('dimid', $dimid);
 ?>
-<table>
-<tr><td class=label><?php etr("Narrative") ?>:</td>
-<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Narrative") ?>:</div>
+<div class="col-12 col-md-auto">
 <?php textbox('narrative', $narrative); ?>
-</td>
-<tr>
-	<td class=label><?php etr("Time") ?>:</td>
-	<td>
+</div>
+</div><div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Time") ?>:</div>
+	<div class="col-12 col-md-auto">
 	<?php datebox('transtime', formatDate($transtime));	?>
-	</td>
-</tr>
-<tr>
-	<td class=label><?php etr("Excpense account") ?></td>
-	<td><?php combobox('accountid', $accounts, null, false); ?></td>
-</tr>
-<tr>
-	<td class=label><?php etr("Amount") ?></td>
-	<td><?php moneybox('amount', ''); ?></td>
-</tr>
-<tr>
-	<td class=label><?php etr("VAT") ?></td>
-	<td><?php moneybox('vat', ''); ?></td>
-</tr>
+	</div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Excpense account") ?></div>
+	<div class="col-12 col-md-auto"><?php combobox('accountid', $accounts, null, false); ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Amount") ?></div>
+	<div class="col-12 col-md-auto"><?php moneybox('amount', ''); ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("VAT") ?></div>
+	<div class="col-12 col-md-auto"><?php moneybox('vat', ''); ?></div>
+</div>
 
-</table>
+</div>
 <br/>
 <?php saveButton(); ?>
 </form>

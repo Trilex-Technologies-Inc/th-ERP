@@ -50,38 +50,38 @@ top("configuration.php", "Daily form", $title);
 
 <form action="daily_form.php" method="POST">
 <?php hidden('formid', $formid) ?>
-<table>
-<tr>
-<td><?php echo tr("Id") ?>:</td>
-<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php echo tr("Id") ?>:</div>
+<div class="col-12 col-md-auto">
 <?php 
 if ($new)
 	textbox('formid', '');
 else 
 	echo $formid 
 ?>
-</td>
-</tr>
-<tr>
-<td><?php echo tr("Description") ?>:</td>
-<td><?php textbox('description', $policy->description, 40) ?></td>
-</tr>
-<tr>
-<td><?php echo tr("Team") ?>:</td>
-<td><?php comboBox("teamid", $teams, $policy->teamid, false) ?></td>
-</tr>
-<tr>
-<td><?php echo tr("Pay account group") ?>:</td>
-<td><?php comboBox("groupid", $groups, $policy->groupid, false) ?></td>
-</tr>
+</div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php echo tr("Description") ?>:</div>
+<div class="col-12 col-md-auto"><?php textbox('description', $policy->description, 40) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php echo tr("Team") ?>:</div>
+<div class="col-12 col-md-auto"><?php comboBox("teamid", $teams, $policy->teamid, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php echo tr("Pay account group") ?>:</div>
+<div class="col-12 col-md-auto"><?php comboBox("groupid", $groups, $policy->groupid, false) ?></div>
+</div>
 
-<tr height='10'/>
-<tr>
-<td colspan='2'>
+<div class="row g-3 align-items-center mb-2">
+</div><div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
   <input type="submit" name="save" value="<?php echo tr("Save") ?>"/>
-</td>
-</tr>
-</table>
+</div>
+</div>
+</div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
 <?php bottom() ?>

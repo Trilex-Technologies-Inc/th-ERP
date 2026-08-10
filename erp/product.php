@@ -55,9 +55,9 @@
 				$languages_id = findValue("
 				select min(languages_id) from languages");
 				sql("
-				insert into products_description 
+				insert into products_description
 				(products_id, language_id, products_name, products_description)
-				values 
+				values
 				($oscommerceid, $languages_id, '$model', '$description')");
 				$categories_id = findValue("
 				select min(categories_id) from categories");
@@ -65,7 +65,7 @@
 				insert into products_to_categories (products_id, categories_id)
 				values ($oscommerceid, $categories_id)");
 				sql("
-				update product set oscommerceid=$oscommerceid 
+				update product set oscommerceid=$oscommerceid
 				where productid='$productid'");
 			}
 		} else {
@@ -88,7 +88,7 @@
 				$languages_id = findValue("
 				select min(languages_id) from languages");
 				sql("
-				update products_description set 
+				update products_description set
 					products_name='$model',
 					products_description='$description'
 				where products_id=$oscommerceid and language_id=$languages_id");
@@ -115,7 +115,7 @@
 			insert into supplier_price (supplierid, productid, price, supplier_productcode)
 			values ($supplierid, $productid, null, '$productcode_new')");
 		}
-		
+
 	}
 
 	if (isDelete()) {
@@ -127,8 +127,8 @@
 	$parts = null;
 	if (!isEmpty($productid)) {
 	    $selectSQL =
-  		"select p.productid,
-  		       model,
+		"select p.productid,
+		       model,
 		       p.description,
 			   p.barcode,
 		       purchase_price,
@@ -151,7 +151,7 @@
 	$categories = rs2array(query("select categoryid, description from category"));
 	$unittypes = rs2array(query("select unittype, description from unittype"));
 	$suppliers = rs2array(query("select supplierid, name from supplier"));
-	
+
 ?>
 <head>
 <title>thERP - <?php etr("Product") ?></title>
@@ -171,9 +171,9 @@ if ($new)
 title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 ?>
 <form name=postform action="product.php" method="POST">
-<table>
-<tr><td><?php etr("Productno") ?>:</td>
-<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Productno") ?>:</div>
+<div class="col-12 col-md-auto">
 <?php
 	if ($new) {
 		numberbox('productid', '');
@@ -183,10 +183,10 @@ title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 		echo "<input type='hidden' name='productid' value='$productid'/>";
 	}
 ?>
-</td>
-<tr><td><?php etr("Model") ?>:</td><td><?php textbox("model", $rec->model) ?></td>
+</div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Model") ?>:</div><div class="col-12 col-md-auto"><?php textbox("model", $rec->model) ?></div>
 
-</table>
+</div></div>
 
 <div id="header">
 <?php buildTabs($productid, 'general') ?>
@@ -194,18 +194,18 @@ title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 <div id="main">
 	<div id="contents">
 
-<table>
-<tr><td class=label><?php etr("Description") ?>:</td><td><textarea rows=10 cols=60 name='description'><?php echo $rec->description ?></textarea></td>
-<tr><td class=label><?php etr("Category") ?>:</td><td><?php comboBox("categoryid", $categories, $rec->categoryid, false) ?></td></tr>
-<tr><td class=label><?php etr("Barcode") ?>:</td><td><?php textbox("barcode", $rec->barcode) ?></td></tr>
-<tr>
-	<td class=label><?php etr("Units of measure") ?>:</td>
-	<td><?php combobox('unittype', $unittypes, $rec->unittype, true) ?></td>
-</tr>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><textarea rows=10 cols=60 name='description'><?php echo $rec->description ?></textarea></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Category") ?>:</div><div class="col-12 col-md-auto"><?php comboBox("categoryid", $categories, $rec->categoryid, false) ?></div></div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Barcode") ?>:</div><div class="col-12 col-md-auto"><?php textbox("barcode", $rec->barcode) ?></div></div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Units of measure") ?>:</div>
+	<div class="col-12 col-md-auto"><?php combobox('unittype', $unittypes, $rec->unittype, true) ?></div>
+</div>
 
-<tr>
-	<td class=label><?php etr("Supplier product code") ?>:</td>
-	<td>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Supplier product code") ?>:</div>
+	<div class="col-12 col-md-auto">
 		<table>
 		<?php
 		if (!isEmpty($productid)) {
@@ -241,11 +241,11 @@ title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 		?>
 		</table>
 
-  	</td>
-</tr>
+	</div>
+</div>
 
 
-</table>
+</div>
 <br/>
 <?php
 button("Save product", "save");

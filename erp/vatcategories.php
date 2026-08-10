@@ -25,11 +25,11 @@
 
 <form action="vatcategories.php" method="GET">
 <div class="border">
-<table>
-<tr><td><?php etr("Description") ?>:</td><td><input type="text" model="description" value="<?php echo $description ?>"/></td>
-<tr><td><input type="submit" model="search" value="<?php etr("Search") ?>" /></td></tr>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><input type="text" model="description" value="<?php echo $description ?>"/></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><input type="submit" model="search" value="<?php etr("Search") ?>" /></div></div>
+
+</div>
 </div>
 </form>
 &nbsp;
@@ -53,12 +53,12 @@
     }
 ?>
 </table>
-<table>
-<tr>
-<td><?php newButton("vatcategory.php") ?></td>
-<td><?php saveButton() ?></td>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php newButton("vatcategory.php") ?></div>
+<div class="col-12 col-md-auto"><?php saveButton() ?></div>
+</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>

@@ -57,20 +57,20 @@ title("<a href='dimensions.php'>" . tr("Dimensions") . "</a> > $title")
 ?>
 
 <form action="dimension.php" method="POST">
-<table>
-<tr>
-	<td><?php etr("Id") ?>:</td>
-	<td><input type=text name='dimid' value='<?php echo $dimid ?>'/></td>
-</tr>
-<tr><td><?php etr("Name") ?>:</td><td><input type="text" name="name" value="<?php echo $name ?>"/></td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Id") ?>:</div>
+	<div class="col-12 col-md-auto"><input type=text name='dimid' value='<?php echo $dimid ?>'/></div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Name") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="name" value="<?php echo $name ?>"/></div>
 <?php $checked = $type ? 'checked' : '' ?>
-<tr>
-<td colspan=2>
+</div><div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
 <?php saveButton() ?>
 &nbsp;
-</td>
-</tr>
-</table>
+</div>
+</div>
+</div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
 <?php bottom() ?>

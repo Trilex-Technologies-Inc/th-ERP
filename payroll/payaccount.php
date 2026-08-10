@@ -88,24 +88,24 @@ title("<a href='payaccounts.php'>" . tr("Pay accounts") . "</a> > $title")
 ?>
 
 <form action="payaccount.php" method="POST">
-<table>
-<tr>
-	<td class=label><?php etr("Id") ?>:</td>
-	<td><?php numberbox('accountid', $accountid, 5) ?></td>
-</tr>
-<tr><td class=label><?php etr("Description") ?>:</td><td><input type="text" name="description" value="<?php echo $row->description ?>" size='40' /></td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Id") ?>:</div>
+	<div class="col-12 col-md-auto"><?php numberbox('accountid', $accountid, 5) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="description" value="<?php echo $row->description ?>" size='40' /></div>
 <?php hidden('old_description', $row->description) ?>
-<tr>
-	<td class=label><?php etr("Input type") ?>:</td>
-	<td><?php comboBox("inputtype", $quantities, $row->inputtype, true) ?></td>
-</tr>
-<tr><td class=label valign=top><?php etr("Formula") ?>:</td><td><textarea name='formula' cols=60 rows=5><?php echo $row->formula ?></textarea></td>
-<tr><td class=label><?php etr("Calculation sequence") ?>:</td><td><?php numberbox("calcseq", $row->calcseq, 5) ?></td>
-<tr>
-	<td class=label><?php etr("General ledger account") ?>:</td>
-	<td><?php comboBox("glaccountid", $glaccounts, $row->glaccountid, true) ?></td>
-</tr>
-</table>
+</div><div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Input type") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox("inputtype", $quantities, $row->inputtype, true) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Formula") ?>:</div><div class="col-12 col-md-auto"><textarea name='formula' cols=60 rows=5><?php echo $row->formula ?></textarea></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Calculation sequence") ?>:</div><div class="col-12 col-md-auto"><?php numberbox("calcseq", $row->calcseq, 5) ?></div>
+</div><div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("General ledger account") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox("glaccountid", $glaccounts, $row->glaccountid, true) ?></div>
+</div>
+</div>
 <?php
 if ($groups != null) {
 	echo "<br/>";

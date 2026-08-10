@@ -65,19 +65,19 @@ title($title);
 
 <form action="location.php" method="POST">
 <input type=hidden name=locationid value='<?php echo $locationid ?>'/>
-<table>
-<tr><td><?php echo tr("Name") ?>:</td><td><input type="text" name="name" value="<?php echo $name ?>"/></td>
-<tr><td><?php echo tr("Street address") ?>:</td><td><input type="text" name="streetaddress" value="<?php echo $streetaddress ?>"/></td>
-<tr><td><?php echo tr("City") ?>:</td><td><input type="text" name="city" value="<?php echo $city ?>"/></td>
-<tr><td><?php echo tr("Zip code") ?>:</td><td><input type="text" name="zipcode" value="<?php echo $zipcode ?>"/></td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php echo tr("Name") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="name" value="<?php echo $name ?>"/></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php echo tr("Street address") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="streetaddress" value="<?php echo $streetaddress ?>"/></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php echo tr("City") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="city" value="<?php echo $city ?>"/></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php echo tr("Zip code") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="zipcode" value="<?php echo $zipcode ?>"/></div>
 
-<tr>
-<td colspan=2>
+</div><div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
 <input type="submit" name="save" value="Save"/>
 &nbsp;
-</td>
-</tr>
-</table>
+</div>
+</div>
+</div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
 <?php bottom() ?>

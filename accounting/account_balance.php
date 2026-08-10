@@ -41,12 +41,12 @@
 <?php include("menubar.php") ?>
 <?php title("Balance > $account->name") ?>
 
-<table>
-<tr>
-	<td class=label><?php etr("Accout") ?>:</td>
-	<td><?php echo "$accountid - $account->name" ?></td>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Accout") ?>:</div>
+	<div class="col-12 col-md-auto"><?php echo "$accountid - $account->name" ?></div>
+</div>
+</div>
 <br/>
 <div class=border>
 <table>

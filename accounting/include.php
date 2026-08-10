@@ -13,22 +13,16 @@ define('ACCOUNTID_VAT_RECEIVALE', 2310);
 function menubar($currentHref = null)
 {
 	top0("Accounting");
-	echo "<table width='100%' cellspacing=0 cellpadding=0 >";
-	echo "<tr>";
-	echo "<td>";
-	echo "<table width='100%' class=menubar>";
-		echo "<tr>";
+	echo "<nav class='app-sidebar' aria-label='" . tr("Module navigation") . "'>";
+	echo "<div class='app-nav-list'>";
 			$percent = 20;
 			menu('index.php', 'Register', $percent, true, $currentHref);
 			menu('balance.php', 'Balance', $percent, true, $currentHref);
 			menu('transactions.php', 'History', $percent, true, $currentHref);
 			menu('configuration.php', 'Configuration', $percent, true, $currentHref);
 			menu('help.php', 'Help', $percent, false, $currentHref);
-		echo "</tr>";
-	echo "</table>";
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
+	echo "</div>";
+	echo "</nav>";
 }
 
 ?>

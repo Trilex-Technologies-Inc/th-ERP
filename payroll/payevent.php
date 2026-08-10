@@ -259,25 +259,25 @@ if (!$first) {
 }
 ?>
 </table>
-<table>
-<tr>
-<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
 <?php
 $label = isEmpty($payeventid) ? 'Submit' : 'Save';
 button($label, "save")
 ?>
-</td>
-<td>
+</div>
+<div class="col-12 col-md-auto">
 <?php
 if (!isEmpty($payeventid))
 	deleteButton()
 ?>
-</td>
-<td>
+</div>
+<div class="col-12 col-md-auto">
 <?php backButton($employeeid0) ?>
-</td>
-</tr>
-</table>
+</div>
+</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>

@@ -79,24 +79,24 @@ title(tr("Swedish tax tables"))
 
 <div class=border>
 <form action="se_taxtable.php" method="GET">
-<table>
-<tr>
-	<td><?php etr("Table no") ?>:</td>
-	<td><?php combobox('tableno', $tables, $tableno, false) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Period length") ?>:</td>
-	<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Table no") ?>:</div>
+	<div class="col-12 col-md-auto"><?php combobox('tableno', $tables, $tableno, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Period length") ?>:</div>
+	<div class="col-12 col-md-auto">
 		<?php $selected = $periodlength == 14 ? 'checked' : '' ?>
 		<input type=radio name=periodlength value='14' <?php echo $selected ?>>14</input>
 		<?php $selected = $periodlength == 30 ? 'checked' : '' ?>
 		<input type=radio name=periodlength value='30' <?php echo $selected ?>>30</input>
-	</td>
-</tr>
-<tr>
-<td colspan=2><?php searchButton('Search', 'search') ?></td>
-</tr>
-</table>
+	</div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php searchButton('Search', 'search') ?></div>
+</div>
+</div>
 </form>
 </div>
 <br/>

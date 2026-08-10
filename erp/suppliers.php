@@ -40,11 +40,11 @@ title($title);
 <form action="suppliers.php" method="GET">
 <input type=hidden name=mode value='<?php echo $mode ?>'/>
 <div class="border">
-<table>
-<tr><td><?php etr("Supplier name") ?>:</td><td><input type="text" name="name" value="<?php echo $name ?>"/></td>
-<tr><td><?php searchButton() ?></td></tr>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Supplier name") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="name" value="<?php echo $name ?>"/></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php searchButton() ?></div></div>
+
+</div>
 </div>
 </form>
 &nbsp;
@@ -77,11 +77,11 @@ title($title);
     }
 ?>
 </table>
-<table>
-<tr>
-<td><?php newButton("supplier.php?mode=$mode") ?></td>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php newButton("supplier.php?mode=$mode") ?></div>
+</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>

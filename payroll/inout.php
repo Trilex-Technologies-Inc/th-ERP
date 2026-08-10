@@ -83,31 +83,31 @@
 <br>
 <?php 
 echo $givenname . ' ' . $surname . '<br><br>';
-echo "<table>";
-echo "<tr>";
-echo "<td class=label>" . tr("Date") . ":</td>";
-echo "<td>";
+echo "<div class='container-fluid px-0 erp-form-layout'>";
+echo "<div class='row g-3 align-items-center mb-2'>";
+echo "<div class='col-12 col-md-auto'>" . tr("Date") . ":</div>";
+echo "<div class='col-12 col-md-auto'>";
 datebox('date', formatDate($now));
-echo "</td>";
-echo "</tr>";
-echo "<tr>";
-echo "<td class=label>" . tr("Time") . ":</td>";
-echo "<td>";
+echo "</div>";
+echo "</div>";
+echo "<div class='row g-3 align-items-center mb-2'>";
+echo "<div class='col-12 col-md-auto'>" . tr("Time") . ":</div>";
+echo "<div class='col-12 col-md-auto'>";
 timebox('time', date('H:i', $now));
 hidden('org_time', date('H:i', $now));
 hidden('seconds', date('s', $now));
-echo "</td>";
-echo "</tr>";
+echo "</div>";
+echo "</div>";
 if ($shift_start != null) {
-	echo "<td class=label>" . tr("Schedule") . ":</td>";
-	echo "<td>";
+	echo "<div class='col-12 col-md-auto'>" . tr("Schedule") . ":</div>";
+	echo "<div class='col-12 col-md-auto'>";
 	echo date('H:i', $shift_start);
 	echo ' - ';
 	echo date('H:i', $shift_end);
-	echo "</td>";
-	echo "</tr>";
+	echo "</div>";
+	echo "";
 }
-echo "</table>";
+echo "</div>";
 echo "<br>";
 if ($lastType == TIME_REGISTRATION_OUT || isEmpty($lastType)) {
 	pushButton('In', 'cmd_' . TIME_REGISTRATION_IN);

@@ -33,12 +33,12 @@ SQL;
 <br>
 <form action="employees.php" method="GET">
 <div class="border">
-<table>
-<tr><td><?php echo tr("Surname") ?>:</td><td><input type="text" name="surname" value="<?php echo  getParam('surname') ?>"/></td></tr>
-<tr><td><?php echo tr("Show inactive") ?>:</td><td><input type=checkbox name=inactive <?php echo  $inactive ? "checked" : "" ?> /></td></tr>
-<tr><td><input type="submit" name="search" value="<?php echo tr("Search") ?>" /></td></tr>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php echo tr("Surname") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="surname" value="<?php echo  getParam('surname') ?>"/></div></div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php echo tr("Show inactive") ?>:</div><div class="col-12 col-md-auto"><input type=checkbox name=inactive <?php echo  $inactive ? "checked" : "" ?> /></div></div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><input type="submit" name="search" value="<?php echo tr("Search") ?>" /></div></div>
+
+</div>
 </div>
 </form>
 
@@ -62,11 +62,11 @@ SQL;
     }
 ?>
 </table>
-<table>
-<tr>
-<td><?php newButton("employee_detail.php") ?></td>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php newButton("employee_detail.php") ?></div>
+</div>
+</div>
 </form>
 <?php bottom() ?>	
 </body>

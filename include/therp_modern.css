@@ -17,7 +17,7 @@ body {
   font-family: "Nunito", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif !important;
   font-size: 14px !important;
 }
-body:has(table.menubar .app-nav-item) { padding-left: calc(var(--sb-sidebar) + 24px) !important; }
+body:has(.app-sidebar .app-nav-item) { padding-left: calc(var(--sb-sidebar) + 24px) !important; }
 
 a { color: var(--sb-primary); text-decoration: none; }
 a:hover { color: var(--sb-primary-dark); }
@@ -32,7 +32,7 @@ h1, h2, h3, H1, H2, H3 { color: var(--sb-heading); font-family: inherit !importa
   box-shadow: 0 .15rem 1.75rem 0 rgba(58,59,69,.15);
 }
 .app-header .navbar-brand { display: none; }
-body:not(:has(table.menubar .app-nav-item)) .app-header .navbar-brand { display: flex; align-items: center; gap: 10px; }
+body:not(:has(.app-sidebar .app-nav-item)) .app-header .navbar-brand { display: flex; align-items: center; gap: 10px; }
 .app-header .badge { color: #858796 !important; background: #f8f9fc !important; }
 .user-avatar, .brand-mark {
   display: inline-grid; place-items: center; border-radius: 50%; font-weight: 800;
@@ -42,21 +42,20 @@ body:not(:has(table.menubar .app-nav-item)) .app-header .navbar-brand { display:
 .sidebar-toggle { display: none; border: 0 !important; background: transparent !important; box-shadow: none !important; padding: 8px !important; }
 .sidebar-toggle span { display: block; width: 22px; height: 2px; margin: 4px 0; background: #858796; }
 
-/* Convert each module's legacy navigation table into the SB Admin sidebar. */
-table.menubar:has(.app-nav-item) {
+/* Module navigation uses a responsive Bootstrap-compatible sidebar. */
+.app-sidebar {
   position: fixed; inset: 0 auto 0 0; z-index: 1030;
   display: block; width: var(--sb-sidebar) !important; margin: 0 !important; padding: 88px 14px 24px;
   overflow-y: auto; border: 0; background: linear-gradient(180deg, var(--sb-primary) 10%, #224abe 100%) !important;
   box-shadow: 0 0 22px rgba(34,74,190,.18);
   box-sizing: border-box;
 }
-table.menubar:has(.app-nav-item)::before {
+.app-sidebar::before {
   content: "thERP"; position: absolute; top: 0; left: 14px; right: 14px; height: 72px;
   display: flex; align-items: center; justify-content: center; color: #fff; border-bottom: 1px solid rgba(255,255,255,.16);
   font-family: "Segoe UI", sans-serif; font-size: 17px; font-weight: 800; letter-spacing: .1em;
 }
-table.menubar:has(.app-nav-item) tbody,
-table.menubar:has(.app-nav-item) tr { display: block; }
+.app-nav-list { display: block; }
 .app-nav-item { display: block; width: 100% !important; padding: 3px 0 !important; background: transparent !important; font-family: inherit !important; }
 .app-nav-item > a {
   display: flex; align-items: center; gap: 12px; min-height: 46px; padding: 9px 11px;
@@ -90,6 +89,8 @@ table.menubar:has(.app-nav-item) tr { display: block; }
 .erp-form-table { border-collapse: separate !important; border-spacing: 0 9px !important; }
 .erp-form-table td { padding: 3px 8px !important; vertical-align: middle; }
 .erp-form-table td:first-child { color: #5a5c69; font-weight: 700; }
+.erp-form-layout { margin-bottom: .75rem; }
+.erp-form-layout .row > div:first-child:not(:only-child) { color: #5a5c69; font-weight: 700; }
 
 input[type=text], input[type=password], input[type=email], input[type=number], input[type=date], input[type=time], select, textarea {
   min-height: 38px; padding: .55rem .75rem !important; color: #6e707e; background: #fff;
@@ -117,13 +118,13 @@ li.menupage a:hover { color: var(--sb-primary); transform: translateY(-2px); }
 .login-card .form-control, .login-card select { width: 100%; }
 
 @media (max-width: 900px) {
-  body, body:has(table.menubar .app-nav-item) { padding-left: 14px !important; padding-right: 14px !important; }
+  body, body:has(.app-sidebar .app-nav-item) { padding-left: 14px !important; padding-right: 14px !important; }
   .app-header { margin-left: -14px; margin-right: -14px; }
   .app-header .navbar-brand { display: flex; align-items: center; gap: 8px; margin-right: auto; }
   .brand-name { display: none; }
   .sidebar-toggle { display: inline-block; }
-  table.menubar:has(.app-nav-item) { transform: translateX(-105%); transition: transform .2s ease; }
-  body.sidebar-open table.menubar:has(.app-nav-item) { transform: translateX(0); }
+  .app-sidebar { transform: translateX(-105%); transition: transform .2s ease; }
+  body.sidebar-open .app-sidebar { transform: translateX(0); }
   body.sidebar-open::after { content: ""; position: fixed; inset: 0; z-index: 1025; background: rgba(0,0,0,.35); }
   .user-label { display: none; }
   .app-footer { margin-left: -14px; margin-right: -14px; }

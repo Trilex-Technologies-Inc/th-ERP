@@ -65,25 +65,25 @@ $accounts = rs2array(query("select accountid, description from payaccount"));
 <input type=hidden name=periodid value="<?php echo $periodid ?>"/>
 <input type=hidden name=no value="<?php echo $no ?>"/>
 <?php hiddenParams() ?>
-<table>
+<div class="container-fluid px-0 erp-form-layout">
 <?php eventTypeRow('payitem') ?>
-<tr>
-  <td>Period:</td>
-  <td><?php displayPeriod($periodid) ?></td>
-<tr>
-  <td>Type:</td>
-  <td><?php comboBox('accountid', $accounts, $accountid, false) ?></td>
-</tr>
-<tr>
-  <td>Amount:</td>
-  <td><input type=text name='amount' value='<?php echo $amount ?>'/></td>
-</tr>
-</table>
-<table>
-<tr>
-<td><?php button("Submit", "save") ?></td>
-</tr>
-</table>
+<div class="row g-3 align-items-center mb-2">
+  <div class="col-12 col-md-auto">Period:</div>
+  <div class="col-12 col-md-auto"><?php displayPeriod($periodid) ?></div>
+</div><div class="row g-3 align-items-center mb-2">
+  <div class="col-12 col-md-auto">Type:</div>
+  <div class="col-12 col-md-auto"><?php comboBox('accountid', $accounts, $accountid, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+  <div class="col-12 col-md-auto">Amount:</div>
+  <div class="col-12 col-md-auto"><input type=text name='amount' value='<?php echo $amount ?>'/></div>
+</div>
+</div>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php button("Submit", "save") ?></div>
+</div>
+</div>
 &nbsp;
 <?php backButton($employeeid) ?>
 </form>
