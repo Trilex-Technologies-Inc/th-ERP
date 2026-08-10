@@ -26,49 +26,50 @@ top0();
 	</div>
 </nav>
 
-<main class="container py-4 py-lg-5 module-picker">
-	<header class="mb-4 mb-lg-5">
-		<span class="module-eyebrow"><?php etr("Dashboard") ?></span>
-		<h1 class="display-6 fw-bold mt-2 mb-2"><?php etr("Select module") ?></h1>
-		<p class="text-secondary mb-0"><?php etr("Switch module") ?></p>
+<main class="module-picker">
+	<header class="module-picker-hero">
+		<div>
+			<span class="module-eyebrow"><?php etr("Workspace") ?></span>
+			<h1><?php etr("Select module") ?></h1>
+			<p><?php etr("Choose an area to continue working in thERP.") ?></p>
+		</div>
+		<div class="module-hero-mark" aria-hidden="true"><span></span><span></span><span></span><span></span></div>
 	</header>
 
-	<nav class="row g-4" aria-label="<?php etr("Module navigation") ?>">
-		<div class="col-12 col-md-6 col-xl-4">
-			<a class="module-card card h-100 border-0 shadow-sm text-decoration-none" href="../sales/index.php">
-				<div class="card-body p-4"><span class="module-card-icon bg-primary-subtle text-primary">$</span><h2 class="h5 fw-bold mt-4 mb-2"><?php etr("Sales") ?></h2><p class="text-secondary mb-0"><?php etr("Customers") ?> · <?php etr("Sales orders") ?> · <?php etr("Receipts") ?></p></div>
-			</a>
-		</div>
-		<div class="col-12 col-md-6 col-xl-4">
-			<a class="module-card card h-100 border-0 shadow-sm text-decoration-none" href="../erp/index.php">
-				<div class="card-body p-4"><span class="module-card-icon bg-success-subtle text-success">▦</span><h2 class="h5 fw-bold mt-4 mb-2"><?php etr("Stock/Inventory") ?></h2><p class="text-secondary mb-0"><?php etr("Products") ?> · <?php etr("Purchase") ?> · <?php etr("Stock move") ?></p></div>
-			</a>
-		</div>
-		<div class="col-12 col-md-6 col-xl-4">
-			<a class="module-card card h-100 border-0 shadow-sm text-decoration-none" href="../manufacturing/index.php">
-				<div class="card-body p-4"><span class="module-card-icon bg-warning-subtle text-warning">⚙</span><h2 class="h5 fw-bold mt-4 mb-2"><?php etr("Manufacturing") ?></h2><p class="text-secondary mb-0"><?php etr("Production orders") ?> · <?php etr("Products") ?></p></div>
-			</a>
-		</div>
-		<div class="col-12 col-md-6 col-xl-4">
-			<a class="module-card card h-100 border-0 shadow-sm text-decoration-none" href="../payroll/employees.php">
-				<div class="card-body p-4"><span class="module-card-icon bg-info-subtle text-info">◉</span><h2 class="h5 fw-bold mt-4 mb-2"><?php etr("Payroll") ?></h2><p class="text-secondary mb-0"><?php etr("Employees") ?> · <?php etr("Reporting") ?> · <?php etr("Schedules") ?></p></div>
-			</a>
-		</div>
-		<div class="col-12 col-md-6 col-xl-4">
-			<a class="module-card card h-100 border-0 shadow-sm text-decoration-none" href="../project/projects.php">
-				<div class="card-body p-4"><span class="module-card-icon bg-danger-subtle text-danger">◇</span><h2 class="h5 fw-bold mt-4 mb-2"><?php etr("Project") ?></h2><p class="text-secondary mb-0"><?php etr("Projects") ?> · <?php etr("Debit") ?></p></div>
-			</a>
-		</div>
-		<div class="col-12 col-md-6 col-xl-4">
-			<a class="module-card card h-100 border-0 shadow-sm text-decoration-none" href="../accounting/index.php">
-				<div class="card-body p-4"><span class="module-card-icon bg-secondary-subtle text-secondary">≡</span><h2 class="h5 fw-bold mt-4 mb-2"><?php etr("General ledger") ?></h2><p class="text-secondary mb-0"><?php etr("Transactions") ?> · <?php etr("Accounts") ?> · <?php etr("Balance") ?></p></div>
-			</a>
-		</div>
-		<div class="col-12">
-			<a class="module-card module-card-wide card border-0 shadow-sm text-decoration-none" href="security.php">
-				<div class="card-body p-4 d-md-flex align-items-center gap-4"><span class="module-card-icon bg-dark-subtle text-dark flex-shrink-0">⌘</span><div><h2 class="h5 fw-bold mb-2 mt-3 mt-md-0"><?php etr("Common") ?></h2><p class="text-secondary mb-0"><?php etr("Security") ?> · <?php etr("Languages") ?> · <?php etr("Company info") ?></p></div><span class="ms-md-auto text-primary fw-bold" aria-hidden="true">→</span></div>
-			</a>
-		</div>
+	<div class="module-picker-heading">
+		<div><span><?php etr("Modules") ?></span><h2><?php etr("Business areas") ?></h2></div>
+		<small>7 <?php etr("available") ?></small>
+	</div>
+
+	<nav class="module-grid" aria-label="<?php etr("Module navigation") ?>">
+		<a class="module-card" href="../sales/index.php">
+			<span class="module-card-icon module-icon-sales" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 2v20M17 6H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></span>
+			<span class="module-card-copy"><strong><?php etr("Sales") ?></strong><small><?php etr("Customers") ?> · <?php etr("Sales orders") ?> · <?php etr("Receipts") ?></small></span><span class="module-card-arrow" aria-hidden="true">&#8594;</span>
+		</a>
+		<a class="module-card" href="../erp/index.php">
+			<span class="module-card-icon module-icon-stock" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7 12 3l8 4-8 4-8-4ZM4 7v10l8 4 8-4V7M12 11v10"/></svg></span>
+			<span class="module-card-copy"><strong><?php etr("Stock/Inventory") ?></strong><small><?php etr("Products") ?> · <?php etr("Purchase") ?> · <?php etr("Stock move") ?></small></span><span class="module-card-arrow" aria-hidden="true">&#8594;</span>
+		</a>
+		<a class="module-card" href="../manufacturing/index.php">
+			<span class="module-card-icon module-icon-manufacturing" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 21V10l6 4v-4l6 4V7h4v14H4ZM8 21v-3M13 21v-3M18 21v-3"/></svg></span>
+			<span class="module-card-copy"><strong><?php etr("Manufacturing") ?></strong><small><?php etr("Production orders") ?> · <?php etr("Products") ?></small></span><span class="module-card-arrow" aria-hidden="true">&#8594;</span>
+		</a>
+		<a class="module-card" href="../payroll/employees.php">
+			<span class="module-card-icon module-icon-payroll" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM19 8v6M16 11h6"/></svg></span>
+			<span class="module-card-copy"><strong><?php etr("Payroll") ?></strong><small><?php etr("Employees") ?> · <?php etr("Reporting") ?> · <?php etr("Schedules") ?></small></span><span class="module-card-arrow" aria-hidden="true">&#8594;</span>
+		</a>
+		<a class="module-card" href="../project/projects.php">
+			<span class="module-card-icon module-icon-project" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 5h16v14H4zM8 3v4M16 3v4M4 9h16M8 13h3M8 16h6"/></svg></span>
+			<span class="module-card-copy"><strong><?php etr("Project") ?></strong><small><?php etr("Projects") ?> · <?php etr("Debit") ?></small></span><span class="module-card-arrow" aria-hidden="true">&#8594;</span>
+		</a>
+		<a class="module-card" href="../accounting/index.php">
+			<span class="module-card-icon module-icon-ledger" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 4h16v16H4zM8 4v16M12 8h4M12 12h4M12 16h4"/></svg></span>
+			<span class="module-card-copy"><strong><?php etr("General ledger") ?></strong><small><?php etr("Transactions") ?> · <?php etr("Accounts") ?> · <?php etr("Balance") ?></small></span><span class="module-card-arrow" aria-hidden="true">&#8594;</span>
+		</a>
+		<a class="module-card module-card-wide" href="security.php">
+			<span class="module-card-icon module-icon-common" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10ZM9 12l2 2 4-5"/></svg></span>
+			<span class="module-card-copy"><strong><?php etr("Common") ?></strong><small><?php etr("Security") ?> · <?php etr("Languages") ?> · <?php etr("Company info") ?></small></span><span class="module-card-arrow" aria-hidden="true">&#8594;</span>
+		</a>
 	</nav>
 </main>
 <?php bottom() ?>

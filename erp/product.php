@@ -170,45 +170,77 @@ if ($new)
 	$title = tr("Add product");
 title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 ?>
-<form name=postform action="product.php" method="POST">
-<div class="container-fluid px-0 erp-form-layout">
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Productno") ?>:</div>
-<div class="col-12 col-md-auto">
-<?php
-	if ($new) {
-		numberbox('productid', '');
-		echo "&nbsp;(" . tr("Leave empty for auto generated") . ")";
-	} else {
-		echo $productid;
-		echo "<input type='hidden' name='productid' value='$productid'/>";
-	}
-?>
+<form name="postform" action="product.php" method="POST" class="product-editor">
+<div class="product-editor-intro">
+	<div class="product-editor-icon" aria-hidden="true">
+		<svg viewBox="0 0 24 24"><path d="M20 13V7a2 2 0 0 0-1-1.73l-6-3.46a2 2 0 0 0-2 0L5 5.27A2 2 0 0 0 4 7v6a2 2 0 0 0 1 1.73l6 3.46a2 2 0 0 0 2 0l6-3.46A2 2 0 0 0 20 13ZM4.27 6 12 10.5 19.73 6M12 22V10.5"/></svg>
+	</div>
+	<div>
+		<span class="product-editor-eyebrow"><?php etr("Product catalogue") ?></span>
+		<h1><?php echo $new ? tr("Create a product") : htmlspecialchars($rec->model) ?></h1>
+		<p><?php etr("Maintain product details, classification, and supplier references.") ?></p>
+	</div>
+	<?php if (!$new) { ?><span class="product-id-badge"><?php etr("Productno") ?> #<?php echo htmlspecialchars($productid) ?></span><?php } ?>
 </div>
-</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Model") ?>:</div><div class="col-12 col-md-auto"><?php textbox("model", $rec->model) ?></div>
 
-</div></div>
+<section class="card border-0 shadow-sm product-identity-card">
+	<div class="card-body">
+		<div class="product-section-heading">
+			<div><span><?php etr("Identity") ?></span><h2><?php etr("Basic information") ?></h2></div>
+		</div>
+		<div class="row g-4">
+			<div class="col-12 col-md-5">
+				<label class="form-label fw-semibold" for="productid"><?php etr("Productno") ?></label>
+				<?php if ($new) { ?>
+					<div class="product-field"><?php numberbox('productid', '') ?></div>
+					<small class="form-text"><?php etr("Leave empty for auto generated") ?></small>
+				<?php } else { ?>
+					<div class="product-readonly-value"><?php echo htmlspecialchars($productid) ?></div>
+					<input type="hidden" name="productid" value="<?php echo htmlspecialchars($productid) ?>"/>
+				<?php } ?>
+			</div>
+			<div class="col-12 col-md-7">
+				<label class="form-label fw-semibold" for="model"><?php etr("Model") ?></label>
+				<div class="product-field"><?php textbox("model", $rec->model) ?></div>
+			</div>
+		</div>
+	</div>
+</section>
 
-<div id="header">
-<?php buildTabs($productid, 'general') ?>
+<div id="header" class="product-tabs">
+	<?php buildTabs($productid, 'general') ?>
 </div>
-<div id="main">
+<div id="main" class="product-tab-panel">
 	<div id="contents">
+		<div class="product-section-heading">
+			<div><span><?php etr("General") ?></span><h2><?php etr("Product details") ?></h2></div>
+		</div>
+		<div class="row g-4">
+			<div class="col-12">
+				<label class="form-label fw-semibold" for="description"><?php etr("Description") ?></label>
+				<textarea rows="5" name="description" id="description"><?php echo htmlspecialchars($rec->description) ?></textarea>
+			</div>
+			<div class="col-12 col-md-4">
+				<label class="form-label fw-semibold" for="categoryid"><?php etr("Category") ?></label>
+				<div class="product-field"><?php comboBox("categoryid", $categories, $rec->categoryid, false) ?></div>
+			</div>
+			<div class="col-12 col-md-4">
+				<label class="form-label fw-semibold" for="barcode"><?php etr("Barcode") ?></label>
+				<div class="product-field"><?php textbox("barcode", $rec->barcode) ?></div>
+			</div>
+			<div class="col-12 col-md-4">
+				<label class="form-label fw-semibold" for="unittype"><?php etr("Units of measure") ?></label>
+				<div class="product-field"><?php combobox('unittype', $unittypes, $rec->unittype, true) ?></div>
+			</div>
+		</div>
 
-<div class="container-fluid px-0 erp-form-layout">
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><textarea rows=10 cols=60 name='description'><?php echo $rec->description ?></textarea></div>
-</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Category") ?>:</div><div class="col-12 col-md-auto"><?php comboBox("categoryid", $categories, $rec->categoryid, false) ?></div></div>
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Barcode") ?>:</div><div class="col-12 col-md-auto"><?php textbox("barcode", $rec->barcode) ?></div></div>
-<div class="row g-3 align-items-center mb-2">
-	<div class="col-12 col-md-auto"><?php etr("Units of measure") ?>:</div>
-	<div class="col-12 col-md-auto"><?php combobox('unittype', $unittypes, $rec->unittype, true) ?></div>
-</div>
-
-<div class="row g-3 align-items-center mb-2">
-	<div class="col-12 col-md-auto"><?php etr("Supplier product code") ?>:</div>
-	<div class="col-12 col-md-auto">
-		<table>
+		<?php if (!isEmpty($productid)) { ?>
+		<section class="supplier-codes">
+			<div class="product-section-heading">
+				<div><span><?php etr("Suppliers") ?></span><h2><?php etr("Supplier product codes") ?></h2></div>
+			</div>
+			<div class="supplier-code-table">
 		<?php
-		if (!isEmpty($productid)) {
 			$productid2 = isEmpty($productid) ? 0 : $productid;
 			$rs = query("
 			select sp.supplierid, name, supplier_productcode
@@ -219,45 +251,37 @@ title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 			$i = 0;
 			while ($row = fetch($rs)) {
 				hidden("supplierid_$i", $row->supplierid);
-				echo "<tr>";
-				echo "<td>$row->name:</td>";
-				echo "<td>";
+				echo "<div class='supplier-code-row'>";
+				echo "<label for='productcode_$i'>" . htmlspecialchars($row->name) . "</label>";
+				echo "<div class='product-field'>";
 				textbox("productcode_$i", $row->supplier_productcode, 30, true);
 				hidden("old_productcode_$i", $row->supplier_productcode);
-				echo "</td>";
-				echo "</tr>";
+				echo "</div></div>";
 				$i++;
 			}
 			hidden("supplier_count", $i);
-			echo "<tr>";
-			echo "<td>";
+			echo "<div class='supplier-code-row supplier-code-new'>";
+			echo "<div class='product-field'>";
 			combobox("supplierid_new", $suppliers, null, true);
-			echo "</td>";
-				echo "<td>";
-				textbox("productcode_new", $row->supplier_productcode, 30, true);
-				echo "</td>";
-			echo "</tr>";
-		}
+			echo "</div><div class='product-field'>";
+			textbox("productcode_new", null, 30, true);
+			echo "</div></div>";
 		?>
-		</table>
-
+			</div>
+			<small class="form-text"><?php etr("Select a supplier and enter their product reference to add another code.") ?></small>
+		</section>
+		<?php } ?>
 	</div>
 </div>
 
-
+<div class="product-actions-bar">
+	<div class="d-flex flex-wrap gap-2">
+		<?php button("Save product", "save") ?>
+		<?php if (!$new) button("Add product", "add", "product.php") ?>
+	</div>
+	<div><?php deleteButton() ?></div>
 </div>
-<br/>
-<?php
-button("Save product", "save");
-echo "&nbsp;";
-deleteButton();
-echo "&nbsp;";
-if (!$new)
-	button("Add product", "add", "product.php");
-?>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
-
-</div></div>
 </form>
 <?php bottom() ?>
 
