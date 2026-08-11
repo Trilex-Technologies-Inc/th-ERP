@@ -18,7 +18,7 @@
 		$surname = getParam('surname');
 		$policyid = getParam('policyid');
 		$bank_account = getParam('bank_account');
-		$active = getParam('active');
+		$active = getParam('active', 0);
 		$street_address = getParam('street_address');
 		$zipcode = getParam('zipcode');
 		$city = getParam('city');
@@ -160,89 +160,59 @@ function onPolicyChange()
 
 <body>
 <?php menubar("employees.php", "hiring") ?>
-<?php title("$emp->givenname $emp->surname") ?>
+<?php title($new ? tr("Create employee") : htmlspecialchars(trim($emp->givenname . " " . $emp->surname))) ?>
 
-	<div id="header">
-	<?php buildTabs($employeeid, 'general') ?>
-	</div>
-	<div id="main">
-		<div id="contents">
+<main class="employee-detail-page">
+	<header class="employee-detail-intro">
+		<a class="employee-detail-back" href="employees.php" aria-label="<?php etr("Employees") ?>">&#8592;</a>
+		<div class="employee-detail-avatar" aria-hidden="true"><?php echo $new ? '+' : htmlspecialchars(strtoupper(substr($emp->givenname, 0, 1))) ?></div>
+		<div class="employee-detail-heading"><span><?php etr("Payroll employee") ?></span><h1><?php echo $new ? tr("Create employee") : htmlspecialchars(trim($emp->givenname . " " . $emp->surname)) ?></h1><p><?php etr("Manage personal details, payroll policy, teams, and account information.") ?></p></div>
+		<?php if (!$new) { ?><div class="employee-detail-meta"><span>#<?php echo htmlspecialchars($employeeid) ?></span><strong class="<?php echo $emp->active ? 'is-active' : 'is-inactive' ?>"><?php echo $emp->active ? tr("Active") : tr("Inactive") ?></strong></div><?php } ?>
+	</header>
 
+	<?php if (!$new) { ?><div class="employee-detail-tabs"><?php buildTabs($employeeid, 'general') ?></div><?php } ?>
 
+	<form name="form1" action="employee_detail.php" method="POST">
+	<?php hidden('employeeid', $employeeid); hidden('old_policyid', $old_policyid); ?>
+	<section class="employee-detail-card card border-0 shadow-sm">
+		<div class="card-header bg-white employee-detail-card-header"><div><span><?php etr("Profile") ?></span><h2><?php etr("Personal information") ?></h2></div></div>
+		<div class="card-body"><div class="row g-3">
+			<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="givenname"><?php etr("Givenname") ?></label><input id="givenname" type="text" name="givenname" value="<?php echo htmlspecialchars($emp->givenname) ?>" /></div>
+			<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="surname"><?php etr("Surname") ?></label><input id="surname" type="text" name="surname" value="<?php echo htmlspecialchars($emp->surname) ?>" /></div>
+			<div class="col-12 col-md-4"><label class="form-label fw-semibold" for="birthdate"><?php etr("Birth date") ?></label><?php datebox('birthdate', $emp->birthdate) ?></div>
+			<div class="col-12 col-md-8"><label class="form-label fw-semibold" for="username"><?php etr("Username") ?></label><?php textbox('username', $emp->username, 30) ?></div>
+			<?php if (!$new) { ?><div class="col-12"><div class="employee-active-toggle"><?php checkbox('active', $emp->active) ?><label for="active"><?php etr("Active employee") ?></label></div></div><?php } ?>
+		</div></div>
+	</section>
 
-<form name=form1 action="employee_detail.php" method="POST">
-<?php hidden('employeeid', $employeeid) ?>
-<table>
-<tr><td class=label>Id:</td>
-<td>
-<?php
-	if (!$new) {
-		echo $employeeid;
-		echo "<input type='hidden' name='employeeid' value='$employeeid'/>";
-	}
-?>
-</td>
-
-<tr><td class=label><?php echo tr("Givenname") ?>:</td><td><input type="text" name="givenname" value="<?php echo $emp->givenname ?>"/></td></tr>
-<tr><td class=label><?php echo tr("Surname") ?>:</td><td><input type="text" name="surname" value="<?php echo $emp->surname ?>"/></td></tr>
-<tr><td class=label><?php echo tr("Birth date") ?>:</td><td><?php datebox('birthdate', $emp->birthdate) ?></td></tr>
-<tr><td class=label><?php echo tr("Policy") ?>:</td><td><?php comboBox("policyid", $policies, $policyid, false, 'onPolicyChange()') ?></td></tr>
-<?php hidden('old_policyid', $old_policyid) ?>
-<?php
-if ($attributes != null) {
-	$i = 0;
-	while ($row = fetch($attributes)) {
-		echo "<tr>";
-		echo "<input type=hidden name='attributeid_$i' value='$row->attributeid'/>";
-		echo "<td class=label>". formatCase($row->description) . ":</td>";
-		echo "<td>";
-		numberBox("value_$i", $row->value);
-		echo "&nbsp;<a href='employee_history.php?employeeid=$employeeid&attributeid=$row->attributeid'>";
-		image('history.gif');
-		echo "</td>";
-		echo "<input type=hidden name='old_value_$i' value='$row->value'/>";
-		echo "</tr>";
-		$i++;
-	}
-	echo "<input type=hidden name=count value='$i'/>";
-}
-
-if ($teams != null) {
-	echo "<tr>";
-	echo "<td class=label>" . tr("Teams") . ":</td>";
-	echo "<td>";
-	while ($row = fetch($teams)) {
-		$href = "employee_detail.php?employeeid=$employeeid&del_teamid=$row->teamid";
-		echo $row->description . "&nbsp;";
-		deleteIcon($href);
-		echo ",&nbsp;";
-	}
-	comboBox('teamid_new', $allTeams, null, true);
-	echo "</td>";
-	echo "</tr>";
-}
-?>
-<tr><td class=label><?php echo tr("Bank account") ?>:</td><td><input type="text" name="bank_account" value="<?php echo $emp->bank_account ?>"/></td></tr>
-
-
-<?php if (!$new) { ?>
-<tr>
-<td class=label><?php echo tr("Active") ?>:</td>
-<td><?php checkbox('active', $emp->active) ?></td>
-</tr>
-<?php } ?>
-<tr><td class=label><?php etr("Street") ?>:</td><td><?php textbox('street_address', $emp->street_address, 60) ?></td></tr>
-<tr><td class=label><?php etr("Zipcode") ?>:</td><td><?php textbox('zipcode', $emp->zipcode, 15) ?></td></tr>
-<tr><td class=label><?php etr("City") ?>:</td><td><?php textbox('city', $emp->city, 30) ?></td></tr>
-<tr><td class=label><?php etr("Username") ?>:</td><td><?php textbox('username', $emp->username, 30) ?></td></tr>
-</table>
-
-<br/>
-<?php saveButton() ?>
-<input type="hidden" name="new" value="<?php echo $new ?>"/>
-</form>
+	<section class="employee-detail-card card border-0 shadow-sm">
+		<div class="card-header bg-white employee-detail-card-header"><div><span><?php etr("Employment") ?></span><h2><?php etr("Policy and teams") ?></h2></div></div>
+		<div class="card-body">
+			<div class="row g-3"><div class="col-12 col-md-6"><label class="form-label fw-semibold" for="policyid"><?php etr("Policy") ?></label><?php comboBox("policyid", $policies, $policyid, false, 'onPolicyChange()') ?></div></div>
+			<?php if ($attributes != null) { ?><div class="employee-attribute-grid">
+			<?php $i = 0; while ($row = fetch($attributes)) { hidden("attributeid_$i", $row->attributeid); hidden("old_value_$i", $row->value); ?>
+				<div class="employee-attribute-field"><label for="value_<?php echo $i ?>"><?php echo htmlspecialchars(formatCase($row->description)) ?></label><div><?php numberBox("value_$i", $row->value) ?><a href="employee_history.php?employeeid=<?php echo urlencode($employeeid) ?>&attributeid=<?php echo urlencode($row->attributeid) ?>" title="<?php etr("History") ?>"><?php image('history.gif') ?></a></div></div>
+			<?php $i++; } hidden('count', $i); ?></div><?php } ?>
+			<?php if ($teams != null) { ?><div class="employee-teams"><label><?php etr("Teams") ?></label><div class="employee-team-list">
+			<?php $teamCount = 0; while ($row = fetch($teams)) { $teamCount++; ?><span class="employee-team-chip"><?php echo htmlspecialchars($row->description) ?><?php deleteIcon("employee_detail.php?employeeid=" . urlencode($employeeid) . "&del_teamid=" . urlencode($row->teamid)) ?></span><?php } ?>
+			<?php if ($teamCount == 0) { ?><span class="employee-team-empty"><?php etr("No teams assigned") ?></span><?php } ?></div><div class="employee-team-add"><?php comboBox('teamid_new', $allTeams, null, true) ?></div></div><?php } ?>
 		</div>
-	</div>
+	</section>
+
+	<section class="employee-detail-card card border-0 shadow-sm">
+		<div class="card-header bg-white employee-detail-card-header"><div><span><?php etr("Payroll and address") ?></span><h2><?php etr("Payment and contact details") ?></h2></div></div>
+		<div class="card-body"><div class="row g-3">
+			<div class="col-12"><label class="form-label fw-semibold" for="bank_account"><?php etr("Bank account") ?></label><input id="bank_account" type="text" name="bank_account" value="<?php echo htmlspecialchars($emp->bank_account) ?>" /></div>
+			<div class="col-12"><label class="form-label fw-semibold" for="street_address"><?php etr("Street") ?></label><?php textbox('street_address', $emp->street_address, 60) ?></div>
+			<div class="col-12 col-md-4"><label class="form-label fw-semibold" for="zipcode"><?php etr("Zipcode") ?></label><?php textbox('zipcode', $emp->zipcode, 15) ?></div>
+			<div class="col-12 col-md-8"><label class="form-label fw-semibold" for="city"><?php etr("City") ?></label><?php textbox('city', $emp->city, 30) ?></div>
+		</div></div>
+	</section>
+
+	<div class="employee-detail-actions"><?php saveButton() ?></div>
+	<input type="hidden" name="new" value="<?php echo $new ?>" />
+	</form>
+</main>
 
 <?php bottom() ?>
 </body>

@@ -25,6 +25,8 @@
 		$orderid = insert_id();
 		if ($recur)
 			sql("insert into recur_salesorder (orderid, active) values ($orderid, 1)");
+		header("Location: salesorder.php?orderid=" . urlencode($orderid));
+		die;
 	}
 
 	$incVAT = false;
@@ -258,12 +260,14 @@ include_common();
 <script>
 function onLoad()
 {
-	<?php
+	var focusTarget = <?php
 	if (getParam("method_changed") && $method == METHOD_CARD) 
-		echo "document.postform.creditcardno.focus();";
+		echo "document.postform.creditcardno";
 	else
-		echo "document.postform.productid_new.focus();";
-	?>
+		echo "document.postform.productid_new";
+	?>;
+	if (focusTarget)
+		focusTarget.focus();
 }
 
 function submitForm()
@@ -282,13 +286,24 @@ function methodChanged()
 <body onLoad="onLoad()">
 <?php
 menubar('index.php', 'salesorder_help.php');
-$title = $new ? tr("Register") : $salesorderno;
-title("<a href='sales.php'>" . tr("Sales orders") . "</a> > $title") ;
+title(tr("Sales order")) ;
 ?>
+
+<main class="sales-order-page">
+	<header class="sales-order-intro">
+		<a class="sales-order-back" href="sales.php" aria-label="<?php etr("Sales orders") ?>">&#8592;</a>
+		<div class="sales-order-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 4h14v16H5V4Zm3 3h8v4H8V7Zm0 8h2m2 0h2m2 0h0M8 18h2m2 0h2m2 0h0"/></svg></div>
+		<div class="sales-order-heading">
+			<span><?php echo $customerid == CUSTOMERID_CASH ? tr("Point of sale") : tr("Sales") ?></span>
+			<h1><?php echo $customerid == CUSTOMERID_CASH ? tr("Cash sale") : tr("Sales order") ?> <em>#<?php echo htmlspecialchars($orderid) ?></em></h1>
+			<p><?php etr("Add products, review totals, take payment, and print the receipt.") ?></p>
+		</div>
+		<?php if ($cancelled) { ?><span class="stock-move-status is-cancelled"><?php etr("Cancelled") ?></span><?php } else if ($fullyPayed) { ?><span class="stock-move-status is-received"><?php etr("Paid") ?></span><?php } else { ?><span class="stock-move-status is-draft"><?php etr("In progress") ?></span><?php } ?>
+	</header>
 
 <?php
 if ($mess != null) {
-	echo "<center class=error>$mess</center>";
+	echo "<div class='alert alert-danger' role='alert'>" . htmlspecialchars($mess) . "</div>";
 }
 if (array_key_exists('finish', $_POST)) {
 	$printUrl = "invoice_pdf.php?orderid=" . urlencode($orderid) . "&type=receipt";
@@ -299,9 +314,11 @@ if (array_key_exists('finish', $_POST)) {
 }
 ?>
 
-<form name=postform action="salesorder.php" method="POST">
-<input type=hidden name=customerid value='<?php echo $customerid ?>'/>
-<div class="border p-3 mb-4">
+<form name="postform" action="salesorder.php" method="POST">
+<input type="hidden" name="customerid" value="<?php echo htmlspecialchars($customerid) ?>" />
+<section class="sales-order-overview card border-0 shadow-sm mb-3">
+	<div class="card-header bg-white sales-order-card-header"><div><span><?php etr("Sale details") ?></span><h2><?php etr("Order information") ?></h2></div></div>
+	<div class="card-body">
 	<div class="row g-3 align-items-end">
 		<?php if (!$new) { ?>
 		<div class="col-md-3">
@@ -312,7 +329,7 @@ if (array_key_exists('finish', $_POST)) {
 		<?php } ?>
 		<div class="col-md-3">
 			<label class="form-label"><?php etr("Customer") ?></label>
-			<div class="form-control-plaintext"><?php echo $customer->name ?></div>
+			<div class="form-control-plaintext fw-semibold"><?php echo htmlspecialchars($customer->name) ?></div>
 		</div>
 		<?php if ($customerid != CUSTOMERID_CASH) { ?>
 		<div class="col-md-4">
@@ -424,8 +441,7 @@ if (array_key_exists('finish', $_POST)) {
 			<div class="form-control-plaintext"><?php echo $createdby ?></div>
 		</div>
 	</div>
-</div>
-<br/>
+</div></section>
 <?php
 if ($recur) {
 	saveButton();
@@ -433,9 +449,10 @@ if ($recur) {
 }
 ?>
 <?php if ($items != null) { ?>
-<div class='border'>
-<div class='table-responsive'>
-<table class='table table-sm table-striped table-hover align-middle w-100'>
+<section class="sales-order-lines card border-0 shadow-sm overflow-hidden mb-3">
+<div class="card-header bg-white sales-order-card-header"><div><span><?php etr("Cart") ?></span><h2><?php etr("Products and totals") ?></h2></div></div>
+<div class='erp-table-responsive'>
+<table class='erp-data-table sales-order-table'>
 <thead>
 <tr>
 <?php
@@ -463,19 +480,20 @@ $i = 0;
 $sum = 0;
 $vatSum = 0;
 while ($row = fetch($items)) {
-    if ($addable)
-        echo "<input type=hidden name=no_$i value='$row->no'/>";
     echo "<tr class='$class'>";
     $href = "salesorder.php?orderid=$orderid&del_no=$row->no";
     if ($addable)
         deleteColumn($href);
-    echo "<td><a href='../erp/product.php?productid=$row->productid'>";
-    echo "$row->productid - $row->model</a></td>";
+    echo "<td>";
+    if ($addable)
+        echo "<input type='hidden' name='no_$i' value='" . htmlspecialchars($row->no) . "'/>";
+    echo "<a href='../erp/product.php?productid=" . urlencode($row->productid) . "'>";
+    echo htmlspecialchars($row->productid . ' - ' . $row->model) . "</a></td>";
     echo "<td>";
     if ($addable)
         textbox("comment_$i", $row->comment, 20);
     else
-        echo $row->comment;
+        echo htmlspecialchars($row->comment);
     echo "</td>";
     echo "<td class='text-end'>";
     if ($addable)
@@ -512,7 +530,6 @@ while ($row = fetch($items)) {
 }
 
 if ($addable) {
-    hidden('count', $i);
     echo "<tr class='$class'>";
     echo "<td/>";
     echo "<td>";
@@ -532,42 +549,23 @@ if ($addable) {
     if (!isEmpty($purchaseprice_new))
         echo formatMoney($purchaseprice_new);
     echo "</td>";
+	if (!$incVAT)
+		echo "<td></td>";
     echo "<td><input type=submit name=add value='Add'/></td>";
     echo "</tr>";
 }
 ?>
-<tr>
-<?php
-if ($addable) echo "<td/>";
-?>
-<td/>
-<td/>
-<td/>
-<?php
-if ($incVAT)
-    echo "<td class='text-end'>" . tr("VAT") . ":</td>";
-else {
-    echo "<td/>";
-    echo "<td class='text-end'>" . formatMoney($sum) . "</td>";
-}
-?>
-<td class='text-end'><?php echo formatMoney($vatSum) ?></td>
-</tr>
-<?php $colspan = $addable ? 4 : 3 ?>
-<tr>
-<td colspan='<?php echo $colspan ?>'/> 
-<tr>
-<td colspan='<?php echo $colspan ?>'/> 
-<td class='text-end label'><?php etr("To pay") ?>:</td>
-<td class='text-end'><?php echo formatMoney($toPay) ?></td>
-</tr>
+<?php $totalColumns = 5 + (!$incVAT ? 1 : 0) + ($addable ? 2 : 0); ?>
+<tr class="sales-order-total-row"><td colspan="<?php echo $totalColumns - 1 ?>" class="text-end"><?php etr("Subtotal") ?>:</td><td class="text-end fw-semibold"><?php echo formatMoney($sum) ?></td></tr>
+<?php if (!$incVAT) { ?><tr class="sales-order-total-row"><td colspan="<?php echo $totalColumns - 1 ?>" class="text-end"><?php etr("VAT") ?>:</td><td class="text-end fw-semibold"><?php echo formatMoney($vatSum) ?></td></tr><?php } ?>
+<tr class="sales-order-pay-row"><td colspan="<?php echo $totalColumns - 1 ?>" class="text-end"><?php etr("To pay") ?>:</td><td class="text-end"><?php echo formatMoney($toPay) ?></td></tr>
 </tbody>
 </table>
-</div>
-</div>
-<br/>
+<?php hidden('count', $i); ?>
+</div></section>
 <?php } ?>
 
+<div class="sales-order-actions">
 <?php
 if ($new) {
 	button("Create", "save");
@@ -604,11 +602,13 @@ if ($new) {
 		button("Cancel order", 'cancel');
 		echo "&nbsp;";
 	}
-	button("Show stock moves", "moves", "../erp/stockmoves.php?salesorderid=$orderid");
+button("Show stock moves", "moves", "../erp/stockmoves.php?salesorderid=$orderid");
 }
 ?>
+</div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
+</main>
 <?php bottom() ?>
 
 </body>

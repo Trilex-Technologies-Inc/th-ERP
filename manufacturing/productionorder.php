@@ -192,15 +192,14 @@ if ($addable)
 ?>
 <?php
 if ($addable) {
-	echo "<tr class='<?php echo $class ?>'>";
-	echo "<td/>";
-	echo "<td>";
-	//echo "<input id='product_new' type=text name='productid_new' value='$productid' >";
+	echo "<tr class='$class production-order-add-row'>";
+	echo "<td class='production-order-add-marker'><span aria-hidden='true'>+</span></td>";
+	echo "<td><div class='production-product-picker'>";
 	numberbox('productid_new', $productid);
 	button("Search", "search", "../erp/products.php?mode=selectproduction&orderid=$orderid");
-	echo "</td>";
-	echo "<td align=right><input type=text name='quantity_new' value='1' size=5/></td>";
-	echo "<td><input type=submit name=add value='Add'/></td>";
+	echo "</div><small>" . tr("Enter a product ID or search the catalog") . "</small></td>";
+	echo "<td><div class='production-quantity-field'><input type='text' name='quantity_new' value='1' size='5' aria-label='" . tr("Quantity") . "'/><small>" . tr("Units to produce") . "</small></div></td>";
+	echo "<td class='production-add-action'><input type='submit' name='add' value='" . tr("Add product") . "'/></td>";
 	echo "</tr>";
 }
 ?>
