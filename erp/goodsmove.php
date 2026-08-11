@@ -148,6 +148,18 @@
 	}
 
 	$locations = rs2array(query("select locationid, name from location"));
+	$statusText = tr("Draft");
+	$statusClass = "is-draft";
+	if ($cancelled) {
+		$statusText = tr("Cancelled");
+		$statusClass = "is-cancelled";
+	} else if ($received == '1') {
+		$statusText = tr("Received");
+		$statusClass = "is-received";
+	} else if ($sent == '1') {
+		$statusText = tr("Sent");
+		$statusClass = "is-sent";
+	}
 
 ?>
 
@@ -172,15 +184,30 @@ function saveForm()
 
 <body>
 <?php menubar('purchase.php') ?>
-<?php title("<a href='goodsmoves.php'>" . tr("Stock move order") . "</a> > $orderid") ?>
+<?php title(tr("Stock move order")) ?>
+
+<main class="stock-move-detail-page">
+	<header class="stock-move-detail-intro">
+		<a class="stock-move-back" href="goodsmoves.php" aria-label="<?php etr("Stock move orders") ?>">&#8592;</a>
+		<div class="stock-moves-intro-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M7 7h11l-3-3M17 17H6l3 3M18 7l-3 3M6 17l3-3"/></svg></div>
+		<div class="stock-move-detail-heading">
+			<span class="stock-moves-eyebrow"><?php etr("Inventory transfer") ?></span>
+			<h1><?php etr("Stock move order") ?> <span>#<?php echo htmlspecialchars($orderid) ?></span></h1>
+			<p><?php etr("Review the transfer route, products, and fulfillment status.") ?></p>
+		</div>
+		<span class="stock-move-status <?php echo $statusClass ?>"><?php echo $statusText ?></span>
+	</header>
 
 <?php
 if ($mess != null) {
-	echo "<center class=error>$mess</center>";
+	echo "<div class='alert alert-danger' role='alert'>" . htmlspecialchars($mess) . "</div>";
 }
 ?>
 
-<form name=postform action="goodsmove.php" method="POST">
+<form name="postform" action="goodsmove.php" method="POST">
+<section class="stock-move-overview card border-0 shadow-sm">
+<div class="card-header bg-white stock-move-card-header"><div><span><?php etr("Transfer details") ?></span><h2><?php etr("Route and order information") ?></h2></div></div>
+<div class="card-body">
 <div class="container-fluid px-0 erp-form-layout">
 <?php
 	if (!$new) {
@@ -191,9 +218,9 @@ if ($mess != null) {
 		echo "</div>";
 	}
 ?>
-</div><div class="row g-3 align-items-center mb-2">
-	<div class="col-12 col-md-auto"><?php etr("From Location") ?>:</div>
-	<div class="col-12 col-md-auto">
+<div class="row g-3 align-items-center mb-3">
+	<div class="col-12 col-md-3"><b><?php etr("From Location") ?>:</b></div>
+	<div class="col-12 col-md-9 stock-move-origin-field">
 	<?php
 	if ($sent == 0)
 		combobox('locationid', $locations, $locationid, false, 'saveForm()');
@@ -204,7 +231,7 @@ if ($mess != null) {
 	?>
 	</div>
 </div>
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><b><?php etr("To Location") ?>:</b></div><div class="col-12 col-md-auto">
+<div class="row g-3 align-items-center mb-3"><div class="col-12 col-md-3"><b><?php etr("To Location") ?>:</b></div><div class="col-12 col-md-9 stock-move-location-field is-destination">
 	<?php
 	if ($sent == 0)
 		combobox('toid', $locations, $toid, false, 'saveForm()');
@@ -235,11 +262,13 @@ if ($mess != null) {
 <div class="col-12 col-md-auto"><?php etr("Created by") ?>:</div>
 <div class="col-12 col-md-auto"><?php echo $createdby ?></div>
 </div>
-</div>
-<br/>
+</div></div></section>
 <?php if ($items != null) { ?>
-<div class='border'>
-<table>
+<section class="stock-move-items card border-0 shadow-sm overflow-hidden">
+<div class="card-header bg-white stock-move-card-header"><div><span><?php etr("Order lines") ?></span><h2><?php etr("Products to transfer") ?></h2></div></div>
+<div class="erp-table-responsive">
+<table class="erp-data-table stock-move-items-table">
+<thead><tr>
 <?php
 if ($addable)
 	echo "<th>" . tr("Delete") . "</th>";
@@ -247,6 +276,7 @@ if ($addable)
 <th><?php etr("Product") ?></th>
 <th><?php etr("Quantity") ?></th>
 <th><?php etr("Amount") ?></th>
+</tr></thead><tbody>
 <?php
 	$class = 'odd';
 	$i = 0;
@@ -265,7 +295,6 @@ if ($addable)
         $i++;
 	}
 ?>
-<input type=hidden name=count value='<?php echo $i ?>'/>
 <?php
 if ($addable) {
 	echo "<tr class='$class'>";
@@ -293,10 +322,11 @@ if ($addable) echo "<td/>";
 <td align=right><b><?php etr("Total") ?>:</b></td>
 <td align=right><b><?php echo $sum ?></b></td>
 </tr>
-</table>
-</div>
-<br/>
+</tbody></table></div>
+<input type="hidden" name="count" value="<?php echo $i ?>" />
+</section>
 <?php } ?>
+<div class="stock-move-actions">
 <?php
 	if ($sent==0) {
 			button("Send goods", "send");
@@ -316,7 +346,9 @@ if ($addable) echo "<td/>";
 	if (!$new)
 		button("Show stock moves", "moves", "stockmoves.php?movesorderid=$orderid");
 ?>
+</div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
+</main>
 <?php bottom() ?>
 </body>
