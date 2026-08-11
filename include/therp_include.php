@@ -210,7 +210,7 @@ function top0($module = null)
 function bottom()
 {
 	echo "<footer class='app-footer container-fluid py-4 mt-4 border-top text-center text-secondary small'>";
-	echo "<a href='http://www.therpsoft.com' class='text-decoration-none'>www.therpsoft.com</a>";
+	echo "Copyright THERP 2008 - " . date('Y') . " <a href='https://th-erp.com' class='text-decoration-none'>th-erp.com</a> GPLv2";
 	echo "</footer>";
 	echo "<script src='../include/bootstrap.bundle.min.js'></script>";
 }

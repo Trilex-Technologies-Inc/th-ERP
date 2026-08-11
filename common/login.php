@@ -54,7 +54,7 @@ function togglePassword()
 					<span><?php etr("Payroll") ?></span>
 					<span><?php etr("Accounting") ?></span>
 				</div>
-				<p class="login-brand-footer">www.therpsoft.com</p>
+				<p class="login-brand-footer">Copyright THERP 2008 - <?php echo date('Y') ?> <a href="https://th-erp.com" class="text-white-50">th-erp.com</a> GPLv2</p>
 			</aside>
 
 			<section class="col-lg-7 bg-white">
