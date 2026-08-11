@@ -1,4 +1,30 @@
 (function () {
+  window.thERPPrintDocument = function (url) {
+    var printWindow = window.open(url, '_blank');
+    if (!printWindow) {
+      window.location.href = url;
+      return false;
+    }
+
+    var printed = false;
+    function openPrintDialog() {
+      if (printed || printWindow.closed) return;
+      printed = true;
+      try {
+        printWindow.focus();
+        printWindow.print();
+      } catch (error) {
+        // Keep the PDF open so it can still be printed from the browser viewer.
+      }
+    }
+
+    printWindow.addEventListener('load', function () {
+      window.setTimeout(openPrintDialog, 300);
+    }, { once: true });
+    window.setTimeout(openPrintDialog, 1500);
+    return false;
+  };
+
   function hasHeaders(table) {
     return !!table.querySelector('th');
   }

@@ -166,7 +166,7 @@ if ($mess != null) {
 	<?php
 	if (!isEmpty($invoice_transid)) {
 		echo "<div class='row g-3 mt-3'><div class='col-md-12'><strong>" . tr("Invoice") . ":</strong> ";
-		echo "<a href='invoice_pdf.php?orderid=$orderid&type=credit'>" . tr("Print") . "</a>";
+		echo "<a href='invoice_pdf.php?orderid=$orderid&type=credit' onclick='return thERPPrintDocument(this.href)'>" . tr("Print") . "</a>";
 		echo "&nbsp;&nbsp;";
 		echo "<a href='salesorder.php?orderid=$orderid&action=email'>" . tr("E-mail customer") . "</a>";
 		echo "&nbsp;&nbsp;";

@@ -290,12 +290,12 @@ title("<a href='sales.php'>" . tr("Sales orders") . "</a> > $title") ;
 if ($mess != null) {
 	echo "<center class=error>$mess</center>";
 }
-if (array_key_exists('finish', $_POST) && false) {
-	echo "<center>";
-	echo "<applet code='therp.print.PrintApplet.class' ";
-	echo "codebase='" . getCodebase() ."' ";
-	echo "archive='java/printapplet.jar' width=150 height=30></applet>";
-	echo "</center>";
+if (array_key_exists('finish', $_POST)) {
+	$printUrl = "invoice_pdf.php?orderid=" . urlencode($orderid) . "&type=receipt";
+	echo "<div class='alert alert-success d-flex align-items-center justify-content-between gap-3' role='status'>";
+	echo "<span>" . tr("The sale is complete. The receipt is ready to print.") . "</span>";
+	echo "<a class='btn btn-primary btn-sm text-nowrap' href='$printUrl' onclick='return thERPPrintDocument(this.href)'>" . tr("Print receipt") . "</a>";
+	echo "</div>";
 }
 ?>
 
@@ -356,7 +356,7 @@ if (array_key_exists('finish', $_POST) && false) {
 				?>
 				<div class="row g-3 mt-3">
 					<div class="col-md-12">
-						<a href='invoice_pdf.php?orderid=<?php echo $orderid ?>'><?php echo tr("Print") ?></a>
+						<a href='invoice_pdf.php?orderid=<?php echo $orderid ?>' onclick="return thERPPrintDocument(this.href)"><?php echo tr("Print") ?></a>
 						&nbsp;&nbsp;
 						<a href='email_invoice.php?orderid=<?php echo $orderid ?>'><?php echo tr("E-mail customer") ?></a>
 						&nbsp;&nbsp;
@@ -391,7 +391,7 @@ if (array_key_exists('finish', $_POST) && false) {
 					<strong><?php echo tr("Receipt") ?></strong>: <?php if ($fullyPayed) { etr("Fully paid"); } else { etr("Not paid"); } ?>
 					&nbsp;&nbsp;
 					<?php if ($payed != 0) { ?>
-						<a href='invoice_pdf.php?orderid=<?php echo $orderid ?>&type=receipt'><?php echo tr("Print") ?></a>
+						<a href='invoice_pdf.php?orderid=<?php echo $orderid ?>&type=receipt' onclick="return thERPPrintDocument(this.href)"><?php echo tr("Print") ?></a>
 						&nbsp;&nbsp;
 						<a href='../accounting/transaction.php?transactionid=<?php echo $receipt_transid ?>&salesorderid=<?php echo $orderid ?>'><?php echo tr("Show transaction") ?></a>
 					<?php } ?>

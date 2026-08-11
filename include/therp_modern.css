@@ -375,6 +375,21 @@ a img { max-width: 24px; height: auto; }
 .project-tasks-table input[type='text'], .project-tasks-table select { width: 100%; min-width: 130px; }
 .project-task-new td { background: #f8f7fe !important; }
 .project-editor-actions { display: flex; justify-content: flex-end; padding: 1rem 1.15rem; background: #fff; border: 1px solid var(--sb-border); border-radius: .65rem; box-shadow: 0 .15rem .5rem rgba(34,42,66,.04); }
+.browser-pos-page { max-width: 1000px; margin: 0 auto; }
+.browser-pos-hero { background: linear-gradient(145deg,#fff 55%,#f0f3ff); }
+.browser-pos-content { display: flex; align-items: center; gap: 1.35rem; }
+.browser-pos-icon { display: grid; place-items: center; width: 68px; height: 68px; flex: 0 0 68px; color: #fff; background: linear-gradient(135deg,#263452,var(--sb-primary)); border-radius: 1rem; box-shadow: 0 .55rem 1.2rem rgba(44,61,118,.23); }
+.browser-pos-icon svg { width: 34px; height: 34px; fill: none; stroke: currentColor; stroke-width: 1.65; stroke-linecap: round; stroke-linejoin: round; }
+.browser-pos-copy { min-width: 0; }
+.browser-pos-copy > span { color: var(--sb-primary); font-size: .68rem; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.browser-pos-copy h1 { margin: .2rem 0 .4rem; font-size: 1.65rem !important; font-weight: 780 !important; letter-spacing: -.03em; }
+.browser-pos-copy p { max-width: 560px; margin: 0; color: var(--sb-muted); }
+.browser-pos-start { margin-left: auto; white-space: nowrap; }
+.browser-pos-features { display: grid; grid-template-columns: repeat(3,1fr); background: rgba(255,255,255,.72); border-top: 1px solid var(--sb-border); }
+.browser-pos-features > div { display: flex; flex-direction: column; gap: .2rem; padding: 1.15rem 1.4rem; border-right: 1px solid var(--sb-border); }
+.browser-pos-features > div:last-child { border-right: 0; }
+.browser-pos-features strong { color: var(--sb-heading); font-size: .82rem; }
+.browser-pos-features span { color: var(--sb-muted); font-size: .74rem; }
 
 .categories-page { max-width: 1040px; margin: 0 auto; }
 .categories-intro { display: flex; align-items: center; gap: 1rem; margin-bottom: 1.25rem; }
@@ -587,6 +602,12 @@ li.menupage a:hover { color: var(--sb-primary); transform: translateY(-2px); }
   .project-editor-intro .projects-intro-icon { display: none; }
   .project-editor-id { margin-left: auto; }
   .project-editor-actions input { width: 100%; }
+  .browser-pos-content { align-items: flex-start; flex-wrap: wrap; }
+  .browser-pos-icon { display: none; }
+  .browser-pos-start { width: 100%; margin-left: 0; }
+  .browser-pos-features { grid-template-columns: 1fr; }
+  .browser-pos-features > div { border-right: 0; border-bottom: 1px solid var(--sb-border); }
+  .browser-pos-features > div:last-child { border-bottom: 0; }
   .suppliers-intro { align-items: flex-start; flex-wrap: wrap; }
   .supplier-step, .suppliers-new { width: 100%; margin-left: 0; }
   .suppliers-new input { width: 100%; }
