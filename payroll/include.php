@@ -187,7 +187,7 @@ function formatDateInterval($start, $end)
 
 function getCurrentEmployee()
 {
-	return findValue("select employeeid from user where username='" . getUser() . "'");
+	return findValue("select employeeid from user where username='" . getUser() . "'", null);
 }
 
 function menubar($currentHref = null, $helpSection = null)

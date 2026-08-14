@@ -5,6 +5,7 @@
 
 	$employeeid = getCurrentEmployee();
 	$periodid = getCurrentPeriod();
+	$employeeMissing = isEmpty($employeeid);
 	
 	function pushButton($label, $cmd)
 	{
@@ -26,7 +27,7 @@
 			break;
 		}
 	}
-	if ($type != null) {
+	if ($type != null && !$employeeMissing) {
 		$date = parseDate(getParam('date'));
 		$timeStr = getParam('time');
 		$seconds = 0;
@@ -39,30 +40,32 @@
 	}
 	
 	$del_id = getParam('del_id');
-	if (!isEmpty($del_id)) {
+	if (!isEmpty($del_id) && !$employeeMissing) {
 		sql("delete from timeregistration where id=$del_id");
 	}
 
-	$givenname = findValue("select givenname from employee where employeeid=$employeeid");
-	$surname = findValue("select surname from employee where employeeid=$employeeid");
-	
-	$lastType = findValue("select type 
-	                       from timeregistration r 
-						   where time=(select max(time) 
-						               from timeregistration r2 
-									   where r2.employeeid=r.employeeid)
-				           and employeeid=$employeeid");
-	$history = query("select id, unix_timestamp(time) as time, type 
-	                  from timeregistration
-					  where employeeid=$employeeid
-					  order by time desc
-					  limit 5");
+	if (!$employeeMissing) {
+		$givenname = findValue("select givenname from employee where employeeid=$employeeid");
+		$surname = findValue("select surname from employee where employeeid=$employeeid");
+
+		$lastType = findValue("select type
+		                       from timeregistration r
+							   where time=(select max(time)
+							               from timeregistration r2
+										   where r2.employeeid=r.employeeid)
+					           and employeeid=$employeeid");
+		$history = query("select id, unix_timestamp(time) as time, type
+		                  from timeregistration
+						  where employeeid=$employeeid
+						  order by time desc
+						  limit 5");
+	}
 	
 	
 	$now = time();
 	$start = roundTime($now, TYPE_DAYS);
 	$end = addTime($start, TYPE_DAYS, 1);
-	$shifts = getEmployeeWorkshifts($employeeid, $start, $end);
+	$shifts = $employeeMissing ? array() : getEmployeeWorkshifts($employeeid, $start, $end);
 	$shift_start = null;
 	if (count($shifts) > 0) {
 		$shift = $shifts[0];
@@ -78,6 +81,12 @@
 <body>
 <?php top("reporting.php", "In / Out") ?>
 
+<?php if ($employeeMissing) { ?>
+<div class="alert alert-warning" role="alert">
+	<?php etr("Your user account is not connected to an employee record.") ?>
+	<?php etr("Please ask an administrator to open your user profile and select an employee.") ?>
+</div>
+<?php } else { ?>
 <center>
 <form name=form1 action="inout.php" method="POST">
 <br>
@@ -149,6 +158,7 @@ while ($row = fetch($history)) {
 
 </form>
 </center>
+<?php } ?>
 <?php bottom() ?>
 
 </body>
