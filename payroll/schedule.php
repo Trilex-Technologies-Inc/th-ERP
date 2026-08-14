@@ -91,38 +91,70 @@ include_datebox();
 <body>
 
 <?php menubar("configuration.php") ?>
-<?php title("<a href='schedules.php'>" .tr ("Schedules") . "</a> > $description") ?>
-
-<form action="schedule.php" method=POST>
-<?php newbox() ?>
-<input type=hidden name=scheduleid value='<?php echo $scheduleid ?>'/>
-<div class="border">
-<div class="container-fluid px-0 erp-form-layout">
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Id") ?>:</div><div class="col-12 col-md-auto"><?php echo $scheduleid ?></div></div>
-<div class="row g-3 align-items-center mb-2">
-<div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><?php textbox("description", $description) ?></div>
-</div>
-<div class="row g-3 align-items-center mb-2">
-<div class="col-12 col-md-auto"><?php etr("Recur") ?>:</div>
-<div class="col-12 col-md-auto">
-<?php checkbox('recur', $recur) ?>
-<input type=text name=recur_interval value='<?php echo $recur_interval ?>' size=4/>
-(<?php etr("number of days") ?>)
-</div>
-</div>
-</div>
-</div>
-&nbsp;
-
-<table>
-<th><?php etr("Delete") ?></th>
-<th><?php etr("No") ?></th>
-<th><?php etr("Date") ?></th>
-<th><?php etr("Start") ?></th>
-<th><?php etr("End") ?></th>
 <?php
-    if (!isEmpty($scheduleid)) {
-        $sql = <<<SQL
+$title = isEmpty($description) ? tr("Create schedule") : $description;
+title("<a href='schedules.php'>" . tr("Schedules") . "</a> > " . htmlspecialchars($title))
+?>
+
+<form action="schedule.php" method="POST">
+<?php newbox() ?>
+<input type="hidden" name="scheduleid" value="<?php echo htmlspecialchars($scheduleid) ?>"/>
+
+<div class="card border-0 shadow-sm mb-4">
+	<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+		<div>
+			<h2 class="h5 fw-bold mb-1"><?php echo htmlspecialchars($title) ?></h2>
+			<p class="text-secondary small mb-0"><?php etr("Schedule") ?></p>
+		</div>
+		<span class="badge text-bg-light border"><?php echo isEmpty($scheduleid) ? tr("New") : '#' . htmlspecialchars($scheduleid) ?></span>
+	</div>
+	<div class="card-body p-4">
+		<div class="row g-4">
+			<div class="col-12 col-lg-3">
+				<label class="form-label fw-semibold"><?php etr("Id") ?></label>
+				<div class="form-control-plaintext font-monospace"><?php echo isEmpty($scheduleid) ? tr("Auto generated") : htmlspecialchars($scheduleid) ?></div>
+			</div>
+			<div class="col-12 col-lg-9">
+				<label class="form-label fw-semibold" for="description"><?php etr("Description") ?></label>
+				<input class="form-control" id="description" type="text" name="description" value="<?php echo htmlspecialchars($description) ?>" required />
+			</div>
+			<div class="col-12">
+				<div class="d-flex flex-wrap align-items-center gap-3">
+					<div class="form-check mb-0">
+						<?php checkbox('recur', $recur) ?>
+						<label class="form-check-label fw-semibold" for="recur"><?php etr("Recur") ?></label>
+					</div>
+					<div class="d-flex flex-wrap align-items-center gap-2">
+						<input class="form-control" type="text" name="recur_interval" value="<?php echo htmlspecialchars($recur_interval) ?>" size="4" style="max-width: 90px;"/>
+						<span class="text-secondary small"><?php etr("number of days") ?></span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<div class="card border-0 shadow-sm overflow-hidden">
+	<div class="card-header bg-white py-3">
+		<h2 class="h5 fw-bold mb-1"><?php etr("Work shifts") ?></h2>
+		<p class="text-secondary small mb-0"><?php etr("Schedule shift times") ?></p>
+	</div>
+	<div class="table-responsive">
+		<table class="table table-hover align-middle mb-0">
+			<thead>
+				<tr>
+					<th class="text-center" style="width: 90px;"><?php etr("Delete") ?></th>
+					<th class="text-end" style="width: 120px;"><?php etr("No") ?></th>
+					<th><?php etr("Date") ?></th>
+					<th style="width: 180px;"><?php etr("Start") ?></th>
+					<th style="width: 180px;"><?php etr("End") ?></th>
+				</tr>
+			</thead>
+			<tbody>
+			<?php
+			    $i = 0;
+			    if (!isEmpty($scheduleid)) {
+			        $sql = <<<SQL
         select
           w.shiftid,
           unix_timestamp(starttime) as starttime,
@@ -135,40 +167,44 @@ include_datebox();
           scheduleid=$scheduleid
         order by starttime
 SQL;
-        $rs = query($sql);
-        $i = 0;
-        $class = "odd";
-        while ($row = fetch_object($rs)) {
-            echo "<input type=hidden name=shiftid_$i value='$row->shiftid'/>";
-            echo "<tr class='$class'>";
-            echo "<td align=center><input type=checkbox name='del_$i'/></td>";
-            echo "<td align=right>$row->shiftid</td>";
-            $date = date(DATE_PATTERN, $row->starttime);
-            $starttime = date(TIME_PATTERN, $row->starttime);
-            $endtime = date(TIME_PATTERN, $row->endtime);
-            echo "<td align=center>$date</td>";
-            echo "<td align=center>$starttime</td>";
-            echo "<td align=center>$endtime</td>";
-            echo "</tr>\n";
-            $class = ($class == "odd" ? "even" : "odd");
-            $i++;
-        }
-        echo "<input type=hidden name=rowcount value=$i/>";
-    }
-?>
-<tr>
-<td/>
-<td/>
-<td><?php datebox("date_new") ?></td>
-<td><?php timebox("starttime_new") ?></td>
-<td><?php timebox("endtime_new") ?></td>
-</tr>
-</table>
-<div class="container-fluid px-0 erp-form-layout">
-<div class="row g-3 align-items-center mb-2">
-<div class="col-12 col-md-auto"><?php saveButton() ?></div>
-<div class="col-12 col-md-auto"><?php button("View calendar", "View", "schedule_calendar.php?scheduleid=$scheduleid") ?></div>
-</div>
+			        $rs = query($sql);
+			        while ($row = fetch_object($rs)) {
+			            $shiftid = htmlspecialchars($row->shiftid);
+			            $date = htmlspecialchars(date(DATE_PATTERN, $row->starttime));
+			            $starttime = htmlspecialchars(date(TIME_PATTERN, $row->starttime));
+			            $endtime = htmlspecialchars(date(TIME_PATTERN, $row->endtime));
+			            echo "<tr>";
+			            echo "<td class='text-center'>";
+			            echo "<input type='checkbox' name='del_$i'/>";
+			            echo "<input type='hidden' name='shiftid_$i' value='$shiftid'/>";
+			            echo "</td>";
+			            echo "<td class='text-end font-monospace'>$shiftid</td>";
+			            echo "<td>$date</td>";
+			            echo "<td>$starttime</td>";
+			            echo "<td>$endtime</td>";
+			            echo "</tr>\n";
+			            $i++;
+			        }
+			    }
+			    echo "<input type='hidden' name='rowcount' value='$i'/>";
+			?>
+				<tr class="table-light">
+					<td class="text-center text-secondary fw-semibold">+</td>
+					<td></td>
+					<td><?php datebox("date_new") ?></td>
+					<td><?php timebox("starttime_new") ?></td>
+					<td><?php timebox("endtime_new") ?></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	<div class="card-footer bg-white d-flex flex-wrap gap-2 py-3">
+		<?php saveButton() ?>
+		<?php if (!isEmpty($scheduleid)) { ?>
+			<?php button("View calendar", "View", "schedule_calendar.php?scheduleid=$scheduleid") ?>
+		<?php } ?>
+		<a class="btn btn-outline-secondary" href="schedules.php"><?php etr("Back") ?></a>
+	</div>
 </div>
 </form>
 <?php bottom() ?>

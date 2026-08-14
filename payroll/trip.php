@@ -186,108 +186,108 @@ if (!isEmpty($tripid))
 title($title);
 ?>
 
-<form action="trip.php" method=POST name='form1' class="border">
-<input type=hidden name=employeeid value="<?php echo $employeeid0 ?>"/>
-<input type=hidden name=periodid value="<?php echo $periodid ?>"/>
-<input type=hidden name=tripid value="<?php echo $tripid ?>"/>
-<input type=hidden name=back value="<?php echo $back ?>"/>
-<div class="container-fluid px-0 erp-form-layout">
-<div class="row g-3 align-items-center mb-2">
-  <div class="col-12 col-md-auto"><?php etr("Name") ?>:</div>
-  <div class="col-12 col-md-auto"><?php displayEmployee($employeeid) ?></div>
+<form action="trip.php" method="POST" name="form1">
+<input type="hidden" name="employeeid" value="<?php echo htmlspecialchars($employeeid0) ?>"/>
+<input type="hidden" name="periodid" value="<?php echo htmlspecialchars($periodid) ?>"/>
+<input type="hidden" name="tripid" value="<?php echo htmlspecialchars($tripid) ?>"/>
+<input type="hidden" name="back" value="<?php echo htmlspecialchars($back) ?>"/>
+<div class="card border-0 shadow-sm">
+<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+<div><h2 class="h5 fw-bold mb-1"><?php echo htmlspecialchars($title) ?></h2><p class="text-secondary small mb-0"><?php etr("Trip") ?></p></div>
+<span class="badge text-bg-light border"><?php echo isEmpty($tripid) ? tr("New") : '#' . htmlspecialchars($tripid) ?></span>
 </div>
-<div class="row g-3 align-items-center mb-2">
-  <div class="col-12 col-md-auto"><?php etr("Period") ?>:</div>
-  <div class="col-12 col-md-auto"><?php displayPeriod($periodid) ?></div>
+<div class="card-body p-4">
+<div class="row g-4">
+<div class="col-12 col-lg-6">
+  <label class="form-label fw-semibold"><?php etr("Name") ?></label>
+  <div class="form-control-plaintext"><?php displayEmployee($employeeid) ?></div>
 </div>
-<div class="row g-3 align-items-center mb-2">
-	<div class="col-12 col-md-auto"><?php etr("Starttime") ?>:</div>
-	<div class="col-12 col-md-auto"><?php
+<div class="col-12 col-lg-6">
+  <label class="form-label fw-semibold"><?php etr("Period") ?></label>
+  <div class="form-control-plaintext"><?php displayPeriod($periodid) ?></div>
+</div>
+<div class="col-12 col-lg-6">
+	<label class="form-label fw-semibold"><?php etr("Starttime") ?></label>
+	<div><?php
 	if ($ro)
 		echo formatDate($row->starttime);
 	else
 		datebox('starttime', $row->starttime)
 	?></div>
-	<div class="col-12 col-md-auto">
-	</div><div class="col-12 col-md-auto"><?php etr("Endtime") ?>:</div>
-	<div class="col-12 col-md-auto"><?php
+</div>
+<div class="col-12 col-lg-6">
+	<label class="form-label fw-semibold"><?php etr("Endtime") ?></label>
+	<div><?php
 	if ($ro)
 		echo formatDate(addTime($row->endtime, TYPE_DAYS, -1));
 	else
 		datebox('endtime', addTime($row->endtime, TYPE_DAYS, -1));
 	?></div>
 </div>
-<div class="row g-3 align-items-center mb-2">
-	<div class="col-12 col-md-auto"><?php etr("Origin") ?>:</div>
-	<div class="col-12 col-md-auto"><?php
+<div class="col-12 col-lg-6">
+	<label class="form-label fw-semibold"><?php etr("Origin") ?></label>
+	<div><?php
 	if ($ro)
-		echo $row->origin;
+		echo htmlspecialchars($row->origin);
 	else
 		textbox('origin', $row->origin)
 	?></div>
-	<div class="col-12 col-md-auto">
-	</div><div class="col-12 col-md-auto"><?php etr("Destination") ?>:</div>
-	<div class="col-12 col-md-auto"><?php
+</div>
+<div class="col-12 col-lg-6">
+	<label class="form-label fw-semibold"><?php etr("Destination") ?></label>
+	<div><?php
 	if ($ro)
-		echo $row->destination;
+		echo htmlspecialchars($row->destination);
 	else
 		textbox('destination', $row->destination)
 	?></div>
 </div>
-<div class="row g-3 align-items-center mb-2">
-	<div class="col-12 col-md-auto"><?php etr("Purpose") ?>:</div>
-	<div class="col-12 col-md-auto"><?php
+<div class="col-12">
+	<label class="form-label fw-semibold"><?php etr("Purpose") ?></label>
+	<div><?php
 	if ($ro)
-		echo $row->purpuse;
+		echo htmlspecialchars($row->purpuse);
 	else
 		textbox('purpuse', $row->purpuse, 80);
 	?></div>
 </div>
-<div class="row g-3 align-items-center mb-2">
-	<div class="col-12 col-md-auto"><?php etr("Distance") ?>:</div>
-	<div class="col-12 col-md-auto"><?php
+<div class="col-12 col-lg-6">
+	<label class="form-label fw-semibold"><?php etr("Distance") ?></label>
+	<div><?php
 	if ($ro)
-		echo $row->distance;
+		echo htmlspecialchars($row->distance);
 	else
 		numberbox('distance', $row->distance)
 	?></div>
-	<div class="col-12 col-md-auto">
-	</div><div class="col-12 col-md-auto"><?php etr("Night allowance") ?>:</div>
-	<div class="col-12 col-md-auto"><?php checkbox('night_allowance', $row->night_allowance) ?></div>
+</div>
+<div class="col-12 col-lg-6">
+	<label class="form-label fw-semibold"><?php etr("Night allowance") ?></label>
+	<div class="form-check"><?php checkbox('night_allowance', $row->night_allowance) ?></div>
 </div>
 <?php
 if ($row->transactionid != null) {
-	echo "<div class='row g-3 align-items-center mb-2'>";
-	echo "<div class='col-12 col-md-auto'>" . tr("Transaction") . ":</div>";
-	echo "<div class='col-12 col-md-auto'>";
+	echo "<div class='col-12'>";
+	echo "<label class='form-label fw-semibold'>" . tr("Transaction") . "</label><div>";
 	echo "<a href='../accounting/transaction.php?transactionid=$row->transactionid'>$row->transactionid</a>";
 	echo "</div>";
 	echo "</div>";
 }
 ?>
 </div>
-<div class="container-fluid px-0 erp-form-layout">
-<div class="row g-3 align-items-center mb-2">
-<div class="col-12 col-md-auto">
+</div>
+<div class="card-footer bg-white d-flex flex-wrap gap-2 py-3">
 <?php
 $label = isEmpty($tripid) ? 'Submit' : 'Save';
 button($label, "save");
-echo "&nbsp;&nbsp;";
 $href = "trip_report.php?tripid=$tripid";
 button("Print", "print", $href);
 ?>
-</div>
-<div class="col-12 col-md-auto">
 <?php
 if (!isEmpty($tripid) && !$ro) {
 	button("Confirm", "confirm");
-	echo "&nbsp;&nbsp;";
 	deleteButton();
 }
 ?>
-</div>
-<div class="col-12 col-md-auto">
-</div>
 </div>
 </div>
 </form>

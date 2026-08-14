@@ -183,49 +183,45 @@ if (!isEmpty($payeventid))
 title($title); 
 ?>
 
-<form action="payevent.php" method=POST name='form1' class="border">
-<input type=hidden name=employeeid value="<?php echo $employeeid0 ?>"/>
-<input type=hidden name=periodid value="<?php echo $periodid ?>"/>
-<input type=hidden name=payeventid value="<?php echo $payeventid ?>"/>
-<input type=hidden name=back value="<?php echo $back ?>"/>
-<table>
-<tr>
-  <td class=label><?php etr("Name") ?>:</td>
-  <td><?php displayEmployee($employeeid) ?></td>
-</tr>
-<tr>
-  <td class=label><?php etr("Period") ?>:</td>
-  <td><?php displayPeriod($periodid) ?></td>
-</tr>
+<form action="payevent.php" method="POST" name="form1">
+<input type="hidden" name="employeeid" value="<?php echo htmlspecialchars($employeeid0) ?>"/>
+<input type="hidden" name="periodid" value="<?php echo htmlspecialchars($periodid) ?>"/>
+<input type="hidden" name="payeventid" value="<?php echo htmlspecialchars($payeventid) ?>"/>
+<input type="hidden" name="back" value="<?php echo htmlspecialchars($back) ?>"/>
+<div class="card border-0 shadow-sm">
+<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+<div><h2 class="h5 fw-bold mb-1"><?php echo htmlspecialchars($title) ?></h2><p class="text-secondary small mb-0"><?php etr("Pay event") ?></p></div>
+<span class="badge text-bg-light border"><?php echo isEmpty($payeventid) ? tr("New") : '#' . htmlspecialchars($payeventid) ?></span>
+</div>
+<div class="card-body p-4">
+<div class="row g-4">
+<div class="col-12 col-lg-6"><label class="form-label fw-semibold"><?php etr("Name") ?></label><div class="form-control-plaintext"><?php displayEmployee($employeeid) ?></div></div>
+<div class="col-12 col-lg-6"><label class="form-label fw-semibold"><?php etr("Period") ?></label><div class="form-control-plaintext"><?php displayPeriod($periodid) ?></div></div>
 <?php
-echo "<tr>";
-echo "<td class=label>" . tr("Date") . ":</td>";
-echo "<td>";
+echo "<div class='col-12 col-lg-4'><label class='form-label fw-semibold' for='starttime'>" . tr("Date") . "</label><div>";
 if (array_key_exists('readonly', $_REQUEST)) {
 	echo formatDate($starttime);
 } else {
 	datebox("starttime", isEmpty($starttime) ? '' : date(DATE_PATTERN, $starttime));
 }
-echo "</td>";
-echo "</tr>";
+echo "</div></div>";
 ?>
-<tr>
-  <td class=label><?php etr("Type") ?>:</td>
-  <td>
+<div class="col-12 col-lg-8">
+  <label class="form-label fw-semibold"><?php etr("Type") ?></label>
+  <div class="d-flex flex-wrap gap-2">
   <?php
 	if (array_key_exists('readonly', $_REQUEST)) {
- 		echo "$row->accountid - $row->description";
+		echo htmlspecialchars("$row->accountid - $row->description");
   	} else {
 	  	comboBox('groupid', $groups, $groupid, false, 'onGroupChange()');
-	  	echo "&nbsp;";
 	  	comboBox('accountid', $accounts, $accountid, false, 'onAccountChange()');
   	}
   ?>
-  </td>
-</tr>
-<tr>
-  <td class=label><?php echo getDescription($inputtype, getInputTypeDescriptionList()) ?>:</td>
-  <td><?php
+  </div>
+</div>
+<div class="col-12 col-lg-4">
+  <label class="form-label fw-semibold"><?php echo getDescription($inputtype, getInputTypeDescriptionList()) ?></label>
+  <div><?php
 	if ($inputtype == INPUT_TYPE_MINUTES) {
 		if (array_key_exists('readonly', $_REQUEST)) 
 			echo formatTime($value);
@@ -238,44 +234,35 @@ echo "</tr>";
 			numberBox('value', $value);
   	}
   ?>
-  </td>
-</tr>
-<tr>
-  <td class=label><?php etr("Correction") ?>:</td>
-  <td><?php checkBox('correction', $row->correction) ?></td>
-</tr>
+  </div>
+</div>
+<div class="col-12 col-lg-4">
+  <label class="form-label fw-semibold"><?php etr("Correction") ?></label>
+  <div class="form-check"><?php checkBox('correction', $row->correction) ?></div>
+</div>
 <?php
 $first = true;
+$glRows = array();
 while ($row = fetch($debit)) {
-	if ($first) {
-		echo "<tr><td class=label>" . tr("General ledger") . ":</td>";
-	} else 
-		echo ", ";
-	echo "<td>". $row->glaccountid .' - '. $row->name;
+	$glRows[] = htmlspecialchars($row->glaccountid . ' - ' . $row->name);
 	$first = false;
 }
 if (!$first) {
-	echo "</tr>";
+	echo "<div class='col-12'><label class='form-label fw-semibold'>" . tr("General ledger") . "</label><div class='form-control-plaintext'>" . implode(", ", $glRows) . "</div></div>";
 }
 ?>
-</table>
-<div class="container-fluid px-0 erp-form-layout">
-<div class="row g-3 align-items-center mb-2">
-<div class="col-12 col-md-auto">
+</div>
+</div>
+<div class="card-footer bg-white d-flex flex-wrap gap-2 py-3">
 <?php
 $label = isEmpty($payeventid) ? 'Submit' : 'Save';
 button($label, "save")
 ?>
-</div>
-<div class="col-12 col-md-auto">
 <?php
 if (!isEmpty($payeventid))
 	deleteButton()
 ?>
-</div>
-<div class="col-12 col-md-auto">
 <?php backButton($employeeid0) ?>
-</div>
 </div>
 </div>
 </form>

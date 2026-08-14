@@ -77,9 +77,9 @@ menubar("configuration.php", "policy");
 title("<a href='policies.php'>" . tr("Policies") . "</a> > " . htmlspecialchars($title))
 ?>
 
-	<div id="header">
+	<nav class="policy-tabs" aria-label="<?php echo tr("Policy") ?>">
 	<?php buildTabs($policyid, 'general') ?>
-	</div>
+	</nav>
 	<div id="main">
 		<div id="contents">
 			<form action="policy.php" method="POST" class="policy-editor">

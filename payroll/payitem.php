@@ -62,30 +62,33 @@ $accounts = rs2array(query("select accountid, description from payaccount"));
 <?php payEventTitle($employeeid, "Pay item") ?>
 <?php title(tr("Pay item")) ?>
 
-<form action="payitem.php" method=POST name='form1' class="border">
-<input type=hidden name=periodid value="<?php echo $periodid ?>"/>
-<input type=hidden name=no value="<?php echo $no ?>"/>
+<form action="payitem.php" method="POST" name="form1">
+<input type="hidden" name="periodid" value="<?php echo htmlspecialchars($periodid) ?>"/>
+<input type="hidden" name="no" value="<?php echo htmlspecialchars($no) ?>"/>
 <?php hiddenParams() ?>
-<div class="container-fluid px-0 erp-form-layout">
+<div class="card border-0 shadow-sm">
+<div class="card-header bg-white py-3">
+	<h2 class="h5 fw-bold mb-1"><?php etr("Pay item") ?></h2>
+	<p class="text-secondary small mb-0"><?php displayPeriod($periodid) ?></p>
+</div>
+<div class="card-body p-4">
+<div class="row g-4">
 <?php eventTypeRow('payitem') ?>
-<div class="row g-3 align-items-center mb-2">
-  <div class="col-12 col-md-auto">Period:</div>
-  <div class="col-12 col-md-auto"><?php displayPeriod($periodid) ?></div>
-</div><div class="row g-3 align-items-center mb-2">
-  <div class="col-12 col-md-auto">Type:</div>
-  <div class="col-12 col-md-auto"><?php comboBox('accountid', $accounts, $accountid, false) ?></div>
+<div class="col-12 col-lg-6">
+	<label class="form-label fw-semibold"><?php etr("Type") ?></label>
+	<?php comboBox('accountid', $accounts, $accountid, false) ?>
 </div>
-<div class="row g-3 align-items-center mb-2">
-  <div class="col-12 col-md-auto">Amount:</div>
-  <div class="col-12 col-md-auto"><input type=text name='amount' value='<?php echo $amount ?>'/></div>
+<div class="col-12 col-lg-6">
+	<label class="form-label fw-semibold"><?php etr("Amount") ?></label>
+	<input class="form-control" type="text" name="amount" value="<?php echo htmlspecialchars($amount) ?>"/>
 </div>
 </div>
-<div class="container-fluid px-0 erp-form-layout">
-<div class="row g-3 align-items-center mb-2">
-<div class="col-12 col-md-auto"><?php button("Submit", "save") ?></div>
+</div>
+<div class="card-footer bg-white d-flex flex-wrap gap-2 py-3">
+	<?php button("Submit", "save") ?>
+	<?php backButton($employeeid) ?>
 </div>
 </div>
-&nbsp;
-<?php backButton($employeeid) ?>
 </form>
+<?php bottom() ?>
 </body>

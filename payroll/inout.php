@@ -87,40 +87,35 @@
 	<?php etr("Please ask an administrator to open your user profile and select an employee.") ?>
 </div>
 <?php } else { ?>
-<center>
-<form name=form1 action="inout.php" method="POST">
-<br>
+<form name="form1" action="inout.php" method="POST">
+<div class="card border-0 shadow-sm overflow-hidden">
+<div class="card-header bg-white py-3">
+<h2 class="h5 fw-bold mb-1"><?php echo htmlspecialchars($givenname . ' ' . $surname) ?></h2>
+<p class="text-secondary small mb-0"><?php etr("In / Out") ?></p>
+</div>
+<div class="card-body p-4">
 <?php 
-echo $givenname . ' ' . $surname . '<br><br>';
-echo "<div class='container-fluid px-0 erp-form-layout'>";
-echo "<div class='row g-3 align-items-center mb-2'>";
-echo "<div class='col-12 col-md-auto'>" . tr("Date") . ":</div>";
-echo "<div class='col-12 col-md-auto'>";
+echo "<div class='row g-4 align-items-end'>";
+echo "<div class='col-12 col-lg-4'><label class='form-label fw-semibold'>" . tr("Date") . "</label>";
 datebox('date', formatDate($now));
 echo "</div>";
-echo "</div>";
-echo "<div class='row g-3 align-items-center mb-2'>";
-echo "<div class='col-12 col-md-auto'>" . tr("Time") . ":</div>";
-echo "<div class='col-12 col-md-auto'>";
+echo "<div class='col-12 col-lg-4'><label class='form-label fw-semibold'>" . tr("Time") . "</label>";
 timebox('time', date('H:i', $now));
 hidden('org_time', date('H:i', $now));
 hidden('seconds', date('s', $now));
 echo "</div>";
-echo "</div>";
 if ($shift_start != null) {
-	echo "<div class='col-12 col-md-auto'>" . tr("Schedule") . ":</div>";
-	echo "<div class='col-12 col-md-auto'>";
+	echo "<div class='col-12 col-lg-4'><label class='form-label fw-semibold'>" . tr("Schedule") . "</label><div class='form-control-plaintext'>";
 	echo date('H:i', $shift_start);
 	echo ' - ';
 	echo date('H:i', $shift_end);
 	echo "</div>";
-	echo "";
+	echo "</div>";
 }
 echo "</div>";
-echo "<br>";
+echo "<div class='d-flex flex-wrap gap-2 mt-4'>";
 if ($lastType == TIME_REGISTRATION_OUT || isEmpty($lastType)) {
 	pushButton('In', 'cmd_' . TIME_REGISTRATION_IN);
-	echo '&nbsp;';
 }
 if ($lastType == TIME_REGISTRATION_IN || 
 	$lastType == TIME_REGISTRATION_END_BREAK) {
@@ -134,30 +129,35 @@ if ($lastType == TIME_REGISTRATION_IN ||
 	$lastType == TIME_REGISTRATION_END_BREAK) {
 	pushButton('Out', 'cmd_' . TIME_REGISTRATION_OUT);
 }
+echo "</div>";
 ?>
-<br><br>
-
-<table>
-<th><?php etr("Delete") ?></th>
-<th><?php etr("Time") ?></th>
-<th><?php etr("Type") ?></th>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+<thead><tr><th class="text-center" style="width: 90px;"><?php etr("Delete") ?></th><th><?php etr("Time") ?></th><th><?php etr("Type") ?></th></tr></thead>
+<tbody>
 <?php
-$class = 'odd';
+$count = 0;
 while ($row = fetch($history)) {
-	echo "<tr class=$class>";
-	deleteColumn("inout.php?del_id=$row->id");
+	$count++;
+	echo "<tr>";
+	echo "<td class='text-center'>";
+	deleteIcon("inout.php?del_id=$row->id");
+	echo "</td>";
 	echo "<td>" . formatDate($row->time) . ' ' . date('H:i', $row->time) . "</td>";
 	echo "<td>";
 	echo tr($types[$row->type]);
 	echo "</td>";
 	echo "</tr>";
-    $class = ($class == "odd" ? "even" : "odd");
 }
+if ($count == 0)
+	echo "<tr><td colspan='3' class='text-center text-secondary py-5'>" . tr("No records found") . "</td></tr>";
 ?>
+</tbody>
 </table>
-
+</div>
+</div>
 </form>
-</center>
 <?php } ?>
 <?php bottom() ?>
 

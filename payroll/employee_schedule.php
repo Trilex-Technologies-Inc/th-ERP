@@ -47,8 +47,20 @@
 
 
 <form action="employee_schedule.php" method="POST">
-<input type=hidden name=employeeid value='<?php echo $employeeid ?>'/>
-<table>
+<input type="hidden" name="employeeid" value="<?php echo htmlspecialchars($employeeid) ?>"/>
+<div class="card border-0 shadow-sm overflow-hidden">
+<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+<div><h2 class="h5 fw-bold mb-1"><?php echo htmlspecialchars($name) ?></h2><p class="text-secondary small mb-0"><?php echo tr("Schedule") ?></p></div>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+<thead><tr>
+<th class="text-center" style="width: 90px;"><?php echo tr("Delete") ?></th>
+<th><?php echo tr("From") ?></th>
+<th><?php echo tr("To") ?></th>
+<th><?php echo tr("Schedule") ?></th>
+</tr></thead>
+<tbody>
 <?php
 
 $sql = "select ";
@@ -61,34 +73,27 @@ $sql .= "where employeeid=$employeeid ";
 $sql .= "  and es.scheduleid=s.scheduleid ";
 $sql .= "order by valid_from ";
 $q = sql($sql);
-echo "<th>" . tr("Delete") . "</th>";
-echo "<th>" . tr("From") . "</th>";
-echo "<th>" . tr("To") . "</th>\n";
-echo "<th>" . tr("Schedule") . "</th>\n";
-$class = "odd";
 $i = 0;
 $lastdate = 0;
 $numrows = num_rows($q);
 while ($rec = fetch($q)) {
 	$from = $rec->valid_from;
 	$lastdate = $rec->valid_to;
-	echo "<tr class='$class'>";
-	echo "<input type='hidden' name='from_$i' value='$from'/>";
-	echo "<td align='center'>";
+	echo "<tr>";
+	echo "<td class='text-center'><input type='hidden' name='from_$i' value='" . htmlspecialchars($from) . "'/>";
 	if ($i == $numrows-1)
 	    echo "<input type='checkbox' name='del_$i'/>";
 	echo "</td>";
 	echo "<td>" . formatDate($from) . "</td>";
 	echo "<td>" . formatDate($rec->valid_to) . "</td>";
-	echo "<td>$rec->description</td>";
+	echo "<td>" . htmlspecialchars($rec->description) . "</td>";
 	echo "</tr>\n";
-	$class = ($class == "odd" ? "even" : "odd");
 	$i++;
 }
-echo "<input type=hidden name=rowcount value='$numrows'/>";
+echo "<input type='hidden' name='rowcount' value='$numrows'/>";
 ?>
-<tr>
-<td></td>
+<tr class="table-light">
+<td class="text-center text-secondary fw-semibold">+</td>
 <td>
 <?php
 if ($lastdate > 0) {
@@ -102,7 +107,7 @@ if ($lastdate > 0) {
 </td>
 <td><?php datebox("valid_to_new") ?></td>
 <td>
-<select name=scheduleid_new>
+<select name="scheduleid_new">
 <option value='null'>--- <?php etr("Select schedule") ?> ---</option>
 <?php
 $sql = <<<SQL
@@ -113,20 +118,17 @@ from schedule
 SQL;
 $rs = query($sql);
 while ($row = fetch($rs)) {
-    echo "<option value='$row->scheduleid'>$row->description</option>";
+    echo "<option value='" . htmlspecialchars($row->scheduleid) . "'>" . htmlspecialchars($row->description) . "</option>";
 }
 ?>
 </select>
 </td>
-<tr>
-<td colspan=4>
-<input type="submit" name="save" value="Save"/>
-&nbsp;
-</td>
 </tr>
-
+</tbody>
 </table>
-<input type="hidden" name="employeeid" value="<?php echo $employeeid ?>"/>
+</div>
+<div class="card-footer bg-white d-flex flex-wrap gap-2 py-3"><input type="submit" name="save" value="Save"/></div>
+</div>
 </form>
         </div>
     </div>

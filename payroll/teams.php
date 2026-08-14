@@ -58,39 +58,50 @@ title(tr("Teams"))
 ?>
 
 <form action="teams.php" method="POST">
-<input type=hidden name=policyid value='<?php echo $policyid ?>'/>
-<table>
-<th><?php echo tr("Delete") ?></th>
-<th><?php echo tr("Id") ?></th>
+<div class="card border-0 shadow-sm overflow-hidden">
+<div class="card-header bg-white py-3">
+	<h2 class="h5 fw-bold mb-1"><?php echo tr("Teams") ?></h2>
+	<p class="text-secondary small mb-0"><?php echo tr("Employee teams") ?></p>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+<thead><tr>
+<th class="text-center" style="width: 90px;"><?php echo tr("Delete") ?></th>
+<th class="text-end" style="width: 120px;"><?php echo tr("Id") ?></th>
 <th><?php echo tr("Description") ?></th>
+</tr></thead>
+<tbody>
 <?php
-$class = "odd";
 $i = 0;
 while ($row = fetch($rs)) {
-	echo "<input type=hidden name=teamid_$i value='$row->teamid'/>";
-    echo "<tr class='$class'>";
-    echo "<td align=center>";
-	deleteIcon('teams.php?del_teamid=$row->teamid');
+	$teamid = htmlspecialchars($row->teamid);
+    echo "<tr>";
+    echo "<td class='text-center'>";
+	deleteIcon("teams.php?del_teamid=$teamid");
     echo "</td>";
-    echo "<td>$row->teamid</td>";
+    echo "<td class='text-end font-monospace'>$teamid<input type='hidden' name='teamid_$i' value='$teamid'/></td>";
     echo "<td>";
     textBox("description_$i", $row->description);
     echo "</td>";
     hidden("old_description_$i", $row->description);
     echo "</tr>";
-    $class = ($class == "odd" ? "even" : "odd");
     $i++;
 }
 hidden('count', $i);
 ?>
-<tr>
-<td/>
+<tr class="table-light">
+<td class="text-center text-secondary fw-semibold">+</td>
 <td><?php textBox('teamid_new', '', 6) ?></td>
 <td><?php textBox('description_new', '') ?></td>
 </tr>
+</tbody>
 </table>
-<br/>
-<?php saveButton() ?>
+</div>
+<div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+	<?php saveButton() ?>
+	<span class="text-secondary small"><?php echo $i ?> <?php echo tr("records") ?></span>
+</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>

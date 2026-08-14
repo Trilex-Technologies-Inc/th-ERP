@@ -84,58 +84,54 @@
 $title = $row->description;
 if ($new)
 	$title = tr("Create account");
-title("<a href='payaccounts.php'>" . tr("Pay accounts") . "</a> > $title")
+title("<a href='payaccounts.php'>" . tr("Pay accounts") . "</a> > " . htmlspecialchars($title))
 ?>
 
 <form action="payaccount.php" method="POST">
-<div class="container-fluid px-0 erp-form-layout">
-<div class="row g-3 align-items-center mb-2">
-	<div class="col-12 col-md-auto"><?php etr("Id") ?>:</div>
-	<div class="col-12 col-md-auto"><?php numberbox('accountid', $accountid, 5) ?></div>
+<div class="card border-0 shadow-sm mb-4">
+<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+<div><h2 class="h5 fw-bold mb-1"><?php echo htmlspecialchars($title) ?></h2><p class="text-secondary small mb-0"><?php etr("Pay account") ?></p></div>
+<span class="badge text-bg-light border"><?php echo $new ? tr("New") : '#' . htmlspecialchars($accountid) ?></span>
 </div>
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="description" value="<?php echo $row->description ?>" size='40' /></div>
-<?php hidden('old_description', $row->description) ?>
-</div><div class="row g-3 align-items-center mb-2">
-	<div class="col-12 col-md-auto"><?php etr("Input type") ?>:</div>
-	<div class="col-12 col-md-auto"><?php comboBox("inputtype", $quantities, $row->inputtype, true) ?></div>
-</div>
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Formula") ?>:</div><div class="col-12 col-md-auto"><textarea name='formula' cols=60 rows=5><?php echo $row->formula ?></textarea></div>
-</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Calculation sequence") ?>:</div><div class="col-12 col-md-auto"><?php numberbox("calcseq", $row->calcseq, 5) ?></div>
-</div><div class="row g-3 align-items-center mb-2">
-	<div class="col-12 col-md-auto"><?php etr("General ledger account") ?>:</div>
-	<div class="col-12 col-md-auto"><?php comboBox("glaccountid", $glaccounts, $row->glaccountid, true) ?></div>
-</div>
+<div class="card-body p-4"><div class="row g-4">
+<div class="col-12 col-lg-3"><label class="form-label fw-semibold" for="accountid"><?php etr("Id") ?></label><?php numberbox('accountid', $accountid, 5) ?></div>
+<div class="col-12 col-lg-9"><label class="form-label fw-semibold" for="description"><?php etr("Description") ?></label><input class="form-control" id="description" type="text" name="description" value="<?php echo htmlspecialchars($row->description) ?>" required /><?php hidden('old_description', $row->description) ?></div>
+<div class="col-12 col-lg-6"><label class="form-label fw-semibold" for="inputtype"><?php etr("Input type") ?></label><?php comboBox("inputtype", $quantities, $row->inputtype, true) ?></div>
+<div class="col-12 col-lg-6"><label class="form-label fw-semibold" for="calcseq"><?php etr("Calculation sequence") ?></label><?php numberbox("calcseq", $row->calcseq, 5) ?></div>
+<div class="col-12"><label class="form-label fw-semibold" for="formula"><?php etr("Formula") ?></label><textarea class="form-control font-monospace" id="formula" name="formula" rows="6"><?php echo htmlspecialchars($row->formula) ?></textarea></div>
+<div class="col-12 col-lg-6"><label class="form-label fw-semibold" for="glaccountid"><?php etr("General ledger account") ?></label><?php comboBox("glaccountid", $glaccounts, $row->glaccountid, true) ?></div>
+</div></div>
 </div>
 <?php
 if ($groups != null) {
-	echo "<br/>";
-	echo "<div class=border>";
-	echo "<table>";
-	echo "<th>" . tr("Delete") . "</th>";
-	echo "<th>" . tr("Group") . "</th>";
-	$class = 'odd';
-	while ($row = fetch($groups)) {
-		echo "<tr class=$class>";
-		echo "<td align=center>";
-		deleteIcon("payaccount.php?accountid=$accountid&del_groupid=$row->groupid");
+	echo "<div class='card border-0 shadow-sm overflow-hidden mb-4'>";
+	echo "<div class='card-header bg-white py-3'><h2 class='h5 fw-bold mb-1'>" . tr("Group") . "</h2><p class='text-secondary small mb-0'>" . tr("Pay account groups") . "</p></div>";
+	echo "<div class='table-responsive'><table class='table table-hover align-middle mb-0'>";
+	echo "<thead><tr><th class='text-center' style='width: 90px;'>" . tr("Delete") . "</th><th>" . tr("Group") . "</th></tr></thead><tbody>";
+	$groupCount = 0;
+	while ($groupRow = fetch($groups)) {
+		$groupCount++;
+		$groupid = htmlspecialchars($groupRow->groupid);
+		echo "<tr>";
+		echo "<td class='text-center'>";
+		deleteIcon("payaccount.php?accountid=" . htmlspecialchars($accountid) . "&del_groupid=$groupid");
 		echo "</td>";
-		echo "<td>$row->description</td>";
+		echo "<td>" . htmlspecialchars($groupRow->description) . "</td>";
 		echo "</tr>";
-        $class = ($class == "odd" ? "even" : "odd");
 	}
-	echo "<tr class=$class/>";
-	echo "<td/>";
+	echo "<tr class='table-light'>";
+	echo "<td class='text-center text-secondary fw-semibold'>+</td>";
 	echo "<td>";
 	comboBox("groupid_new", $allGroups, null, true);
 	echo "</td>";
 	echo "</tr>";
-	echo "</table>";
+	echo "</tbody></table></div>";
+	echo "<div class='card-footer bg-white d-flex justify-content-end py-3'><span class='text-secondary small'>$groupCount " . tr("records") . "</span></div>";
 	echo "</div>";
 }
 ?>
-<br/>
-<?php saveButton() ?>
-<input type="hidden" name="new" value="<?php echo $new ?>"/>
+<div class="card border-0 shadow-sm"><div class="card-body d-flex flex-wrap gap-2"><?php saveButton() ?><a class="btn btn-outline-secondary" href="payaccounts.php"><?php etr("Back") ?></a></div></div>
+<?php if ($new) { ?><input type="hidden" name="new" value="1"/><?php } ?>
 </form>
 <?php bottom() ?>
 </body>

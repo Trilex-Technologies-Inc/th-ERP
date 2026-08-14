@@ -23,7 +23,22 @@ if (!isEmpty($del_policyid)) {
 <?php title(tr("Policies")) ?>
 
 <form action="policies.php" method="POST">
-<table>
+<div class="card border-0 shadow-sm overflow-hidden">
+<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+	<div>
+		<h2 class="h5 fw-bold mb-1"><?php echo tr("Policies") ?></h2>
+		<p class="text-secondary small mb-0"><?php echo tr("Policy rules") ?></p>
+	</div>
+	<?php button("Add", "add", "policy.php") ?>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+<thead><tr>
+<th class="text-center" style="width: 90px;"><?php echo tr("Delete") ?></th>
+<th class="text-end" style="width: 120px;"><?php echo tr("Id") ?></th>
+<th><?php echo tr("Description") ?></th>
+</tr></thead>
+<tbody>
 <?php
 
 $sql = "select
@@ -34,29 +49,29 @@ $sql = "select
         order by policyid
         ";
 $q = sql($sql);
-echo "<th>" .tr("Delete") . "</th>";
-echo "<th>" .tr("Id") . "</th>";
-echo "<th>" . tr("Description") . "</th>\n";
-$class = "odd";
-$runningno = 0;
+$count = 0;
 while ($rec = fetch($q)) {
-	echo "<tr class='$class'>";
-	echo "<td align=center>";
-	deleteIcon("policies.php?del_policyid=$rec->policyid");
+	$count++;
+	$policyid = htmlspecialchars($rec->policyid);
+	$description = htmlspecialchars($rec->description);
+	echo "<tr>";
+	echo "<td class='text-center'>";
+	deleteIcon("policies.php?del_policyid=$policyid");
 	echo "</td>";
-	echo "<td>$rec->policyid</td>";
-	echo "<td><a href='policy.php?policyid=$rec->policyid'>$rec->description</a></td>";
+	echo "<td class='text-end font-monospace'>$policyid</td>";
+	echo "<td><a class='fw-semibold' href='policy.php?policyid=$policyid'>$description</a></td>";
 	echo "</tr>\n";
-	$class = ($class == "odd" ? "even" : "odd");
 }
+if ($count == 0)
+	echo "<tr><td colspan='3' class='text-center text-secondary py-5'>" . tr("No records found") . "</td></tr>";
 ?>
-<tr height="10"/>
-<tr>
-<td>
-<?php button("Add", "add", "policy.php") ?>
-</td>
-</tr>
+</tbody>
 </table>
+</div>
+<div class="card-footer bg-white d-flex justify-content-end py-3">
+	<span class="text-secondary small"><?php echo $count ?> <?php echo tr("records") ?></span>
+</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>
