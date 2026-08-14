@@ -55,51 +55,62 @@ $rs = query($sql);
 
 	<?php
 	menubar("configuration.php");
-	title(tr("Price lists"))
+	title("<a href='configuration.php'>" . tr("Configuration") . "</a> > " . tr("Price lists"));
 	?>
 
+	<main class="price-lists-page">
+		<header class="price-lists-intro">
+			<div class="price-lists-icon" aria-hidden="true">
+				<svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/><path d="M18 15v6M15 18h6"/></svg>
+			</div>
+			<div>
+				<span class="price-lists-eyebrow"><?php etr("Sales setup") ?></span>
+				<h1><?php etr("Price lists") ?></h1>
+				<p><?php etr("Maintain the named price levels available to customers and sales orders.") ?></p>
+			</div>
+		</header>
+
 	<form action="pricelists.php" method="POST">
-		<div class="table-responsive">
-			<table class="table table-sm table-striped table-hover align-middle w-100">
-				<thead>
-					<tr>
-						<th><?php echo tr("Delete") ?></th>
-						<th><?php echo tr("Id") ?></th>
-						<th><?php echo tr("Description") ?></th>
-					</tr>
-				</thead>
-				<tbody>
-					<?php
-					$class = "odd";
-					$i = 0;
-					while ($row = fetch($rs)) {
-						echo "<input type=hidden name=listid_$i value='$row->listid'/>";
-						echo "<tr class='$class'>";
-						echo "<td class='text-center'>";
-						deleteIcon("pricelists.php?del_listid=$row->listid");
-						echo "</td>";
-						echo "<td>$row->listid</td>";
-						echo "<td>";
-						textBox("description_$i", $row->description);
-						echo "</td>";
-						hidden("old_description_$i", $row->description);
-						echo "</tr>";
-						$class = ($class == "odd" ? "even" : "odd");
-						$i++;
-					}
-					hidden('count', $i);
-					?>
-					<tr>
-						<td></td>
-						<td><?php textBox('listid_new', '', 6) ?></td>
-						<td><?php textBox('description_new', '') ?></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<br />
-		<?php saveButton() ?>
+		<section class="price-lists-card card border-0 shadow-sm overflow-hidden">
+			<div class="card-header bg-white price-lists-header">
+				<div><span><?php etr("Reference data") ?></span><h2><?php etr("Configured price lists") ?></h2></div>
+			</div>
+			<div class="price-lists-table">
+				<div class="price-lists-row price-lists-head">
+					<div><?php etr("Delete") ?></div>
+					<div><?php etr("Id") ?></div>
+					<div><?php etr("Description") ?></div>
+				</div>
+				<?php
+				$i = 0;
+				while ($row = fetch($rs)) {
+					echo "<div class='price-lists-row'>";
+					echo "<div class='price-lists-delete'>";
+					deleteIcon("pricelists.php?del_listid=$row->listid");
+					echo "</div>";
+					echo "<div><span class='price-list-id'>#" . htmlspecialchars($row->listid) . "</span></div>";
+					echo "<div class='price-lists-field'>";
+					hidden("listid_$i", $row->listid);
+					textBox("description_$i", $row->description);
+					hidden("old_description_$i", $row->description);
+					echo "</div></div>";
+					$i++;
+				}
+				hidden('count', $i);
+				?>
+				<div class="price-lists-row price-lists-new">
+					<div></div>
+					<div class="price-lists-field"><?php textBox('listid_new', '', 6) ?></div>
+					<div class="price-lists-field"><?php textBox('description_new', '') ?></div>
+				</div>
+			</div>
+			<div class="price-lists-footer">
+				<span><?php echo htmlspecialchars($i) ?> <?php etr("Price lists") ?></span>
+				<?php saveButton() ?>
+			</div>
+		</section>
 	</form>
+	</main>
 	<?php bottom() ?>
 </body>
 
