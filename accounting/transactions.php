@@ -38,7 +38,7 @@ include_datebox();
 <?php menubar("transactions.php") ?>
 <?php title(tr("Transactions")) ?>
 <form action="transactions.php" method="GET">
-<div class="border">
+<div class="card border-0 shadow-sm mb-3"><div class="card-body">
 <div class="container-fluid px-0 erp-form-layout">
 <div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Narrative") ?>:</div><div class="col-12 col-md-auto"><?php textbox("narrative", $narrative) ?></div>
 </div><div class="row g-3 align-items-center mb-2">
@@ -50,30 +50,22 @@ include_datebox();
 <div class="col-12 col-md-auto"><input type="submit" name="search" value="<?php etr("Search") ?>" /></div>
 </div>
 
-</div>
-</div>
+</div></div></div>
 </form>
-&nbsp;
-
 <form action="transactions.php" method=POST>
-<table width='100%'>
-<th><?php etr("Id") ?></th>
-<th><?php etr("Narrative") ?></th>
-<th><?php etr("Date") ?></th>
+<div class="card border-0 shadow-sm mb-3">
+<div class="card-header bg-body-tertiary"><div class="row fw-semibold"><div class="col-2"><?php etr("Id") ?></div><div class="col-7"><?php etr("Narrative") ?></div><div class="col-3"><?php etr("Date") ?></div></div></div>
+<div class="list-group list-group-flush">
 <?php
-    $class = "odd";
     $i = 0;
     while ($row = fetch_object($rs)) {
-        echo "<tr class='$class'>";
-        echo "<td align=right><a href='transaction.php?transactionid=$row->transactionid'>$row->transactionid</a></td>";
-        echo "<td><a href='transaction.php?transactionid=$row->transactionid'>$row->narrative</a></td>";
-        echo "<td align=center>" . date(DATE_PATTERN, $row->transtime) . "</td>";
-        echo "</tr>";
-        $class = ($class == "odd" ? "even" : "odd");
+        echo "<div class='list-group-item'><div class='row align-items-center'><div class='col-2'><a href='transaction.php?transactionid=$row->transactionid'>$row->transactionid</a></div>";
+        echo "<div class='col-7'><a href='transaction.php?transactionid=$row->transactionid'>$row->narrative</a></div>";
+        echo "<div class='col-3'>" . date(DATE_PATTERN, $row->transtime) . "</div></div></div>";
         $i++;
     }
 ?>
-</table>
+</div></div>
 <br/>
 <?php
 newButton("register_transaction.php");

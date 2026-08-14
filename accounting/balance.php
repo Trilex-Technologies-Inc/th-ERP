@@ -27,7 +27,7 @@ function showGroup($groupid, $date, $endtime, $assets = false)
 	$year = date("y", $date);
 	$month = date("m", $date);
 	$label = findValue("select description from accountgroup where groupid=$groupid");
-	echo "<tr><td colspan=3><h2>" . $label . "</h2></td></tr>";
+	echo "<section class='card border-0 shadow-sm mb-4'><div class='card-header bg-body-tertiary'><h2 class='h5 mb-0'>" . $label . "</h2></div><div class='list-group list-group-flush'>";
 
 	$selectSQL = "
 	select
@@ -65,43 +65,36 @@ function showGroup($groupid, $date, $endtime, $assets = false)
 	$startSum = 0;
 	$endSum = 0;
     $rs = query($selectSQL);
-    $class = "odd";
     while ($row = fetch_object($rs)) {
-        echo "<tr class='$class'>";
-        echo "<td>$row->accountid</td>";
+        echo "<div class='list-group-item'><div class='row align-items-center'><div class='col-2'>$row->accountid</div>";
         $href = "account_balance.php?accountid=$row->accountid&year=$year";
         if ($type == TYPE_MONTHS)
         	$href .= "&month=$month";
-        echo "<td><a href='$href'>$row->name</a></td>";
-		echo "<td align=right>";
+        echo "<div class='col-4'><a href='$href'>$row->name</a></div>";
+		echo "<div class='col-2 text-end'>";
 		if ($assets) {
 			echo formatMoney($row->startbalance);
 		}
-		echo "</td>";
-        echo "<td align=right>" . formatMoney($row->balance) . "</td>";
-		echo "<td align=right>";
+		echo "</div>";
+        echo "<div class='col-2 text-end'>" . formatMoney($row->balance) . "</div>";
+		echo "<div class='col-2 text-end'>";
 		if ($assets) {
 			echo formatMoney($row->endbalance);
 		}
-		echo "</td>";
-        echo "</tr>";
+		echo "</div></div></div>";
         $sum += $row->balance;
         $startSum += $row->startbalance;
         $endSum += $row->endbalance;
-        $class = ($class == "odd" ? "even" : "odd");
     }
-	echo "<tr><td colspan=2><b>" . tr("Total") . "</b></td>";
-	echo "<td align=right>";
+	echo "<div class='list-group-item bg-body-tertiary'><div class='row fw-bold'><div class='col-6'>" . tr("Total") . "</div><div class='col-2 text-end'>";
 	if ($assets)
 		echo formatMoney($startSum);
-	echo "</td>";
-	echo "<td align=right>" . formatMoney($sum) . "</td>";
-	echo "<td align=right>";
+	echo "</div>";
+	echo "<div class='col-2 text-end'>" . formatMoney($sum) . "</div>";
+	echo "<div class='col-2 text-end'>";
 	if ($assets)
 		echo formatMoney($endSum);
-	echo "</td>";
-	echo "</tr>";
-	echo "<tr height=10></tr>";
+	echo "</div></div></div></div></section>";
 	return $sum;
 }
 
@@ -119,7 +112,7 @@ function showGroup($groupid, $date, $endtime, $assets = false)
 
 <br/>
 <form name=searchform action="balance.php" method="GET">
-<center>
+<div class="d-flex justify-content-center align-items-center gap-3 flex-wrap">
 <?php
 $yearsChecked = '';
 $monthsChecked = '';
@@ -133,29 +126,19 @@ if ($type == TYPE_YEARS) {
 echo "<input type=radio name=type value='" . TYPE_YEARS . "' $yearsChecked onClick='document.searchform.submit()'>" . tr("Years") . "</input>";
 echo "<input type=radio name=type value='" . TYPE_MONTHS . "' $monthsChecked onClick='document.searchform.submit()'>" . tr("Months") . "</input>";
 ?>
-</center>
+</div>
 </form>
 
-<center>
-<table>
-<th><?php etr("Id") ?></th>
-<th><?php etr("Name") ?></th>
-<th><?php etr("Starting") ?></th>
-<th><?php etr("Period") ?></th>
-<th><?php etr("Final") ?></th>
+<div class="container-fluid px-0">
+<div class="card border-0 shadow-sm mb-3"><div class="card-body py-2"><div class="row fw-semibold"><div class="col-2"><?php etr("Id") ?></div><div class="col-4"><?php etr("Name") ?></div><div class="col-2 text-end"><?php etr("Starting") ?></div><div class="col-2 text-end"><?php etr("Period") ?></div><div class="col-2 text-end"><?php etr("Final") ?></div></div></div></div>
 <?php
 $revenues = showGroup(GROUPID_REVENUES, $start, $end);
 $expenses = showGroup(GROUPID_EXPENSES, $start, $end);
 $profit = (-1) * ($expenses + $revenues);
-echo "<tr>";
-echo "<td colspan=3><b>" . tr("Profit") . "</b></td>";
-echo "<td align=right><b>" . formatMoney($profit) . "</b></td>";
-echo "</tr>";
-echo "<tr height=10></tr>";
+echo "<div class='alert alert-primary d-flex justify-content-between fw-bold'><span>" . tr("Profit") . "</span><span>" . formatMoney($profit) . "</span></div>";
 showGroup(GROUPID_ASSETS, $start, $end, true);
 showGroup(GROUPID_LIABILITIES, $start, $end, true);
 ?>
-</table>
-</center>
+</div>
 <?php bottom() ?>
 </body>

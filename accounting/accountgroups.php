@@ -23,32 +23,25 @@
 <?php title(tr("Account groups")) ?>
 
 <form action="accountgroups.php" method="GET">
-<div class="border">
+<div class="card border-0 shadow-sm mb-3"><div class="card-body">
 <div class="container-fluid px-0 erp-form-layout">
 <div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="description" value="<?php echo $description ?>"/></div>
 </div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><input type="submit" name="search" value="<?php etr("Search") ?>" /></div></div>
 
-</div>
-</div>
+</div></div></div>
 </form>
-&nbsp;
-
 <form action="accountgroups.php" method=POST>
-<table>
-<th><?php etr("Id") ?></th>
-<th><?php etr("Description") ?></th>
+<div class="card border-0 shadow-sm mb-3">
+<div class="card-header bg-body-tertiary"><div class="row fw-semibold"><div class="col-3"><?php etr("Id") ?></div><div class="col-9"><?php etr("Description") ?></div></div></div>
+<div class="list-group list-group-flush">
 <?php
     $rs = query($selectSQL);
-    $class = "odd";
     while ($row = fetch_object($rs)) {
-        echo "<tr class='$class'>";
-        echo "<td>$row->groupid</td>";
-        echo "<td><a href='accountgroup.php?groupid=$row->groupid'>$row->description</a></td>";
-        echo "</tr>";
-        $class = ($class == "odd" ? "even" : "odd");
+        echo "<div class='list-group-item'><div class='row align-items-center'><div class='col-3'>$row->groupid</div>";
+        echo "<div class='col-9'><a href='accountgroup.php?groupid=$row->groupid'>$row->description</a></div></div></div>";
     }
 ?>
-</table>
+</div></div>
 <br/>
 <div class="container-fluid px-0 erp-form-layout">
 <div class="row g-3 align-items-center mb-2">

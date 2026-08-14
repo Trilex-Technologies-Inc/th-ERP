@@ -101,24 +101,19 @@ if (count($dims) > 1) {
 }	
 
 ?>
-<table>
-<th><?php etr("Account") ?></th>
-<th><?php etr("Amount") ?></th>
+<div class="card border-0 shadow-sm">
+<div class="card-header bg-body-tertiary"><div class="row fw-semibold"><div class="col-8"><?php etr("Account") ?></div><div class="col-4 text-end"><?php etr("Amount") ?></div></div></div>
+<div class="list-group list-group-flush">
 <?php
 $balance = 0;
-$class = 'odd';
 while ($part = fetch($parts)) {
-	echo "<tr class='$class'>";
-	echo "<td>$part->accountid - $part->name</td>";
-	echo "<td align=right>";
+	echo "<div class='list-group-item'><div class='row align-items-center'><div class='col-8'>$part->accountid - $part->name</div><div class='col-4 text-end'>";
 	printf('%9.2f', $part->amount);
-	echo "</td>";
-	echo "</tr>\n";
+	echo "</div></div></div>";
 	$balance += $part->amount;
-    $class = ($class == "odd" ? "even" : "odd");
 }
 ?>
-</table>
+</div></div>
 <?php
 if ($balance != 0) {
 	echo "<p class=error>" . tr("ERROR - Transaction doesn't balance") . "</p>";

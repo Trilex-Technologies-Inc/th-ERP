@@ -195,54 +195,35 @@ if ($parts != null) {
 		echo "<div id='contents'>";
 	}
 
-	echo "<table>";
-	echo "<th>" . tr("Delete") . "</th>";
-	echo "<th colspan=2>" . tr("Account") . "</th>";
-	echo "<th>" . tr("Amount") . "</th>";
-	$class = 'odd';
+	echo "<div class='card border-0 shadow-sm'><div class='card-header bg-body-tertiary'><div class='row fw-semibold align-items-center'><div class='col-2'>" . tr("Delete") . "</div><div class='col-6'>" . tr("Account") . "</div><div class='col-4 text-end'>" . tr("Amount") . "</div></div></div><div class='list-group list-group-flush'>";
 	$i = 0;
 	while ($part = fetch($parts)) {
-		echo "<tr class=$class>";
 		echo "<input type=hidden name='accountid_$i' value='$part->accountid'/>";
-		echo "<td align=center>";
+		echo "<div class='list-group-item'><div class='row g-2 align-items-center'><div class='col-2'>";
 		if (!$locked)
 			checkbox("del_$i", false);
-		echo "</td>";
-		echo "<td colspan=2>$part->accountid - $part->name</td>";
-		echo "<td align=right>";
+		echo "</div><div class='col-6'>$part->accountid - $part->name</div><div class='col-4 text-end'>";
 		if ($locked)
 			echo formatMoney($part->amount);
 		else
 			moneybox("amount_$i", $part->amount);
-		echo "</td>";
-		echo "</tr>\n";
-	    $class = ($class == "odd" ? "even" : "odd");
+		echo "</div></div></div>";
 		$i++;
 	}
 	if (!$locked) {
 		echo "<input type=hidden name=count value='$i'/>";
 		for ($i=0; $i <3; $i++) {
-			echo "<tr class='$class'>";
-			echo "<td/>";
-			echo "<td>";
+			echo "<div class='list-group-item'><div class='row g-2 align-items-center'><div class='col-2'></div><div class='col-2'>";
 			numberbox("accountid_new_$i", '', 5);
-			echo "</td>";
-			echo "<td>";
+			echo "</div><div class='col-4'>";
 			comboBox("accountid_new$i", $accounts, null, true);
-			echo "</td>";
-			echo "<td>";
+			echo "</div><div class='col-4 text-end'>";
 			moneybox("amount_new$i", '');
-			echo "</td>";
-			echo "</tr>";
-		    $class = ($class == "odd" ? "even" : "odd");
+			echo "</div></div></div>";
 		}
 	}
-	echo "<tr class=$class>";
-	echo "<td/><td/>";
-	echo "<td align=right>" . tr("Balance") . ":</td>";
-	echo "<td align=right>" . formatMoney($balance) . "</td>";
-	echo "</tr>";
-	echo "</table>";
+	echo "<div class='list-group-item bg-body-tertiary'><div class='row fw-bold'><div class='col-8 text-end'>" . tr("Balance") . ":</div><div class='col-4 text-end'>" . formatMoney($balance) . "</div></div></div>";
+	echo "</div></div>";
 
 if (count($dims) > 1) {
 	echo "</div></div>";

@@ -48,31 +48,20 @@
 </div>
 </div>
 <br/>
-<div class=border>
-<table>
-<th><?php etr("Transaction") ?></th>
-<th><?php etr("Amount") ?></th>
-<th><?php etr("Date") ?></th>
+<div class="card border-0 shadow-sm">
+<div class="card-header bg-body-tertiary"><div class="row fw-semibold"><div class="col-6"><?php etr("Transaction") ?></div><div class="col-3 text-end"><?php etr("Amount") ?></div><div class="col-3"><?php etr("Date") ?></div></div></div>
+<div class="list-group list-group-flush">
 <?php
-$class = 'odd';
 $sum = 0;
 while ($part = fetch($parts)) {
-	echo "<tr class='$class'>";
-	echo "<td><a href='transaction.php?transactionid=$part->transactionid'>$part->transactionid</a> - $part->narrative</td>";
-	echo "<td align=right>";
+	echo "<div class='list-group-item'><div class='row align-items-center'><div class='col-6'><a href='transaction.php?transactionid=$part->transactionid'>$part->transactionid</a> - $part->narrative</div>";
+	echo "<div class='col-3 text-end'>";
 	printf('%9.2f', $part->amount);
-	echo "</td>";
-	echo "<td>" . formatDate($part->transtime) . "</td>";
-	echo "</tr>\n";
+	echo "</div><div class='col-3'>" . formatDate($part->transtime) . "</div></div></div>";
 	$sum += $part->amount;
-    $class = ($class == "odd" ? "even" : "odd");
 }
 ?>
-<tr>
-<td><b><?php etr("Total") ?></b></td>
-<td align=right><?php echo formatMoney($sum) ?></td>
-</tr>
-</table>
-</div>
+<div class="list-group-item bg-body-tertiary"><div class="row fw-bold"><div class="col-6"><?php etr("Total") ?></div><div class="col-3 text-end"><?php echo formatMoney($sum) ?></div></div></div>
+</div></div>
 
 </body>

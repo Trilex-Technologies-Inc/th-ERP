@@ -43,7 +43,7 @@ styleSheet();
 <?php title(tr("Accounts")) ?>
 
 <form action="accounts.php" method="GET">
-<div class="border">
+<div class="card border-0 shadow-sm mb-3"><div class="card-body">
 <div class="container-fluid px-0 erp-form-layout">
 <div class="row g-3 align-items-center mb-2">
 	<div class="col-12 col-md-auto"><?php etr("Dimension") ?>:</div>
@@ -61,28 +61,23 @@ styleSheet();
 </div>
 <div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php searchButton() ?></div></div>
 
-</div>
-</div>
+</div></div></div>
 </form>
 
 <form action="accounts.php" method=POST>
-<table width='100%'>
-<th width="10%"><?php etr("Delete") ?></th>
-<th width="10%"><?php etr("Accountno") ?></th>
-<th width="80%"><?php etr("Name") ?></th>
+<div class="card border-0 shadow-sm mb-3">
+<div class="card-header bg-body-tertiary"><div class="row fw-semibold align-items-center"><div class="col-2"><?php etr("Delete") ?></div><div class="col-3"><?php etr("Accountno") ?></div><div class="col-7"><?php etr("Name") ?></div></div></div>
+<div class="list-group list-group-flush">
 <?php
     $rs = query($selectSQL);
-    $class = "odd";
     while ($row = fetch_object($rs)) {
-        echo "<tr class='$class'>";
-		deleteColumn("accounts.php?del_accountid=$row->accountid");
-        echo "<td align=right>$row->accountid</td>";
-        echo "<td><a href='account.php?dimid=$dimid&accountid=$row->accountid'>$row->name</a></td>";
-        echo "</tr>";
-        $class = ($class == "odd" ? "even" : "odd");
+        echo "<div class='list-group-item'><div class='row align-items-center'><div class='col-2'>";
+        deleteIcon("accounts.php?del_accountid=$row->accountid");
+        echo "</div><div class='col-3'>$row->accountid</div>";
+        echo "<div class='col-7'><a href='account.php?dimid=$dimid&accountid=$row->accountid'>$row->name</a></div></div></div>";
     }
 ?>
-</table>
+</div></div>
 <div class="container-fluid px-0 erp-form-layout">
 <div class="row g-3 align-items-center mb-2">
 <div class="col-12 col-md-auto"><?php newButton("account.php?dimid=$dimid") ?></div>

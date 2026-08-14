@@ -88,28 +88,15 @@ title("<a href='accounts.php'>" . tr("Accounts") . "</a> > $title")
 <?php
 if ($groups != null) {
 	echo "<br/>";
-	echo "<div class=border>";
-	echo "<table>";
-	echo "<th>" . tr("Delete") . "</th>";
-	echo "<th>" . tr("Group") . "</th>";
-	$class = 'odd';
+	echo "<div class='card border-0 shadow-sm'><div class='card-header bg-body-tertiary'><div class='row fw-semibold'><div class='col-3'>" . tr("Delete") . "</div><div class='col-9'>" . tr("Group") . "</div></div></div><div class='list-group list-group-flush'>";
 	while ($row = fetch($groups)) {
-		echo "<tr class=$class>";
-		echo "<td align=center>";
+		echo "<div class='list-group-item'><div class='row align-items-center'><div class='col-3'>";
 		deleteIcon("account.php?dimid=$dimid&accountid=$accountid&del_groupid=$row->groupid");
-		echo "</td>";
-		echo "<td>$row->description</td>";
-		echo "</tr>";
-        $class = ($class == "odd" ? "even" : "odd");
+		echo "</div><div class='col-9'>$row->description</div></div></div>";
 	}
-	echo "<tr class=$class/>";
-	echo "<td/>";
-	echo "<td>";
+	echo "<div class='list-group-item'><div class='row align-items-center'><div class='col-3'></div><div class='col-9'>";
 	comboBox("groupid_new", $allGroups, null, true);
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
+	echo "</div></div></div></div></div>";
 }
 ?>
 <br/>
