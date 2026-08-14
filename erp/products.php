@@ -61,12 +61,24 @@ function printReport()
 <?php menubar('products.php') ?>
 <?php title(tr("Products")) ?>
 
-<form action="products.php" method="GET" name="searchform" class="products-filter mb-4">
+<main class="products-page">
+<header class="products-intro">
+	<div class="products-intro-icon" aria-hidden="true">
+		<svg viewBox="0 0 24 24"><path d="M20 13V7a2 2 0 0 0-1-1.73l-6-3.46a2 2 0 0 0-2 0L5 5.27A2 2 0 0 0 4 7v6a2 2 0 0 0 1 1.73l6 3.46a2 2 0 0 0 2 0l6-3.46A2 2 0 0 0 20 13ZM4.27 6 12 10.5 19.73 6M12 22V10.5"/></svg>
+	</div>
+	<div>
+		<span class="products-eyebrow"><?php etr("Inventory") ?></span>
+		<h1><?php etr("Products") ?></h1>
+		<p><?php etr("Search, review, and open product catalogue records.") ?></p>
+	</div>
+	<div class="products-create"><?php button("Add product", "add", "product.php") ?></div>
+</header>
+
+<form action="products.php" method="GET" name="searchform" class="products-filter">
 <div class="card border-0 shadow-sm">
 	<div class="card-body">
-		<div class="d-flex justify-content-between align-items-center mb-3">
-			<h2 class="h6 fw-bold mb-0"><?php etr("Search") ?></h2>
-			<span class="text-secondary small"><?php etr("Products") ?></span>
+		<div class="products-section-heading">
+			<div><span><?php etr("Search") ?></span><h2><?php etr("Filter products") ?></h2></div>
 		</div>
 		<div class="row g-3">
 			<div class="col-12 col-md-6 col-xl-3">
@@ -97,10 +109,9 @@ function printReport()
 <form action="products.php" method="POST">
 <input type="hidden" name="mode" value="<?php echo htmlspecialchars($mode) ?>"/>
 <input type="hidden" name="orderid" value="<?php echo htmlspecialchars($orderid) ?>"/>
-<div class="card border-0 shadow-sm overflow-hidden">
-	<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
-		<h2 class="h6 fw-bold mb-0"><?php etr("Products") ?></h2>
-		<?php button("Add product", "add", "product.php") ?>
+<div class="products-list card border-0 shadow-sm overflow-hidden">
+	<div class="card-header bg-white products-list-header">
+		<div><span><?php etr("Catalogue") ?></span><h2><?php etr("Product list") ?></h2></div>
 	</div>
 	<div class="overflow-auto">
 		<div class="products-grid">
@@ -150,12 +161,16 @@ while ($row = fetch_object($rs)) {
 	$class = ($class == "odd" ? "even" : "odd");
 }
 if ($productCount == 0) {
-	echo "<div class='text-center text-secondary py-5'>" . tr("No products found") . "</div>";
+	echo "<div class='products-empty'><span>⌕</span><strong>" . tr("No products found") . "</strong><small>" . tr("Try changing the search filters.") . "</small></div>";
 }
 ?>
 		</div>
 	</div>
+	<div class="products-list-footer">
+		<span><?php echo htmlspecialchars($productCount) ?> <?php etr("Products") ?></span>
+	</div>
 </div>
 </form>
+</main>
 <?php bottom() ?>
 </body>

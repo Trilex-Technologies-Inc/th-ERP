@@ -297,21 +297,24 @@ if ($addable)
 ?>
 <?php
 if ($addable) {
-	echo "<tr class='$class'>";
-	echo "<td/>";
-	echo "<td>";
+	echo "<tr class='stock-move-add-line-row'><td colspan='" . ($addable ? 4 : 3) . "'>";
+	echo "<div class='stock-move-add-line'>";
+	echo "<div class='stock-move-add-field stock-move-product-picker'>";
+	echo "<label for='productid_new'>" . tr("Product") . "</label>";
+	echo "<div>";
 	numberbox('productid_new', $productid);
 	$href = "products.php?mode=selectgoodsmove&orderid=$orderid";
 	button("Search", "search", $href);
-	echo "</td>";
-	echo "<td align=right>";
+	echo "</div></div>";
+	echo "<div class='stock-move-add-field'>";
+	echo "<label for='quantity_new'>" . tr("Quantity") . "</label>";
 	numberbox('quantity_new', $quantity, 5);
-	echo "</td>";
-	echo "<td>",
+	echo "</div>";
+	echo "<div class='stock-move-add-submit'>";
 	button("Add", "add");
-	echo "</td>";
-	echo "<td/>";
-	echo "</tr>";
+	echo "</div>";
+	echo "</div>";
+	echo "</td></tr>";
 }
 ?>
 <tr>

@@ -24,6 +24,7 @@ function menubar($currentHref = null, $helpUrl = 'http://therp.sf.net')
 {
 	top0("Stock/Inventory");
 	echo "<nav class='app-sidebar' aria-label='" . tr("Module navigation") . "'>";
+	sidebarHomeLink();
 	echo "<div class='app-nav-list'>";
 			$percent = 20;
 			menu('products.php', 'Products', $percent, true, $currentHref);

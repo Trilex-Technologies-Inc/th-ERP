@@ -194,6 +194,7 @@ function menubar($currentHref = null, $helpSection = null)
 {
 	top0("Payroll");
 	echo "<nav class='app-sidebar' aria-label='" . tr("Module navigation") . "'>";
+	sidebarHomeLink();
 	echo "<div class='app-nav-list'>";
 		$percent = 20;
 		menu('employees.php', 'Employees', $percent, true, $currentHref);

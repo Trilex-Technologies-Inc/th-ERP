@@ -1,4 +1,5 @@
 <nav class="app-sidebar" aria-label="<?php etr("Module navigation") ?>">
+	<?php sidebarHomeLink() ?>
 	<div class="app-nav-list">
 		<div class="app-nav-item px-2 mb-2"><?php moduleCombo('selfservice') ?></div>
 		<div class="app-nav-item"><a class="menubar" href="inout.php" accesskey="1"><?php echo tr("In/Out") ?></a></div>

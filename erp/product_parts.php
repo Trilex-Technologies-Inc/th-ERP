@@ -25,6 +25,8 @@
 						where parentid=$productid");
 	}
 
+	$model = isEmpty($productid) ? '' : findValue("select model from product where productid=$productid", '');
+	$new = isEmpty($model);
 	$allProducts = rs2array(query("select productid, model from product"));
 ?>
 <head>
@@ -39,50 +41,87 @@ include_common();
 <body>
 <?php
 menubar('products.php');
-buildHeader($productid);
+$title = $model;
+title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 ?>
 
-<div id="header">
-<?php buildTabs($productid, 'parts') ?>
+<form name="postform" action="product_parts.php" method="POST" class="product-editor">
+<?php hidden('productid', $productid) ?>
+<div class="product-editor-intro">
+	<div class="product-editor-icon" aria-hidden="true">
+		<svg viewBox="0 0 24 24"><path d="M3 7h7v7H3ZM14 3h7v7h-7ZM14 14h7v7h-7ZM10 10l4-4M10 10l4 8"/></svg>
+	</div>
+	<div>
+		<span class="product-editor-eyebrow"><?php etr("Product catalogue") ?></span>
+		<h1><?php echo htmlspecialchars($model) ?></h1>
+		<p><?php etr("Maintain product bill of materials and component quantities.") ?></p>
+	</div>
+	<?php if (!$new) { ?><span class="product-id-badge"><?php etr("Productno") ?> #<?php echo htmlspecialchars($productid) ?></span><?php } ?>
 </div>
-<div id="main">
-	<div id="contents">
-<form name=postform action="product_parts.php" method="POST">
-<?php 
-	hidden('productid', $productid);
-	echo "<br/>";
-	echo "<table>";
-	echo "<th>" . tr("Delete") . "</th>";
-	echo "<th>" . tr("Part") . "</th>";
-	echo "<th>" . tr("Quantity") . "</th>";
-	$class = 'odd';
-	while ($row = fetch($parts)) {
-		echo "<tr class=$class>";
-		echo "<td align=center>";
-		deleteIcon("product_parts.php?productid=$productid&del_childid=$row->childid");
-		echo "</td>";
-		echo "<td>$row->model</td>";
-		echo "<td>$row->quantity</td>";
-		echo "</tr>";
-        $class = ($class == "odd" ? "even" : "odd");
-	}
-	echo "<tr class=$class/>";
-	echo "<td/>";
-	echo "<td>";
-	comboBox("childid_new", $allProducts, null, true);
-	echo "</td>";
-	echo "<td>";
-	numberbox("quantity_new", 1);
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
-?>
-<br/>
-<?php
-button("Save product", "save");
-?>
 
-</div></div>
+<section class="card border-0 shadow-sm product-identity-card">
+	<div class="card-body">
+		<div class="product-section-heading">
+			<div><span><?php etr("Identity") ?></span><h2><?php etr("Basic information") ?></h2></div>
+		</div>
+		<div class="row g-4">
+			<div class="col-12 col-md-5">
+				<label class="form-label fw-semibold"><?php etr("Productno") ?></label>
+				<div class="product-readonly-value"><?php echo htmlspecialchars($productid) ?></div>
+			</div>
+			<div class="col-12 col-md-7">
+				<label class="form-label fw-semibold"><?php etr("Model") ?></label>
+				<div class="product-readonly-value"><?php echo htmlspecialchars($model) ?></div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<div id="header" class="product-tabs">
+	<?php buildTabs($productid, 'parts') ?>
+</div>
+<div id="main" class="product-tab-panel">
+	<div id="contents">
+		<div class="product-section-heading">
+			<div><span><?php etr("Parts") ?></span><h2><?php etr("Bill of materials") ?></h2></div>
+		</div>
+		<div class="product-parts-table">
+			<div class="product-parts-row product-parts-head">
+				<div><?php etr("Delete") ?></div>
+				<div><?php etr("Part") ?></div>
+				<div class="text-end"><?php etr("Quantity") ?></div>
+			</div>
+			<?php
+			if ($parts != null) {
+				while ($row = fetch($parts)) {
+					echo "<div class='product-parts-row'>";
+					echo "<div class='product-parts-delete'>";
+					deleteIcon("product_parts.php?productid=$productid&del_childid=$row->childid");
+					echo "</div>";
+					echo "<label for='quantity_new'>" . htmlspecialchars($row->model) . "</label>";
+					echo "<div class='product-parts-quantity text-end'>" . htmlspecialchars($row->quantity) . "</div>";
+					echo "</div>";
+				}
+			}
+			echo "<div class='product-parts-row product-parts-new'>";
+			echo "<div></div>";
+			echo "<div class='product-field'>";
+			comboBox("childid_new", $allProducts, null, true);
+			echo "</div>";
+			echo "<div class='product-field product-parts-new-quantity'>";
+			numberbox("quantity_new", 1);
+			echo "</div></div>";
+			?>
+		</div>
+		<small class="form-text"><?php etr("Select a component product and quantity to add it to the bill of materials.") ?></small>
+	</div>
+</div>
+
+<div class="product-actions-bar">
+	<div class="d-flex flex-wrap gap-2">
+		<?php button("Save product", "save") ?>
+	</div>
+</div>
 </form>
 <?php bottom() ?>
 

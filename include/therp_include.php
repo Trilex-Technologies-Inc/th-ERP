@@ -234,6 +234,11 @@ function menu($href, $text, $width, $hasNext, $currentHref)
 	echo "<div class='app-nav-item'><a class='$class' href='$href'><span class='nav-icon' aria-hidden='true'>$icon</span><span>" . tr($text) . "</span></a></div>\n";
 }
 
+function sidebarHomeLink()
+{
+	echo "<a class='sidebar-home-link' href='../common/modules.php' aria-label='" . tr("Home") . "'>thERP</a>";
+}
+
 function showUpgrade()
 {
 	if (isset($_REQUEST['upgrademess'])) {

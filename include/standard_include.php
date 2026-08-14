@@ -599,9 +599,27 @@ function getLanguage()
 
 function title($title)
 {
+	$parts = preg_split('/\s+>\s+/', $title);
+	$current = trim(strip_tags($parts[count($parts) - 1]));
+	if (isEmpty($current))
+		$current = trim(strip_tags($title));
+
 	echo "<div class='container-fluid pt-4 pb-2'>";
-	echo "<div class='d-flex align-items-center justify-content-between border-bottom pb-2'>";
-	echo "<h1 class='h4 mb-0 fw-semibold'>$title</h1>";
+	echo "<div class='page-title-bar border-bottom pb-2'>";
+	echo "<nav class='erp-breadcrumb' aria-label='" . tr("Breadcrumb") . "'>";
+	echo "<ol>";
+	for ($i = 0; $i < count($parts); $i++) {
+		$part = trim($parts[$i]);
+		if (isEmpty(strip_tags($part)))
+			continue;
+		$isCurrent = $i == count($parts) - 1;
+		echo $isCurrent ? "<li aria-current='page'>" : "<li>";
+		echo $part;
+		echo "</li>";
+	}
+	echo "</ol>";
+	echo "</nav>";
+	echo "<h1 class='h4 mb-0 fw-semibold'>$current</h1>";
 	echo "</div></div>\n";
 }
 

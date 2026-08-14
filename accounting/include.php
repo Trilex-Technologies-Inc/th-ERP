@@ -14,6 +14,7 @@ function menubar($currentHref = null)
 {
 	top0("Accounting");
 	echo "<nav class='app-sidebar' aria-label='" . tr("Module navigation") . "'>";
+	sidebarHomeLink();
 	echo "<div class='app-nav-list'>";
 			$percent = 20;
 			menu('index.php', 'Register', $percent, true, $currentHref);
