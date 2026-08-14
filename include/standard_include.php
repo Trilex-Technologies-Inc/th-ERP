@@ -611,9 +611,6 @@ function title($title)
 
 	echo "<div class='container-fluid pt-4 pb-2'>";
 	echo "<div class='page-title-bar border-bottom pb-2'>";
-	echo "<div class='page-title-heading'>";
-	echo "<button class='page-back-button' type='button' onclick=\"if (history.length > 1) history.back(); else location.href='../common/modules.php';\">" . tr("Back") . "</button>";
-	echo "<div>";
 	echo "<nav class='erp-breadcrumb' aria-label='" . tr("Breadcrumb") . "'>";
 	echo "<ol>";
 	echo "<li><a href='../common/modules.php'>" . tr("Home") . "</a></li>";
@@ -632,8 +629,6 @@ function title($title)
 	echo "</ol>";
 	echo "</nav>";
 	echo "<h1 class='h4 mb-0 fw-semibold'>$current</h1>";
-	echo "</div>";
-	echo "</div>";
 	echo "</div></div>\n";
 }
 
