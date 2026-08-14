@@ -60,6 +60,7 @@ $accounts = rs2array(query("select accountid, description from payaccount"));
 
 <?php include("menubar.php") ?>
 <?php payEventTitle($employeeid, "Pay item") ?>
+<?php title(tr("Pay item")) ?>
 
 <form action="payitem.php" method=POST name='form1' class="border">
 <input type=hidden name=periodid value="<?php echo $periodid ?>"/>

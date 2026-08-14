@@ -8,6 +8,7 @@
 <body>
 
 <?php menubar('purchase.php') ?>
+<?php title(tr("Purchase")) ?>
 
 <?php menupage_begin() ?>
 <div class="purchase-hub">

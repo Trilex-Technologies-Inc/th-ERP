@@ -11,6 +11,7 @@ metatag();
 <body>
 <?php
 top0();
+title(tr("Select module"));
 ?>
 <nav class="app-sidebar module-sidebar" aria-label="<?php etr("Module navigation") ?>">
 	<div class="app-nav-list">

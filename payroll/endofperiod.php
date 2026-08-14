@@ -67,8 +67,8 @@ $period = find($sql);
 <body>
 
 <?php menubar("endofperiod.php", "end") ?>
+<?php title(tr("End of period")) ?>
 
-<br/>
 <?php etr("Current period is") ?>:
 <?php echo $period->starttime . ' - ' . $period->endtime; ?><br/>
 <br/>

@@ -9,6 +9,7 @@
 <body>
 
 <?php menubar("configuration.php", "config") ?>
+<?php title(tr("Configuration")) ?>
 <?php menupage_begin() ?>
 <div class="container-fluid px-0 erp-form-layout">
 <div class="row g-3 align-items-center mb-2">

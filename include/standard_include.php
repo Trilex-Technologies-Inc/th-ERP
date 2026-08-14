@@ -599,15 +599,27 @@ function getLanguage()
 
 function title($title)
 {
+	global $therp_current_module;
+
 	$parts = preg_split('/\s+>\s+/', $title);
 	$current = trim(strip_tags($parts[count($parts) - 1]));
 	if (isEmpty($current))
 		$current = trim(strip_tags($title));
+	$module = isEmpty($therp_current_module) ? '' : tr($therp_current_module);
+	$firstPart = count($parts) > 0 ? trim(strip_tags($parts[0])) : '';
+	$moduleHref = $module == tr("Common") ? '../common/modules.php' : 'index.php';
 
 	echo "<div class='container-fluid pt-4 pb-2'>";
 	echo "<div class='page-title-bar border-bottom pb-2'>";
+	echo "<div class='page-title-heading'>";
+	echo "<button class='page-back-button' type='button' onclick=\"if (history.length > 1) history.back(); else location.href='../common/modules.php';\">" . tr("Back") . "</button>";
+	echo "<div>";
 	echo "<nav class='erp-breadcrumb' aria-label='" . tr("Breadcrumb") . "'>";
 	echo "<ol>";
+	echo "<li><a href='../common/modules.php'>" . tr("Home") . "</a></li>";
+	if (!isEmpty($module) && $firstPart != $module) {
+		echo "<li><a href='$moduleHref'>" . $module . "</a></li>";
+	}
 	for ($i = 0; $i < count($parts); $i++) {
 		$part = trim($parts[$i]);
 		if (isEmpty(strip_tags($part)))
@@ -620,6 +632,8 @@ function title($title)
 	echo "</ol>";
 	echo "</nav>";
 	echo "<h1 class='h4 mb-0 fw-semibold'>$current</h1>";
+	echo "</div>";
+	echo "</div>";
 	echo "</div></div>\n";
 }
 

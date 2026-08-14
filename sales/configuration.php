@@ -8,6 +8,7 @@
 <body>
 
 <?php menubar('configuration.php') ?>
+<?php title(tr("Configuration")) ?>
 
 <?php menupage_begin() ?>
 <ul>

@@ -79,8 +79,8 @@
 <?php menubar("companyinfo.php") ?>
 <?php
 $title = tr("Company info");
+title($title);
 ?>
-<br>
 <form action="companyinfo.php" method="POST">
 <table>
 <tr><td><?php echo tr("Company name") ?>:</td><td><input type="text" name="companyname" value="<?php echo $rec->companyname ?>"/></td>

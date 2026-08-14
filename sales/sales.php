@@ -74,8 +74,8 @@ $customers = rs2array(query("select customerid, name from customer"));
 
 	<?php
 	menubar('index.php');
+	title(tr("Sales"));
 	?>
-	<br>
 	<form action="sales.php" method="GET">
 		<div class="border p-3 mb-4">
 			<div class="row g-3 align-items-end">

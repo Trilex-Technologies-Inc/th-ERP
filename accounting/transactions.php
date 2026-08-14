@@ -36,7 +36,7 @@ include_datebox();
 <body>
 
 <?php menubar("transactions.php") ?>
-<br>
+<?php title(tr("Transactions")) ?>
 <form action="transactions.php" method="GET">
 <div class="border">
 <div class="container-fluid px-0 erp-form-layout">

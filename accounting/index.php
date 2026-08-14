@@ -10,6 +10,7 @@
 <div class=main>
 <?php
 menubar('index.php', 'index_help.php');
+title(tr("Accounting"));
 menupage_begin();
 ?>
 <ul>

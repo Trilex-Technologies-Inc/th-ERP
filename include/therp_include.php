@@ -182,11 +182,14 @@ function top($currentHRef, $title, $path = null, $help = "help")
 	if ($path != null)
 		title($path);
 	else
-		echo "<div class='mb-3'></div>";
+		title($title);
 }
 
 function top0($module = null)
 {
+	global $therp_current_module;
+
+	$therp_current_module = $module;
 	$title = tr("Switch module");
 	$company = findValue("select companyname from companyinfo");
 	if (isEmpty($company))
