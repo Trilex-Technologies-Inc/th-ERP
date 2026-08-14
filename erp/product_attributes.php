@@ -56,12 +56,12 @@ styleSheet();
 styleSheet('tabs');
 include_common();
 ?>
-</head>
+	</head>
 
 <body>
 <?php
 menubar('products.php');
-$title = $rec->model;
+$title = isEmpty($productid) ? '' : findValue("select model from product where productid=$productid", '');
 buildHeader($productid);
 ?>
 

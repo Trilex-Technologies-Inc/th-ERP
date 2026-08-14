@@ -81,6 +81,10 @@
 			$new = false;
 		}
 	}
+	if ($rec == null) {
+		$rec = new Dummy();
+	}
+	$model = $rec->model;
 
 	$suppliers = rs2array(query("select supplierid, name from supplier"));
 
@@ -97,23 +101,51 @@ include_common();
 <body>
 <?php
 menubar('products.php');
-$title = $rec->model;
-buildHeader($productid);
+$title = $model;
+title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 ?>
 
-<div id="header">
-<?php buildTabs($productid, 'prices') ?>
-</div>
-<div id="main">
-	<div id="contents">
-
-<form name=postform action="product_prices.php" method="POST">
+<form name="postform" action="product_prices.php" method="POST" class="product-editor">
 <?php hidden('productid', $productid) ?>
-<div class="container-fluid px-0 erp-form-layout">
-<div class="row g-3 align-items-center mb-2">
-	<div class="col-12 col-md-auto"><?php etr("Sales price") ?>:</div>
-	<div class="col-12 col-md-auto">
-		<table>
+<div class="product-editor-intro">
+	<div class="product-editor-icon" aria-hidden="true">
+		<svg viewBox="0 0 24 24"><path d="M12 1v22M17 5H9.5a3.5 3.5 0 0 0 0 7H14a3.5 3.5 0 0 1 0 7H6"/></svg>
+	</div>
+	<div>
+		<span class="product-editor-eyebrow"><?php etr("Product catalogue") ?></span>
+		<h1><?php echo htmlspecialchars($model) ?></h1>
+		<p><?php etr("Maintain product purchase and sales prices.") ?></p>
+	</div>
+	<?php if (!$new) { ?><span class="product-id-badge"><?php etr("Productno") ?> #<?php echo htmlspecialchars($productid) ?></span><?php } ?>
+</div>
+
+<section class="card border-0 shadow-sm product-identity-card">
+	<div class="card-body">
+		<div class="product-section-heading">
+			<div><span><?php etr("Identity") ?></span><h2><?php etr("Basic information") ?></h2></div>
+		</div>
+		<div class="row g-4">
+			<div class="col-12 col-md-5">
+				<label class="form-label fw-semibold"><?php etr("Productno") ?></label>
+				<div class="product-readonly-value"><?php echo htmlspecialchars($productid) ?></div>
+			</div>
+			<div class="col-12 col-md-7">
+				<label class="form-label fw-semibold"><?php etr("Model") ?></label>
+				<div class="product-readonly-value"><?php echo htmlspecialchars($model) ?></div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<div id="header" class="product-tabs">
+	<?php buildTabs($productid, 'prices') ?>
+</div>
+<div id="main" class="product-tab-panel">
+	<div id="contents">
+		<div class="product-section-heading">
+			<div><span><?php etr("Prices") ?></span><h2><?php etr("Sales price") ?></h2></div>
+		</div>
+		<div class="supplier-code-table">
 		<?php
 		$productid2 = isEmpty($productid) ? 0 : $productid;
 		$rs = query("
@@ -122,22 +154,21 @@ buildHeader($productid);
 		left outer join sales_price sp on sp.listid=pl.listid and sp.productid=$productid2
 		");
 		while ($row = fetch($rs)) {
-			echo "<tr>";
-			echo "<td>$row->description:</td>";
-			echo "<td>";
+			echo "<div class='supplier-code-row'>";
+			echo "<label for='salesprice_$row->listid'>" . htmlspecialchars($row->description) . "</label>";
+			echo "<div class='product-field'>";
 			moneybox("salesprice_$row->listid", $row->price);
 			hidden("old_salesprice_$row->listid", $row->price);
-			echo "</td>";
-			echo "</tr>";
+			echo "</div></div>";
 		}
 		?>
-		</table>
-	</div>
-</div>
-<div class="row g-3 align-items-center mb-2">
-	<div class="col-12 col-md-auto"><?php etr("Purchase price") ?>:</div>
-	<div class="col-12 col-md-auto">
-		<table>
+		</div>
+
+		<section class="supplier-codes">
+			<div class="product-section-heading">
+				<div><span><?php etr("Suppliers") ?></span><h2><?php etr("Purchase price") ?></h2></div>
+			</div>
+			<div class="supplier-code-table">
 		<?php
 		$productid2 = isEmpty($productid) ? 0 : $productid;
 		$rs = query("
@@ -149,40 +180,36 @@ buildHeader($productid);
 		$i = 0;
 		while ($row = fetch($rs)) {
 			hidden("supplierid_$i", $row->supplierid);
-			echo "<tr>";
-			echo "<td>$row->name:</td>";
-			echo "<td>";
+			echo "<div class='supplier-code-row'>";
+			echo "<label for='purchaseprice_$i'>" . htmlspecialchars($row->name) . "</label>";
+			echo "<div class='product-field'>";
 			moneybox("purchaseprice_$i", $row->price);
-			hidden("old_pruchaseprice_$i", $row->price);
-			echo "</td>";
-			echo "</tr>";
+			hidden("old_purchaseprice_$i", $row->price);
+			echo "</div></div>";
 			$i++;
 		}
 		hidden("supplier_count", $i);
-		echo "<tr>";
-		echo "<td>";
+		echo "<div class='supplier-code-row supplier-code-new'>";
+		echo "<div class='product-field'>";
 		combobox("supplierid_new", $suppliers, null, true);
-		echo "</td>";
-		echo "<td>";
-		moneybox("purchaseprice_new", $row->price);
-		echo "</td>";
-		echo "</tr>";
+		echo "</div><div class='product-field'>";
+		moneybox("purchaseprice_new", null);
+		echo "</div></div>";
 		?>
-		</table>
-
+			</div>
+			<small class="form-text"><?php etr("Select a supplier and enter a purchase price to add another supplier price.") ?></small>
+		</section>
 	</div>
 </div>
 
+<div class="product-actions-bar">
+	<div class="d-flex flex-wrap gap-2">
+		<?php button("Save product", "save") ?>
+	</div>
 </div>
-<br/>
-<?php
-button("Save product", "save");
-echo "&nbsp;";
-?>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
 
-</div></div>
 <?php bottom() ?>
 
 </body>

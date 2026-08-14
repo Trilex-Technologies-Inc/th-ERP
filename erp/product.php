@@ -147,10 +147,14 @@
 			$new = false;
 		}
 	}
+	if ($rec == null) {
+		$rec = new Dummy();
+	}
 
 	$categories = rs2array(query("select categoryid, description from category"));
 	$unittypes = rs2array(query("select unittype, description from unittype"));
 	$suppliers = rs2array(query("select supplierid, name from supplier"));
+	$model = $rec == null ? '' : $rec->model;
 
 ?>
 <head>
@@ -165,7 +169,7 @@ include_common();
 <body>
 <?php
 menubar('products.php');
-$title = $rec->model;
+$title = $model;
 if ($new)
 	$title = tr("Add product");
 title("<a href='products.php'>" . tr("Products") . "</a> > $title");
@@ -177,7 +181,7 @@ title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 	</div>
 	<div>
 		<span class="product-editor-eyebrow"><?php etr("Product catalogue") ?></span>
-		<h1><?php echo $new ? tr("Create a product") : htmlspecialchars($rec->model) ?></h1>
+		<h1><?php echo $new ? tr("Create a product") : htmlspecialchars($model) ?></h1>
 		<p><?php etr("Maintain product details, classification, and supplier references.") ?></p>
 	</div>
 	<?php if (!$new) { ?><span class="product-id-badge"><?php etr("Productno") ?> #<?php echo htmlspecialchars($productid) ?></span><?php } ?>

@@ -54,9 +54,10 @@ function therpExceptionHandler($e)
 	echo $e;
 	echo "</pre>";
 	//try {
-	$ex = str_replace('\"', '', $e);
+	$ex = mysqli_real_escape_string(db_connection(), str_replace('\"', '', $e));
+	$user = mysqli_real_escape_string(db_connection(), getUser());
 	$sql = "insert into logger (loggtext, loggtime, username)
-		     values (\"$ex\", now(), '" . getUser() . "')";
+		     values ('$ex', now(), '$user')";
 	echo $sql;
 	sql($sql);
 	die;
@@ -79,9 +80,10 @@ function therpErrorHandler($errno, $errstr)
 		echo $errstr;
 		echo "</pre>";
 	}
-	$ex = $errno . ": " . str_replace('\"', '', $errstr);
+	$ex = mysqli_real_escape_string(db_connection(), $errno . ": " . str_replace('\"', '', $errstr));
+	$user = mysqli_real_escape_string(db_connection(), getUser());
 	$sql = "insert into logger (loggtext, loggtime, username)
-	     values (\"$ex\", now(), '" . getUser() . "')";
+	     values ('$ex', now(), '$user')";
 	sql($sql);
 	if ($isError)
 		die;
