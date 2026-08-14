@@ -48,14 +48,14 @@
 <?php menubar("configuration.php") ?>
 <?php
 $title = $row->name;
-if ($new)
+if ($new || isEmpty($title))
 	$title = tr("Create formula");
 	title("<a href='formulas.php'>" . tr("Formulas") . "</a> > " . htmlspecialchars($title))
 ?>
 
 <form action="formula.php" method="POST" class="formula-editor">
 	<div class="card border-0 shadow-sm">
-		<div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+		<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
 			<div>
 				<h2 class="h5 fw-bold mb-1"><?php echo htmlspecialchars($title) ?></h2>
 				<p class="text-secondary small mb-0"><?php etr("Formula") ?></p>
@@ -66,8 +66,12 @@ if ($new)
 			<div class="row g-4">
 				<div class="col-12 col-lg-3">
 					<label class="form-label fw-semibold" for="formulaid"><?php etr("Id") ?></label>
-					<?php numberbox('formulaid', $formulaid, 5) ?>
-					<div class="form-text"><?php etr("Formula") ?> ID</div>
+					<?php if ($new) { ?>
+						<?php numberbox('formulaid', $formulaid, 5) ?>
+					<?php } else { ?>
+						<div class="form-control-plaintext font-monospace"><?php echo htmlspecialchars($formulaid) ?></div>
+						<input type="hidden" name="formulaid" value="<?php echo htmlspecialchars($formulaid) ?>"/>
+					<?php } ?>
 				</div>
 				<div class="col-12 col-lg-9">
 					<label class="form-label fw-semibold" for="name"><?php etr("Name") ?></label>
@@ -85,7 +89,9 @@ if ($new)
 			<a class="btn btn-outline-secondary" href="formulas.php"><?php etr("Back") ?></a>
 		</div>
 	</div>
-	<input type="hidden" name="new" value="<?php echo $new ?>"/>
+	<?php if ($new) { ?>
+		<input type="hidden" name="new" value="1"/>
+	<?php } ?>
 </form>
 <?php bottom() ?>
 </body>

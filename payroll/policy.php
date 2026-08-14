@@ -59,6 +59,8 @@
 	select a.accountid, a.accountid, a.name from account a 
 	join account_group ag on ag.accountid=a.accountid and groupid=" . GROUPID_EXPENSES . "
 	where a.dimid=1"));
+	$new = isEmpty($policyid);
+	$title = $new ? tr("Create policy") : $policy->description;
 	
 ?>
 <html>
@@ -72,7 +74,7 @@
 
 <?php
 menubar("configuration.php", "policy");
-title("<a href='policies.php'>" . tr("Policies") . "</a> > $policy->description")
+title("<a href='policies.php'>" . tr("Policies") . "</a> > " . htmlspecialchars($title))
 ?>
 
 	<div id="header">
@@ -80,42 +82,51 @@ title("<a href='policies.php'>" . tr("Policies") . "</a> > $policy->description"
 	</div>
 	<div id="main">
 		<div id="contents">
-<form action="policy.php" method="POST">
-<div class="container-fluid px-0 erp-form-layout">
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php echo tr("Policyid") ?>:</div>
-<div class="col-12 col-md-auto">
-<?php
-	if (!isEmpty($policyid)) {
-		echo $policyid;
-		echo "<input type='hidden' name='policyid' value='$policyid'/>";
-	} else {
-		echo "[" . tr("Auto generated") . "]";
-		echo "<input type='hidden' name='new' value='1'/>";
-	}
-?>
-</div>
-
-</div><div class="row g-3 align-items-center mb-2">
-<div class="col-12 col-md-auto"><?php echo tr("Description") ?>:</div>
-<div class="col-12 col-md-auto"><input type='text' name='description' value='<?php echo $policy->description ?>'/></div>
-</div>
-<?php hidden('old_description', $policy->description) ?>
-<div class="row g-3 align-items-center mb-2">
-<div class="col-12 col-md-auto"><?php echo tr("GL Account") ?>:</div>
-<div class="col-12 col-md-auto"><?php combobox('glaccountid', $accounts, $policy->glaccountid, true) ?></div>
-</div>
-
-
-<div class="row g-3 align-items-center mb-2">
-</div><div class="row g-3 align-items-center mb-2">
-<div class="col-12 col-md-auto">
-  <input type="submit" name="save" value="<?php echo tr("Save") ?>"/>
-  <input type="submit" name="delete" value="<?php echo tr("Delete") ?>"/>
-</div>
-</div>
-</div>
-
-</form>
+			<form action="policy.php" method="POST" class="policy-editor">
+				<div class="card border-0 shadow-sm">
+					<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+						<div>
+							<h2 class="h5 fw-bold mb-1"><?php echo htmlspecialchars($title) ?></h2>
+							<p class="text-secondary small mb-0"><?php etr("Policy") ?></p>
+						</div>
+						<span class="badge text-bg-light border"><?php echo $new ? tr("New") : '#' . htmlspecialchars($policyid) ?></span>
+					</div>
+					<div class="card-body p-4">
+						<div class="row g-4">
+							<div class="col-12 col-lg-3">
+								<label class="form-label fw-semibold"><?php echo tr("Policyid") ?></label>
+								<div class="form-control-plaintext">
+									<?php
+										if (!$new) {
+											echo htmlspecialchars($policyid);
+											echo "<input type='hidden' name='policyid' value='" . htmlspecialchars($policyid) . "'/>";
+										} else {
+											echo "[" . tr("Auto generated") . "]";
+											echo "<input type='hidden' name='new' value='1'/>";
+										}
+									?>
+								</div>
+							</div>
+							<div class="col-12 col-lg-9">
+								<label class="form-label fw-semibold" for="description"><?php echo tr("Description") ?></label>
+								<input class="form-control" id="description" type="text" name="description" value="<?php echo htmlspecialchars($policy->description) ?>" required />
+								<?php hidden('old_description', $policy->description) ?>
+							</div>
+							<div class="col-12 col-lg-6">
+								<label class="form-label fw-semibold" for="glaccountid"><?php echo tr("GL Account") ?></label>
+								<?php combobox('glaccountid', $accounts, $policy->glaccountid, true) ?>
+							</div>
+						</div>
+					</div>
+					<div class="card-footer bg-white d-flex flex-wrap gap-2 py-3">
+						<input type="submit" name="save" value="<?php echo tr("Save") ?>"/>
+						<?php if (!$new) { ?>
+							<button class="btn btn-outline-danger" type="submit" name="delete" value="1"><?php echo tr("Delete") ?></button>
+						<?php } ?>
+						<a class="btn btn-outline-secondary" href="policies.php"><?php etr("Back") ?></a>
+					</div>
+				</div>
+			</form>
 		</div>
 	</div>
 <?php bottom() ?>
