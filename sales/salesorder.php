@@ -314,6 +314,15 @@ if (array_key_exists('finish', $_POST)) {
 }
 ?>
 
+<?php if (!$new) { ?>
+<section class="sales-order-summary" aria-label="<?php etr("Order summary") ?>">
+	<div><span><?php etr("Customer") ?></span><strong><?php echo htmlspecialchars($customer->name) ?></strong></div>
+	<div><span><?php etr("Order date") ?></span><strong><?php echo htmlspecialchars(date(DATE_PATTERN, $orderdate)) ?></strong></div>
+	<div><span><?php etr("Order total") ?></span><strong><?php echo formatMoney($toPay) ?></strong></div>
+	<div class="<?php echo $fullyPayed ? 'is-paid' : 'is-due' ?>"><span><?php echo $fullyPayed ? tr("Payment status") : tr("Amount paid") ?></span><strong><?php echo $fullyPayed ? tr("Fully paid") : formatMoney($payed) ?></strong></div>
+</section>
+<?php } ?>
+
 <form name="postform" action="salesorder.php" method="POST">
 <input type="hidden" name="customerid" value="<?php echo htmlspecialchars($customerid) ?>" />
 <section class="sales-order-overview card border-0 shadow-sm mb-3">
@@ -334,10 +343,10 @@ if (array_key_exists('finish', $_POST)) {
 		<?php if ($customerid != CUSTOMERID_CASH) { ?>
 		<div class="col-md-4">
 			<label class="form-label"><?php echo tr("Ordered by") ?></label>
-			<?php if (isEmpty($invoice_transid)) { textbox('orderedby', $rec->orderedby); } else { echo "<div class='form-control-plaintext'>" . $rec->orderedby . "</div>"; } ?>
+			<?php if (isEmpty($invoice_transid)) { textbox('orderedby', $rec->orderedby); } else { echo "<div class='form-control-plaintext'>" . htmlspecialchars($rec->orderedby) . "</div>"; } ?>
 		</div>
 		<div class="col-auto align-self-end">
-			<?php if (isEmpty($invoice_transid)) { ?><input type='image' name='save' value='Save' src='../images/disk.gif'><?php } ?>
+			<?php if (isEmpty($invoice_transid)) { ?><input type="submit" name="save" value="<?php etr("Save") ?>" /><?php } ?>
 		</div>
 		<?php } ?>
 	</div>
@@ -350,7 +359,7 @@ if (array_key_exists('finish', $_POST)) {
 			<label class="form-label"><?php etr("Location") ?></label>
 			<?php
 			if (isEmpty($invoice_transid))
-				combobox('locationid', $locations, $locationid, false, 'saveForm()');
+				combobox('locationid', $locations, $locationid, false, 'submitForm()');
 			else {
 				$location = findValue("select name from location where locationid=$locationid");
 				echo $location;
@@ -372,7 +381,7 @@ if (array_key_exists('finish', $_POST)) {
 			if (!isEmpty($invoice_transid)) {
 				?>
 				<div class="row g-3 mt-3">
-					<div class="col-md-12">
+					<div class="col-md-12 sales-order-links">
 						<a href='invoice_pdf.php?orderid=<?php echo $orderid ?>' onclick="return thERPPrintDocument(this.href)"><?php echo tr("Print") ?></a>
 						&nbsp;&nbsp;
 						<a href='email_invoice.php?orderid=<?php echo $orderid ?>'><?php echo tr("E-mail customer") ?></a>
@@ -385,7 +394,7 @@ if (array_key_exists('finish', $_POST)) {
 			if (!$new) {
 				?>
 				<div class="row g-3 mt-3">
-					<div class="col-md-12">
+					<div class="col-md-12 sales-order-receipt-status">
 						<strong><?php echo tr("Receipt") ?></strong>: <?php if ($fullyPayed) { etr("Fully paid"); } else { echo formatMoney($payed) . " / " . formatMoney($toPay); } ?>
 						&nbsp;&nbsp;
 						<?php if ($payed != 0) {
@@ -404,7 +413,7 @@ if (array_key_exists('finish', $_POST)) {
 		else {
 			?>
 			<div class="row g-3 mt-3">
-				<div class="col-md-12">
+				<div class="col-md-12 sales-order-receipt-status">
 					<strong><?php echo tr("Receipt") ?></strong>: <?php if ($fullyPayed) { etr("Fully paid"); } else { etr("Not paid"); } ?>
 					&nbsp;&nbsp;
 					<?php if ($payed != 0) { ?>
@@ -438,7 +447,7 @@ if (array_key_exists('finish', $_POST)) {
 	<div class="row g-3 mt-3">
 		<div class="col-md-3">
 			<label class="form-label"><?php etr("Created by") ?></label>
-			<div class="form-control-plaintext"><?php echo $createdby ?></div>
+			<div class="form-control-plaintext"><?php echo htmlspecialchars($createdby) ?></div>
 		</div>
 	</div>
 </div></section>
@@ -516,9 +525,9 @@ while ($row = fetch($items)) {
         $vat = $row->vat/100 * $row->unitprice * $row->quantity;
         echo "<td class='text-end'>" . formatMoney($vat) . "</td>";
     }
-    if ($addable) {
-        echo "<td class='text-center'>";
-        echo "<input type='image' name='save' value='Save' src='../images/disk.gif'>";
+	if ($addable) {
+		echo "<td class='text-center'>";
+		echo "<input type='submit' class='sales-line-save' name='save' value='" . tr("Save") . "'>";
         echo "</td>";
     }
     echo "</tr>
@@ -530,11 +539,13 @@ while ($row = fetch($items)) {
 }
 
 if ($addable) {
-    echo "<tr class='$class'>";
+    echo "<tr class='sales-order-add-row'>";
     echo "<td/>";
     echo "<td>";
+    echo "<div class='sales-order-product-picker'>";
     textbox('productid_new', $productid, 10);
     button("Search", "search", "../erp/products.php?mode=selectproduct&orderid=$orderid");
+    echo "</div><small>" . tr("Select a product, then confirm quantity and price.") . "</small>";
     echo "</td>";
     echo "<td>";
     textbox('comment_new', '', 20);
@@ -551,7 +562,7 @@ if ($addable) {
     echo "</td>";
 	if (!$incVAT)
 		echo "<td></td>";
-    echo "<td><input type=submit name=add value='Add'/></td>";
+    echo "<td class='sales-order-add-action'><input type=submit name=add value='" . tr("Add") . "'/></td>";
     echo "</tr>";
 }
 ?>

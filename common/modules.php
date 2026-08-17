@@ -14,6 +14,7 @@ top0();
 title(tr("Select module"));
 ?>
 <nav class="app-sidebar module-sidebar" aria-label="<?php etr("Module navigation") ?>">
+	<?php sidebarHomeLink() ?>
 	<div class="app-nav-list">
 		<?php
 		menu('../sales/index.php', 'Sales', 14, true, null);

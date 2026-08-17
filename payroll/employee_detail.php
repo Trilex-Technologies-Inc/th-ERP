@@ -23,14 +23,15 @@
 		$zipcode = getParam('zipcode');
 		$city = getParam('city');
 		$birthdate = prepStringParam('birthdate');
+		$countrycode = prepStringParam('countrycode');
 		$username = getParam('username');
 		if (isNew()) {
 			$sql = "insert into employee (givenname, surname, bank_account, 
 			                              active, street_address, zipcode, city, policyid,
-			                              birthdate)
+			                              birthdate, countrycode)
 			        values ('$givenname','$surname', '$bank_account',
-					        1, '$street_address', '$zipcode', '$city', $policyid,
-					        $birthdate)";
+				        1, '$street_address', '$zipcode', '$city', $policyid,
+				        $birthdate, $countrycode)";
 			sql($sql);
 			$employeeid = insert_id();
 		} else {
@@ -44,7 +45,8 @@
 					street_address='$street_address',
 					zipcode='$zipcode',
 					city='$city',
-					birthdate=$birthdate
+					birthdate=$birthdate,
+					countrycode=$countrycode
                 where employeeid=$employeeid";
     		sql($updateSQL);
 		}
@@ -97,6 +99,7 @@
 			   street_address,
 			   zipcode,
 			   city,
+			   countrycode,
 			   username,
 			   birthdate
 		from employee e
@@ -144,6 +147,7 @@
 	                            from policy p
 	                            join policy_description d on d.policyid=p.policyid and language='" . getLanguage() . "'"));
 	$allTeams = rs2array(query("select teamid, description from team"));
+	$countries = rs2array(query("select countrycode, name from country order by name"));
 ?>
 
 <?php head_begin('Employee') ?>
@@ -179,7 +183,7 @@ function onPolicyChange()
 		<div class="card-body"><div class="row g-3">
 			<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="givenname"><?php etr("Givenname") ?></label><input id="givenname" type="text" name="givenname" value="<?php echo htmlspecialchars($emp->givenname) ?>" /></div>
 			<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="surname"><?php etr("Surname") ?></label><input id="surname" type="text" name="surname" value="<?php echo htmlspecialchars($emp->surname) ?>" /></div>
-			<div class="col-12 col-md-4"><label class="form-label fw-semibold" for="birthdate"><?php etr("Birth date") ?></label><?php datebox('birthdate', $emp->birthdate) ?></div>
+			<div class="col-12 col-md-4"><label class="form-label fw-semibold" for="birthdate"><?php etr("Birth date") ?></label><input id="birthdate" type="date" name="birthdate" value="<?php echo htmlspecialchars($emp->birthdate) ?>" /></div>
 			<div class="col-12 col-md-8"><label class="form-label fw-semibold" for="username"><?php etr("Username") ?></label><?php textbox('username', $emp->username, 30) ?></div>
 			<?php if (!$new) { ?><div class="col-12"><div class="employee-active-toggle"><?php checkbox('active', $emp->active) ?><label for="active"><?php etr("Active employee") ?></label></div></div><?php } ?>
 		</div></div>
@@ -206,6 +210,7 @@ function onPolicyChange()
 			<div class="col-12"><label class="form-label fw-semibold" for="street_address"><?php etr("Street") ?></label><?php textbox('street_address', $emp->street_address, 60) ?></div>
 			<div class="col-12 col-md-4"><label class="form-label fw-semibold" for="zipcode"><?php etr("Zipcode") ?></label><?php textbox('zipcode', $emp->zipcode, 15) ?></div>
 			<div class="col-12 col-md-8"><label class="form-label fw-semibold" for="city"><?php etr("City") ?></label><?php textbox('city', $emp->city, 30) ?></div>
+			<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="countrycode"><?php etr("Country") ?></label><?php comboBox('countrycode', $countries, $emp->countrycode, true) ?></div>
 		</div></div>
 	</section>
 

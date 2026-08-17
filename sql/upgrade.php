@@ -1,5 +1,5 @@
 <?php
-define('DBVERSION', 64);
+define('DBVERSION', 66);
 
 function upgrade()
 {
@@ -25,6 +25,30 @@ function upgradeVersion($dbversion)
 	call_user_func("upgrade$dbversion");
 	sql("update version set dbversion=$dbversion");
 	return "Upgraded to database version $dbversion<br>";
+}
+function upgrade65()
+{
+	runScript("../sql/pos_retail_upgrade.sql");
+}
+function upgrade66()
+{
+	$column = findValue("
+	select count(*) from information_schema.columns
+	where table_schema=database()
+	and table_name='employee'
+	and column_name='countrycode'", 0);
+	if ($column == 0)
+		sql("alter table employee add countrycode varchar(2)");
+
+	$constraint = findValue("
+	select count(*) from information_schema.table_constraints
+	where constraint_schema=database()
+	and table_name='employee'
+	and constraint_name='fk_employee_country'", 0);
+	if ($constraint == 0)
+		sql("
+		alter table employee add constraint fk_employee_country
+		foreign key (countrycode) references country (countrycode)");
 }
 function upgrade64()
 {

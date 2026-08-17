@@ -61,10 +61,16 @@ if (!isEmpty($orderid)) {
 		$total = getSalesOrderTotalIncVat($orderid);
 		if ($total > 0) {
 			$received = getParam('received', $total);
+			$paymentMethod = getParam('payment_method', 'cash');
 			if ($received < $total) {
 				$mess = tr('The received amount is less than the amount due.');
 			} else {
 				tx('finish_cashorder', array($orderid, $received));
+				if (findValue("show tables like 'pos_payment'", null) != null) {
+					$paymentMethod = addslashes($paymentMethod);
+					sql("insert into pos_payment (orderid, methodid, amount, createdby)
+					     values ($orderid, '$paymentMethod', $total, '" . getUser() . "')");
+				}
 				header('Location: posclient.php?orderid=' . urlencode($orderid) . '&completed=1');
 				die;
 			}
@@ -505,6 +511,12 @@ if (!isEmpty($orderid)) {
 																																								$todayDetailCount++; ?><a href="../accounting/transaction.php?transactionid=<?php echo urlencode($todaySale->invoice_transid) ?>" class="erp-pos-sale-row"><span>#<?php echo htmlspecialchars($todaySale->orderid) ?></span><time><?php echo date('H:i', strtotime($todaySale->orderdate)) ?></time><strong><?php echo formatMoney($todaySale->sale_total) ?></strong></a><?php }
 																																																																																																																																																			if (!$todayDetailCount) { ?><div class="erp-pos-sales-empty"><?php etr('No completed sales today') ?></div><?php } ?>
 		</div>
+		<nav class="erp-pos-toolbar" aria-label="<?php etr('POS quick actions') ?>">
+			<a href="posclient.php?action=new"><span aria-hidden="true">＋</span><strong><?php etr('New sale') ?></strong><small><?php etr('Start an empty cart') ?></small></a>
+			<a href="sales.php?starttime=<?php echo urlencode(strtotime('today')) ?>"><span aria-hidden="true">▤</span><strong><?php etr('Sales history') ?></strong><small><?php etr('Review completed orders') ?></small></a>
+			<a href="receipts.php"><span aria-hidden="true">✓</span><strong><?php etr('Receipts') ?></strong><small><?php etr('Payments and receipts') ?></small></a>
+			<a href="../erp/products.php"><span aria-hidden="true">□</span><strong><?php etr('Inventory') ?></strong><small><?php echo (int)$lowStockCount ?> <?php etr('low-stock items') ?></small></a>
+		</nav>
 		<form method="post" action="posclient.php<?php if ($orderid) echo '?orderid=' . urlencode($orderid); ?>" class="erp-pos-shell" id="pos-form">
 			<section class="erp-pos-catalog">
 				<header class="erp-pos-top">
@@ -536,14 +548,16 @@ if (!isEmpty($orderid)) {
 					<div class="erp-pos-actions"><a class="erp-new" href="posclient.php?action=new"><?php etr('New sale') ?></a><button class="erp-secondary" type="submit" onclick="setAction('save')" <?php if (!$orderid || !$editable) echo 'disabled'; ?>><?php etr('Save') ?></button><?php if ($paid) { ?><a class="erp-pay" href="invoice_pdf.php?orderid=<?php echo urlencode($orderid) ?>&type=receipt"><?php etr('Print receipt') ?></a><?php } else { ?><button class="erp-pay" type="button" onclick="openPayment()" <?php if (!$orderid || !$total) echo 'disabled'; ?>><?php etr('Pay now') ?> · <?php echo formatMoney($total) ?></button><?php } ?></div>
 				</footer>
 			</aside>
-			<input type="hidden" name="action" id="pos-action"><input type="hidden" name="quantity_new" value="1"><input type="hidden" name="received" id="pos-received"><input type="hidden" name="count" value="<?php echo $i ?>">
+			<input type="hidden" name="action" id="pos-action"><input type="hidden" name="quantity_new" value="1"><input type="hidden" name="received" id="pos-received"><input type="hidden" name="payment_method" id="pos-payment-method" value="cash"><input type="hidden" name="count" value="<?php echo $i ?>">
 		</form>
 	</main>
 	<dialog id="payment-dialog" class="erp-pay-dialog">
 		<form method="dialog">
 			<h2><?php etr('Take payment') ?></h2>
 			<p><?php etr('Enter the amount received from the customer.') ?></p>
-			<div class="due"><span><?php etr('Amount due') ?></span><strong><?php echo formatMoney($total) ?></strong></div><label><?php etr('Cash received') ?><input id="received" type="number" min="<?php echo htmlspecialchars($total) ?>" step="any" value="<?php echo htmlspecialchars($total) ?>"></label>
+			<div class="due"><span><?php etr('Amount due') ?></span><strong><?php echo formatMoney($total) ?></strong></div>
+			<label><?php etr('Payment method') ?><select id="payment-method"><option value="cash"><?php etr('Cash') ?></option><option value="card"><?php etr('Card') ?></option><option value="bank"><?php etr('Bank transfer') ?></option><option value="gift"><?php etr('Gift card') ?></option><option value="store_credit"><?php etr('Store credit') ?></option></select></label>
+			<label><?php etr('Amount received') ?><input id="received" type="number" min="<?php echo htmlspecialchars($total) ?>" step="any" value="<?php echo htmlspecialchars($total) ?>"></label>
 			<div class="erp-dialog-actions"><button value="cancel"><?php etr('Cancel') ?></button><button type="button" class="confirm" onclick="completePayment()"><?php etr('Complete sale') ?></button></div>
 		</form>
 	</dialog>
@@ -561,6 +575,7 @@ if (!isEmpty($orderid)) {
 
 		function completePayment() {
 			document.getElementById('pos-received').value = document.getElementById('received').value;
+			document.getElementById('pos-payment-method').value = document.getElementById('payment-method').value;
 			setAction('pay');
 			document.getElementById('pos-form').submit()
 		}
