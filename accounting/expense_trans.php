@@ -61,7 +61,14 @@ if ($errmess != null)
 
 ?>
 
-<form action="expense_trans.php" method="POST">
+<main class="accounting-transaction-page">
+<section class="accounting-transaction-card accounting-expense-card">
+<div class="accounting-transaction-intro">
+    <span class="accounting-section-kicker"><?php etr("Quick actions") ?></span>
+    <h1><?php etr("Expense transaction") ?></h1>
+    <p><?php etr("Record an expense, including its VAT and payment amount.") ?></p>
+</div>
+<form action="expense_trans.php" method="POST" class="accounting-transaction-form">
 <?php
 hidden('transactionid', $transactionid);
 hidden('dimid', $dimid);
@@ -94,6 +101,8 @@ hidden('dimid', $dimid);
 <br/>
 <?php saveButton(); ?>
 </form>
+</section>
+</main>
 <?php
 bottom();
 ?>

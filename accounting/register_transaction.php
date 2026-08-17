@@ -147,7 +147,14 @@ if ($errmess != null)
 
 ?>
 
-<form action="register_transaction.php" method="POST">
+<main class="accounting-transaction-page">
+<section class="accounting-transaction-card">
+<div class="accounting-transaction-intro">
+    <span class="accounting-section-kicker"><?php etr("General ledger") ?></span>
+    <h1><?php etr("Register transaction") ?></h1>
+    <p><?php etr("Enter the transaction details and balance the accounts before confirming.") ?></p>
+</div>
+<form action="register_transaction.php" method="POST" class="accounting-transaction-form">
 <?php
 hidden('transactionid', $transactionid);
 hidden('dimid', $dimid);
@@ -244,6 +251,8 @@ if (!$locked) {
 ?>
 <input type=hidden name=new value='<?php echo $new ?>'/>
 </form>
+</section>
+</main>
 <?php
 bottom();
 ?>
