@@ -120,9 +120,9 @@ function printReport()
 				<div class="product-number"><?php etr("Productno") ?></div>
 				<div class="product-name flex-grow-1"><?php etr("Product") ?></div>
 				<?php if (isEmpty($mode)) { ?>
-					<div class="product-quantity text-end"><?php etr("Quantity") ?></div>
-					<div class="product-quantity text-end"><?php etr("Ordered qty, sales") ?></div>
-					<div class="product-quantity text-end"><?php etr("Ordered qty, purchase") ?></div>
+					<div class="product-quantity product-stock text-end"><?php etr("Quantity") ?></div>
+					<div class="product-quantity product-sales text-end"><?php etr("Ordered qty, sales") ?></div>
+					<div class="product-quantity product-purchase text-end"><?php etr("Ordered qty, purchase") ?></div>
 				<?php } ?>
 				<div class="product-barcode text-end"><?php etr("Barcode") ?></div>
 			</div>
@@ -152,9 +152,9 @@ while ($row = fetch_object($rs)) {
 		$href = "stockmoves.php?productid=$row->productid&locationid=$locationid";
 		echo "<div class='product-quantity text-end'><a href='$href' class='sum badge text-bg-light border'>" . htmlspecialchars($row->quantity) . "</a></div>";
 		$href = "sales.php?productid=$row->productid&uninvoiced=1";
-		echo "<div class='product-quantity text-end'><a href='$href' class='sum badge text-bg-light border'>" . htmlspecialchars($row->so_quantity) . "</a></div>";
+		echo "<div class='product-quantity product-sales text-end'><a href='$href' class='sum badge text-bg-light border'>" . htmlspecialchars($row->so_quantity) . "</a></div>";
 		$href = "purchaseorders.php?productid=$row->productid";
-		echo "<div class='product-quantity text-end'><a href='$href' class='sum badge text-bg-light border'>" . htmlspecialchars($row->po_quantity) . "</a></div>";
+		echo "<div class='product-quantity product-purchase text-end'><a href='$href' class='sum badge text-bg-light border'>" . htmlspecialchars($row->po_quantity) . "</a></div>";
 	}
 	echo "<div class='product-barcode text-end font-monospace small'>" . htmlspecialchars($row->barcode) . "</div>";
 	echo "</div>";

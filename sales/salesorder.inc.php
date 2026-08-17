@@ -41,7 +41,7 @@ function add_orderitem($orderid, $productid, $quantity, $unitprice, $description
 		from vat_category v
 		join category c on c.vatcatid=v.vatcatid
 		join product p on p.categoryid=c.categoryid
-		where productid=$productid", 0);
+		where productid='$productid'", 0);
 	} else
 		$vatPercent = 0;
 	if ($vatIncluded) {
@@ -63,7 +63,7 @@ function add_orderitem($orderid, $productid, $quantity, $unitprice, $description
 	values (
 		$orderid, 
 		$no, 
-		$productid, 
+		'$productid',
 		$quantity, 
 		$unitprice, 
 		$vatPercent, 
@@ -74,12 +74,12 @@ function add_orderitem($orderid, $productid, $quantity, $unitprice, $description
 	$diff = $toPayRounded - $toPay;
 	$productid = PRODUCTID_ROUNDING;
 	sql("update salesorder_item set unitprice=unitprice+$diff
-	     where orderid=$orderid and productid=$productid");
+	     where orderid=$orderid and productid='$productid'");
 	if (affected_rows() == 0) {
 		$no = findValue("select max(no) from salesorder_item where orderid=$orderid", 0);
 		$no++;
 		sql("insert into salesorder_item (orderid, no, productid, quantity, unitprice, vat)
-		     values ($orderid, $no, $productid, 1, $diff, 0)");
+		     values ($orderid, $no, '$productid', 1, $diff, 0)");
 	}
 	return $no;
 }

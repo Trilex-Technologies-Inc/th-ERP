@@ -76,6 +76,24 @@ if (!isEmpty($orderid)) {
 
 $locations = rs2array(query('select locationid, name from location'));
 $products = query("select productid, model, description, barcode from product where active=1 order by model");
+$todaySales = find("select count(distinct so.orderid) as sale_count,
+                   coalesce(sum(si.quantity * si.unitprice * (1 + si.vat / 100)), 0) as sale_total
+                   from salesorder so
+                   left join salesorder_item si on si.orderid=so.orderid
+                   where so.customerid=" . CUSTOMERID_CASH . "
+                   and so.invoice_transid is not null and so.cancelled=0
+                   and so.orderdate >= curdate()
+                   and so.orderdate < date_add(curdate(), interval 1 day)");
+$todaySaleRows = query("select so.orderid, so.invoice_transid, so.orderdate,
+                        coalesce(sum(si.quantity * si.unitprice * (1 + si.vat / 100)), 0) as sale_total
+                        from salesorder so
+                        left join salesorder_item si on si.orderid=so.orderid
+                        where so.customerid=" . CUSTOMERID_CASH . "
+                        and so.invoice_transid is not null and so.cancelled=0
+                        and so.orderdate >= curdate()
+                        and so.orderdate < date_add(curdate(), interval 1 day)
+                        group by so.orderid, so.orderdate
+                        order by so.orderid desc");
 $locationid = findValue("select locationid from user where username='" . getUser() . "'", 1);
 $items = null;
 $total = 0;
@@ -113,6 +131,8 @@ if (!isEmpty($orderid)) {
 	<?php if ($mess) { ?><div class="alert alert-danger"><?php echo htmlspecialchars($mess) ?></div><?php } ?>
 	<?php if (getParam('completed')) { ?><div class="alert alert-success d-flex justify-content-between align-items-center"><span><?php etr('The sale is complete. The receipt is ready to print.') ?></span><a class="btn btn-primary btn-sm" href="invoice_pdf.php?orderid=<?php echo urlencode($orderid) ?>&type=receipt" onclick="return thERPPrintDocument(this.href)"><?php etr('Print receipt') ?></a></div><?php } ?>
 
+	<div class="erp-pos-today"><div><span><?php etr("Today's sales") ?></span><strong><?php echo formatMoney($todaySales->sale_total) ?></strong></div><small><?php echo (int)$todaySales->sale_count ?> <?php etr('completed sales') ?></small></div>
+	<div class="erp-pos-sales-detail"><div class="erp-pos-sales-detail-head"><strong><?php etr("Today's sale details") ?></strong><span><?php echo date(DATE_PATTERN) ?></span></div><?php $todayDetailCount = 0; while ($todaySale = fetch($todaySaleRows)) { $todayDetailCount++; ?><a href="../accounting/transaction.php?transactionid=<?php echo urlencode($todaySale->invoice_transid) ?>" class="erp-pos-sale-row"><span>#<?php echo htmlspecialchars($todaySale->orderid) ?></span><time><?php echo date('H:i', strtotime($todaySale->orderdate)) ?></time><strong><?php echo formatMoney($todaySale->sale_total) ?></strong></a><?php } if (!$todayDetailCount) { ?><div class="erp-pos-sales-empty"><?php etr('No completed sales today') ?></div><?php } ?></div>
 	<form method="post" action="posclient.php<?php if ($orderid) echo '?orderid=' . urlencode($orderid); ?>" class="erp-pos-shell" id="pos-form">
 		<section class="erp-pos-catalog"><header class="erp-pos-top"><div><h1><?php etr('Point of sale') ?></h1><p><?php echo date(DATE_PATTERN, $orderdate) ?> · <?php etr('Select a product to add it to the sale') ?></p></div><label class="erp-pos-search"><span>⌕</span><input id="product-search" placeholder="<?php etr('Search products or scan barcode') ?>" autocomplete="off"></label></header><div class="erp-product-grid" id="product-grid"><?php $productCount=0; while ($product = fetch($products)) { $productCount++; ?><button class="erp-product" type="submit" name="productid" value="<?php echo htmlspecialchars($product->productid) ?>" data-search="<?php echo htmlspecialchars(strtolower($product->productid.' '.$product->model.' '.$product->barcode.' '.$product->description)) ?>" onclick="setAction('add')"><strong><?php echo htmlspecialchars($product->model) ?></strong><small><?php echo htmlspecialchars($product->description) ?></small><em>#<?php echo htmlspecialchars($product->productid) ?></em></button><?php } ?><?php if (!$productCount) { ?><div class="erp-empty"><?php etr('No products found') ?></div><?php } ?></div></section>
 		<aside class="erp-cart"><header class="erp-cart-head"><div><h2><?php etr('Current sale') ?> #<?php echo $orderid ? htmlspecialchars($orderid) : '—' ?></h2><small><?php echo $paid ? tr('Paid') : tr('In progress') ?></small></div><?php comboBox('locationid', $locations, $locationid, false); ?></header><div class="erp-cart-lines"><?php $i=0; if ($items) while ($row=fetch($items)) { $amount=$row->quantity*$row->unitprice*(1+$row->vat/100); ?><div class="erp-cart-line"><div><strong><?php echo htmlspecialchars($row->model) ?></strong><small><?php echo formatMoney($row->unitprice) ?> × <?php echo htmlspecialchars($row->quantity) ?></small></div><input type="number" step="any" min="0" name="quantity_<?php echo $i ?>" value="<?php echo htmlspecialchars($row->quantity) ?>" <?php if (!$editable) echo 'disabled'; ?>><b><?php echo formatMoney($amount) ?></b><?php if ($editable) { ?><a href="posclient.php?orderid=<?php echo urlencode($orderid) ?>&action=delete&line=<?php echo urlencode($row->no) ?>">×</a><?php } ?><input type="hidden" name="no_<?php echo $i ?>" value="<?php echo htmlspecialchars($row->no) ?>"><input type="hidden" name="unitprice_<?php echo $i ?>" value="<?php echo htmlspecialchars($row->unitprice) ?>"></div><?php $i++; } ?><?php if (!$i) { ?><div class="erp-cart-empty"><div><strong><?php etr('Cart is empty') ?></strong><br><small><?php etr('Choose a product to begin') ?></small></div></div><?php } ?></div><footer class="erp-cart-summary"><div class="erp-total"><span><?php etr('Total') ?></span><strong><?php echo formatMoney($total) ?></strong></div><div class="erp-pos-actions"><a class="erp-new" href="posclient.php?action=new"><?php etr('New sale') ?></a><button class="erp-secondary" type="submit" onclick="setAction('save')" <?php if (!$orderid || !$editable) echo 'disabled'; ?>><?php etr('Save') ?></button><?php if ($paid) { ?><a class="erp-pay" href="invoice_pdf.php?orderid=<?php echo urlencode($orderid) ?>&type=receipt"><?php etr('Print receipt') ?></a><?php } else { ?><button class="erp-pay" type="button" onclick="openPayment()" <?php if (!$orderid || !$total) echo 'disabled'; ?>><?php etr('Pay now') ?> · <?php echo formatMoney($total) ?></button><?php } ?></div></footer></aside>

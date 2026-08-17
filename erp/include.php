@@ -3,18 +3,21 @@ include('../include/therp_include.php');
 
 function deleteProduct($productid)
 {	
-	$count = findValue("select count(*) from salesorder_item where productid=$productid");
-	$count += findValue("select count(*) from purchaseorder_item where productid=$productid");
-	$count += findValue("select count(*) from stockmove where productid=$productid");
+	$productid = addslashes($productid);
+	$count = findValue("select count(*) from salesorder_item where productid='$productid'", 0);
+	$count += findValue("select count(*) from purchaseorder_item where productid='$productid'", 0);
+	$count += findValue("select count(*) from stockmove where productid='$productid'", 0);
+	$count += findValue("select count(*) from bom where parentid='$productid' or childid='$productid'", 0);
 	if ($count > 0) {
-		sql("update product set active=0 where productid=$productid");
+		// Products referenced by orders, stock movements, or BOMs must remain
+		// available to preserve historical and manufacturing relationships.
+		sql("update product set active=0 where productid='$productid'");
 	} else {
+		$oscommerceid = findValue("select oscommerceid from product where productid='$productid'", null);
 		sql("delete from sales_price where productid='$productid'");
 		sql("delete from product where productid='$productid'");
 		if (oscommerce()) {
-    		$oscommerceid = findValue("
-    		select oscommerceid from product where productid='$productid'");	
-    		if (!isEmpty($oscommerceid))		
+			if (!isEmpty($oscommerceid))
 				sql("delete from products where products_id=$oscommerceid");
 		}
 	}
