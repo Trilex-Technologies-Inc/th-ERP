@@ -52,7 +52,7 @@ title(tr($title))
 &nbsp;
 
 <form action="purchase.php" method=POST>
-<table>
+<div class="card border-0 shadow-sm overflow-hidden"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
 <th><?php etr("Delete") ?></th>
 <th><?php etr("Id") ?></th>
 <th><?php etr("Supplier") ?></th>
@@ -71,7 +71,7 @@ title(tr($title))
         $i++;
     }
 ?>
-</table>
+</table></div></div>
 <br/>
 <?php newButton("suppliers.php?mode=createorder") ?>
 &nbsp;

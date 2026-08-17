@@ -26,7 +26,7 @@
 <?php
 if ($parts != null) {
 	echo "<div class=border>";
-	echo "<table>";
+	echo "<div class='card border-0 shadow-sm overflow-hidden'><div class='table-responsive'><table class='table table-hover align-middle mb-0'>";
 	echo "<th>" . tr("Delete") . "</th>";
 	echo "<th>" . tr("Account") . "</th>";
 	echo "<th>" . tr("Amount") . "</th>";
@@ -54,7 +54,7 @@ if ($parts != null) {
 	echo "</td>";
 	echo "<td><input type=text name='amount_new'/></td>";
 	echo "</tr>";
-	echo "</table>";
+	echo "</table></div></div>";
 	echo "</div>";	
 }
 ?>

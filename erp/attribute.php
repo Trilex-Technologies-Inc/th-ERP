@@ -86,7 +86,7 @@ title($title);
 if ($options != null) {
 	echo "<br/>";
 	echo "<div class=border>";
-	echo "<table>";
+	echo "<div class='card border-0 shadow-sm overflow-hidden'><div class='table-responsive'><table class='table table-hover align-middle mb-0'>";
 	echo "<th>" . tr("Delete") . "</th>";	
 	echo "<th>" . tr("Option") . "</th>";
 	$class = 'odd';
@@ -111,7 +111,7 @@ if ($options != null) {
 	textbox('description_new', '');
 	echo "</td>";
 	echo "</tr>";
-	echo "</table>";
+	echo "</table></div></div>";
 	echo "</div>";
 }
 ?>

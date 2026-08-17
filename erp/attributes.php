@@ -36,7 +36,7 @@ title(tr("Product attributes"))
 ?>
 
 <form action="attributes.php" method="POST">
-<table>
+<div class="card border-0 shadow-sm overflow-hidden"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
 <th><?php echo tr("Delete") ?></th>
 <th><?php echo tr("Name") ?></th>
 <?php
@@ -57,7 +57,7 @@ while ($row = fetch($rs)) {
 }
 hidden('count', $i);
 ?>
-</table>
+</table></div></div>
 <br/>
 <?php newButton("attribute.php") ?>
 </form>

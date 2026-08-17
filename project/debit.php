@@ -2,8 +2,26 @@
 	include('include.php');
 
 	$employeeid = findValue("
-	select employeeid from user where username='" . getUser() . "'");
-	$periodid = 
+	select employeeid from user where username='" . getUser() . "'", null);
+	/* A project user must be linked to an employee before time can be debited.
+	 * Guard this path before building any employee-dependent SQL: interpolating
+	 * an empty value produces the invalid `employeeid=` query seen previously. */
+	if (isEmpty($employeeid)) {
+		head("Debit");
+		?>
+		<body>
+		<?php top("debit", "Debit"); ?>
+		<main class="container-fluid py-4">
+			<div class="alert alert-warning shadow-sm" role="alert">
+				<strong><?php etr("Employee profile required") ?></strong><br>
+				<?php etr("Your user account is not linked to an employee. Please ask an administrator to complete your employee setup before recording project time.") ?>
+			</div>
+		</main>
+		<?php bottom(); ?>
+		</body>
+		<?php
+		exit;
+	}
 	$periodid = findValue("
 	select periodid
 	from payperiod where isnull(locked) or locked=0

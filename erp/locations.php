@@ -36,7 +36,7 @@
 &nbsp;
 
 <form action="locations.php" method=POST>
-<table>
+<div class="card border-0 shadow-sm overflow-hidden"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
 <th><?php etr("Id") ?></th>
 <th><?php etr("Name") ?></th>
 <?php
@@ -51,7 +51,7 @@
         $class = ($class == "odd" ? "even" : "odd");
     }
 ?>
-</table>
+</table></div></div>
 <div class="container-fluid px-0 erp-form-layout">
 <div class="row g-3 align-items-center mb-2">
 <div class="col-12 col-md-auto"><?php newButton("location.php") ?></div>

@@ -123,7 +123,7 @@ $locations = rs2array(query("select locationid, name from location"));
 			echo "<font>" . tr("Starting quantity") . ": $startBalance</font><br><br>";
 		}
 		?>
-		<table>
+		<div class="card border-0 shadow-sm overflow-hidden"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
 			<th><?php etr("Id") ?></th>
 			<th><?php etr("Narrative") ?></th>
 			<th><?php etr("Product") ?></th>
@@ -166,7 +166,7 @@ $locations = rs2array(query("select locationid, name from location"));
 				$i++;
 			}
 			?>
-		</table>
+		</table></div></div>
 		<?php
 		if (!isEmpty($productid)) {
 			echo "<br><font>" . tr("Final quantity") . ": $endBalance</font><br><br>";

@@ -36,7 +36,7 @@ title(tr("Supplier balance"));
 </form>
 &nbsp;
 
-<table>
+<div class="card border-0 shadow-sm overflow-hidden"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
 <th><?php etr("Id") ?></th>
 <th><?php etr("Name") ?></th>
 <th><?php etr("Balance") ?></th>
@@ -55,6 +55,6 @@ title(tr("Supplier balance"));
         $class = ($class == "odd" ? "even" : "odd");
     }
 ?>
-</table>
+</table></div></div>
 <?php bottom() ?>
 </body>

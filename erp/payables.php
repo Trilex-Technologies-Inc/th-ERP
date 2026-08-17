@@ -55,7 +55,7 @@
 &nbsp;
 
 <form action="payables.php" method=POST>
-<table>
+<div class="card border-0 shadow-sm overflow-hidden"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
 <th><?php etr("Delete") ?></th>
 <th><?php etr("Id") ?></th>
 <th><?php etr("supplier") ?></th>
@@ -82,7 +82,7 @@
         $i++;
     }
 ?>
-</table>
+</table></div></div>
 <br/>
 <?php newButton("suppliers.php?mode=payable") ?>
 &nbsp;

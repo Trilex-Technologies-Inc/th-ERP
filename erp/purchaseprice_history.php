@@ -33,7 +33,7 @@ title("Product > <a href='product.php?productid=$productid'>$model</a> > Purchas
 <br/>
 <div class="border">
 
-<table>
+<div class="card border-0 shadow-sm overflow-hidden"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
 <th><?php etr("Date") ?></th>
 <th><?php etr("Purchase order") ?></th>
 <th><?php etr("Price") ?></th>
@@ -52,6 +52,6 @@ title("Product > <a href='product.php?productid=$productid'>$model</a> > Purchas
         $class = ($class == "odd" ? "even" : "odd");
     }
 ?>
-</table>
+</table></div></div>
 <?php bottom() ?>
 </body>

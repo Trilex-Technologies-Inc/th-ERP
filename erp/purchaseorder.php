@@ -270,7 +270,7 @@ if ($cancelled) {
 <br/>
 <?php if ($items != null) { ?>
 <div class='border'>
-<table>
+<div class="card border-0 shadow-sm overflow-hidden"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
 <?php
 if ($addable)
 	echo "<th>" . tr("Delete") . "</th>";
@@ -350,7 +350,7 @@ if ($addable) echo "<td/>";
 <td align=right class=label><?php etr("To pay") ?>:</td>
 <td align=right><?php echo formatMoney($toPay) ?></td>
 </tr>
-</table>
+</table></div></div>
 </div>
 <br/>
 <?php } ?>

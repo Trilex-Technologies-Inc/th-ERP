@@ -153,7 +153,7 @@ if (!$new) {
 <?php
 if ($orders != null) {
 	echo "<p>Left to allocate: $leftToAllocate</p>";
-	echo "<table>";
+	echo "<div class='card border-0 shadow-sm overflow-hidden'><div class='table-responsive'><table class='table table-hover align-middle mb-0'>";
 	echo "<th>" . tr("Payable") . "</th>";
 	echo "<th>" . tr("Amount") . "</th>";
 	echo "<th>" . tr("Previous allocations") . "</th>";
@@ -174,7 +174,7 @@ if ($orders != null) {
         $class = ($class == "odd" ? "even" : "odd");
 		$i++;
 	}
-	echo "</table>";
+	echo "</table></div></div>";
 	echo "<input type=hidden name=count value='$i' />";
 }
 ?>

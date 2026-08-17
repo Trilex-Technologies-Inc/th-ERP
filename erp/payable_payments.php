@@ -32,7 +32,7 @@ title("<a href='payables.php'>" . tr("Payables") . "</a> > <a href='payable.php?
 <div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><b><?php etr("Payable") ?>:</b></div><div class="col-12 col-md-auto"><?php echo $payableid ?></div>
 </div></div>
 <br/>
-<table>
+<div class="card border-0 shadow-sm overflow-hidden"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
 <th><?php etr("Payment Id") ?></th>
 <th><?php etr("Date") ?></th>
 <th><?php etr("Amount") ?></th>
@@ -48,5 +48,5 @@ while ($row = fetch($payments)) {
 }
 
 ?>
-</table>
+</table></div></div>
 </body>
