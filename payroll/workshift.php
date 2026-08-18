@@ -47,7 +47,6 @@
 <?php metatag() ?>
 <title>Payroll - Workshift</title>
 <?php styleSheet() ?>
-<?php include_datebox() ?>
 </head>
 
 

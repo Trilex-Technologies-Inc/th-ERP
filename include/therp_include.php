@@ -299,7 +299,6 @@ function head_begin($title)
 	headTitle($title);
 	styleSheet();
 	include_common();
-	include_datebox();
 	echo "<script src='../include/AjaxRequest.js'></script>";
 }
 

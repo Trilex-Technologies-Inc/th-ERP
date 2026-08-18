@@ -29,7 +29,6 @@
 <title>thERP - <?php etr("Transaction sheet") ?></title>
 <?php
 styleSheet();
-include_datebox();
 ?>
 </head>
 

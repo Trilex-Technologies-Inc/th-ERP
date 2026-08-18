@@ -66,7 +66,6 @@ $customers = rs2array(query("select customerid, name from customer"));
 	<title>thERP - <?php etr("Sales") ?></title>
 	<?php
 	styleSheet();
-	include_datebox();
 	?>
 </head>
 

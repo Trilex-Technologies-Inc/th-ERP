@@ -408,37 +408,30 @@ function newbox()
 
 function datebox($id, $value = null)
 {
-	if (strstr($value, '-') === false)
-		$value = formatDate($value);
-	echo "<input type='text' id='$id' name='$id' value='$value' size='12' ";
-	if (array_key_exists('readonly', $_REQUEST))
-		echo "onKeyPress='return false;' ";
-	else
-		echo "onKeyPress='return onDateKeyPress(event, this);' ";
-	echo ">";
-	echo "<img id='$id" . "_button' src='../include/jscalendar/img.gif'/>";
-	if (!array_key_exists('readonly', $_REQUEST)) {
-		echo "<script>\n";
-		echo "Calendar.setup(\n";
-		echo "{\n";
-		echo "  inputField: '$id',\n";
-		echo "  ifFormat: '" . DATE_PATTERN_MYSQL . "',\n";
-		echo "  button: '$id" . "_button'\n";
-		echo "}\n";
-		echo ");\n";
-		echo "</script>\n";
-		$label = $id;
-		addValidator("validateDate('" . tr($label)  . "', document.postform.$id)");
-		hidden("old_$id", $value);
+	$dateValue = '';
+	if (!isEmpty($value)) {
+		if (is_numeric($value)) {
+			$dateValue = date('Y-m-d', (int)$value);
+		} else if (preg_match('/^\d{4}-\d{2}-\d{2}/', $value)) {
+			$dateValue = substr($value, 0, 10);
+		} else {
+			$date = DateTime::createFromFormat(DATE_PATTERN, $value);
+			if ($date !== false)
+				$dateValue = $date->format('Y-m-d');
+			else {
+				$timestamp = strtotime($value);
+				if ($timestamp !== false)
+					$dateValue = date('Y-m-d', $timestamp);
+			}
+		}
 	}
-}
 
-function include_datebox()
-{
-	echo "<style type='text/css'>@import url(../include/jscalendar/calendar-win2k-1.css);</style>\n";
-	echo "<script src='../include/jscalendar/calendar.js'></script>\n";
-	echo "<script src='../include/jscalendar/lang/calendar-en.js'></script>\n";
-	echo "<script src='../include/jscalendar/calendar-setup.js'></script>\n";
+	echo "<input type='date' class='form-control' id='" . htmlspecialchars($id) . "' name='" . htmlspecialchars($id) . "' value='" . htmlspecialchars($dateValue) . "'";
+	if (array_key_exists('readonly', $_REQUEST))
+		echo " readonly";
+	echo ">";
+	if (!array_key_exists('readonly', $_REQUEST))
+		hidden("old_$id", $dateValue);
 }
 
 function include_common()

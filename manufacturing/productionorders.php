@@ -26,7 +26,6 @@
 <title>thERP - <?php etr("Production orders") ?></title>
 <?php
 styleSheet();
-include_datebox();
 ?>
 </head>
 

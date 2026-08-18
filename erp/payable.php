@@ -108,7 +108,6 @@
 <?php
 metatag();
 styleSheet();
-include_datebox();
 ?>
 </head>
 <body>

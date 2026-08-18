@@ -84,7 +84,6 @@
 <?php 
 styleSheet();
 include_common();
-include_datebox();
 ?>
 </head>
 

@@ -202,7 +202,7 @@ echo "<div class='col-12 col-lg-4'><label class='form-label fw-semibold' for='st
 if (array_key_exists('readonly', $_REQUEST)) {
 	echo formatDate($starttime);
 } else {
-	datebox("starttime", isEmpty($starttime) ? '' : date(DATE_PATTERN, $starttime));
+	datebox("starttime", $starttime);
 }
 echo "</div></div>";
 ?>

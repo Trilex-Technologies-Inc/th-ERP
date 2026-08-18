@@ -53,7 +53,6 @@ $accounts = rs2array(query("select accountid, description from payaccount"));
 <?php metatag() ?>
 <title>Payroll - <?php etr("Pay item") ?></title>
 <?php styleSheet() ?>
-<?php include_datebox() ?>
 </head>
 
 <body>

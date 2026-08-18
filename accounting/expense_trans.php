@@ -46,7 +46,6 @@
 <?php
 styleSheet();
 styleSheet('tabs');
-include_datebox();
 ?>
 </head>
 
