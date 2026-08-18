@@ -2,9 +2,9 @@
 	include('include.php');
 
 	if (isSave()) {
-		$carcompensation_productid = prepNull(getParam('carcompensation_productid'));
-		$perdiem_productid = prepNull(getParam('perdiem_productid'));
-		$night_productid = prepNull(getParam('night_productid'));
+		$carcompensation_productid = prepStringParam('carcompensation_productid');
+		$perdiem_productid = prepStringParam('perdiem_productid');
+		$night_productid = prepStringParam('night_productid');
 		$sql = "update travelconf set
 		        carcompensation_productid=$carcompensation_productid,
 		        perdiem_productid=$perdiem_productid,
