@@ -1,6 +1,7 @@
 <?php
 include("include.php");
 include("schedule_functions.php");
+include("employee.inc");
 
 $employeeid0 = getParam("employeeid");
 $selfservice = false;
@@ -68,29 +69,37 @@ $emplink .= "$employee->givenname $employee->surname</a>";
 top("employees.php", "calendar", $emplink);
 ?>
 
-<center>
-
-<form action="calendar.php" method="GET">
-	<div class="container-fluid px-0 erp-form-layout">
-		<div class="row g-3 align-items-center mb-2">
-		<div class="col-12 col-md-auto"><input type="submit" name="prev" value=" < "/></div>
-		<div class="col-12 col-md-auto"><?php echo date("Y", $date) . ' ' . tr(date("M", $date)) ?></div>
-		<div class="col-12 col-md-auto"><input type="submit" name="next" value=" > "/></div>
-		</div>
+<main class="employee-calendar">
+<?php if (!$selfservice) { ?>
+	<nav class="employee-detail-tabs" aria-label="<?php echo tr("Employee sections") ?>">
+		<?php buildTabs($employeeid, 'calendar') ?>
+	</nav>
+<?php } ?>
+<form action="calendar.php" method="GET" class="calendar-toolbar">
+	<input class="calendar-nav" type="submit" name="prev" value="&#8249;" aria-label="<?php echo tr("Previous month") ?>"/>
+	<div class="calendar-heading">
+		<span class="calendar-eyebrow"><?php echo tr("Employee calendar") ?></span>
+		<h2><?php echo tr(date("M", $date)) . ' ' . date("Y", $date) ?></h2>
 	</div>
+	<input class="calendar-nav" type="submit" name="next" value="&#8250;" aria-label="<?php echo tr("Next month") ?>"/>
 	<input type="hidden" name="employeeid" value="<?php echo $employeeid0 ?>"/>
 	<input type="hidden" name="year" value="<?php echo $year ?>"/>
 	<input type="hidden" name="month" value="<?php echo $month ?>"/>
 </form>
 
-<table class="calendar" width="100%">
-<th><?php echo tr("Sunday") ?></th>
+<div class="calendar-legend" aria-label="<?php echo tr("Calendar legend") ?>">
+	<span><i class="legend-dot shift-dot"></i><?php echo tr("Work shift") ?></span>
+	<span><i class="legend-dot event-dot"></i><?php echo tr("Pay event or trip") ?></span>
+</div>
+<div class="calendar-frame">
+<table class="calendar">
+<thead><tr><th scope="col"><?php echo tr("Sunday") ?></th>
 <th><?php echo tr("Monday") ?></th>
 <th><?php echo tr("Tuesday") ?></th>
 <th><?php echo tr("Wednesday") ?></th>
 <th><?php echo tr("Thursday") ?></th>
 <th><?php echo tr("Friday") ?></th>
-<th><?php echo tr("Saturday") ?></th>
+<th><?php echo tr("Saturday") ?></th></tr></thead><tbody>
 <?php
 $lastdate = strtotime("next month", $date);
 $eventMap = array();
@@ -100,7 +109,7 @@ foreach ($shifts as $shift) {
     $shiftid = $shift[0];
     $shiftstart = $shift[1];
     $shiftend = $shift[2];
-    $html = "<span>";
+    $html = "<span class='calendar-shift'>";
     $html .= date(TIME_PATTERN, $shiftstart) . " - ";
     $html .= date(TIME_PATTERN, $shiftend) . "</span>";
     $eventMap = addEvent($eventMap, $shiftstart, $html);
@@ -144,7 +153,7 @@ while ($rec = fetch_object($q)) {
 		$value = minutes2hours($rec->value) . 'h';
 	if (!isEmpty($value))
 		$value = '(' . $value . ')';
-	$html .= "<font color='black'>" . $rec->description . " $value</font></a>";
+	$html .= "<span>" . $rec->description . " $value</span></a>";
 	while ($day < $rec->endtime) {
 		$key = date("yMd", $day);
 		$eventMap = addEvent($eventMap, $day, $html);
@@ -153,50 +162,45 @@ while ($rec = fetch_object($q)) {
 }
 
 $date = strtotime("last sunday", $date);
-echo "<tr height='70'>";
+$today = date("Ymd");
+echo "<tr>";
 while (true) {
-	echo "<td class='calendar' valign='top' width='14%'>";
-	echo "<table width='100%'>";
-	echo "<tr>";
-	if (date("m", $date) == $month) {
-		echo "<td>";
-		echo "<b>";
-		echo date("d", $date);
-		echo "</b>";
-		echo "</td>";
-		echo "<td align='right'>";		
+	$isCurrentMonth = date("m", $date) == $month;
+	$classes = array("calendar-day");
+	if (!$isCurrentMonth) $classes[] = "outside-month";
+	if (date("Ymd", $date) == $today) $classes[] = "today";
+	if (date("w", $date) == 0 || date("w", $date) == 6) $classes[] = "weekend";
+	echo "<td class='" . implode(" ", $classes) . "'>";
+	echo "<div class='day-header'>";
+	echo "<span class='day-number'>" . date("j", $date) . "</span>";
+	if ($isCurrentMonth) {
 		$href = "payevent.php?employeeid=$employeeid0&starttime=$date";
-		echo "<a class='new' href='$href'>" . tr("New") . "</a>\n";
-		echo "</td>";
+		echo "<a class='new' href='$href' title='" . tr("New pay event") . "'><span>+</span> " . tr("New") . "</a>\n";
 	}
-	echo "</tr>";
+	echo "</div><div class='day-events'>";
 	$day = date("yMd", $date);
 	if (array_key_exists($day, $eventMap)) {
 		$list = $eventMap[$day];
 		foreach ($list as $event) {
-			echo "<tr>";
-			echo "<td colspan='2'>";
-			echo "$event<br/>";
-			echo "</td>";
-			echo "</tr>";
+			echo $event;
 		}
 	}
-	echo "</table>";
+	echo "</div>";
 	echo "</td>";
 	if (date("w", $date) == 6) {
 		echo "</tr>";
 		if (date("ym", $date) > $yymm)
 			break;
-		echo "<tr height='70'>";
+		echo "<tr>";
 	}
 	$date =addDay($date);
 }
 echo "</tr>";
 
 ?>
-</table>
-
-</center>
+</tbody></table>
+</div>
+</main>
 <?php bottom() ?>
 </body>
 </html>

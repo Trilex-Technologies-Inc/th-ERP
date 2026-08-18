@@ -8,6 +8,10 @@
 	$rec = find("select givenname, surname from employee where employeeid=$employeeid");
 	$name = $rec->givenname . " " . $rec->surname;
 
+	if (!isEmpty(getParam("delete_last"))) {
+		sql("delete from emp_schedule where employeeid=$employeeid order by valid_from desc limit 1");
+	}
+
 	if (isSave()) {
 		$i = 0;
 		$rowcount = getParam("rowcount");
@@ -39,12 +43,10 @@
 <?php menubar("employees.php") ?>
 <?php title($name) ?>
 
-	<div id="header">
-	<?php buildTabs($employeeid, 'schedule') ?>
+	<main class="employee-detail-page">
+	<div class="employee-detail-tabs">
+		<?php buildTabs($employeeid, 'schedule') ?>
 	</div>
-	<div id="main">
-		<div id="contents">
-
 
 <form action="employee_schedule.php" method="POST">
 <input type="hidden" name="employeeid" value="<?php echo htmlspecialchars($employeeid) ?>"/>
@@ -127,9 +129,16 @@ while ($row = fetch($rs)) {
 </tbody>
 </table>
 </div>
-<div class="card-footer bg-white d-flex flex-wrap gap-2 py-3"><input type="submit" name="save" value="Save"/></div>
+<div class="card-footer bg-white d-flex flex-wrap justify-content-between gap-2 py-3">
+	<div>
+	<?php if ($numrows > 0) { ?>
+		<button type="submit" name="delete_last" value="1" class="btn btn-outline-danger" onclick="return confirm('<?php echo htmlspecialchars(tr("Delete the latest schedule assignment?"), ENT_QUOTES) ?>')"><?php etr("Delete latest") ?></button>
+	<?php } ?>
+	</div>
+	<input type="submit" name="save" value="<?php echo tr("Save") ?>"/>
+</div>
 </div>
 </form>
-        </div>
-    </div>
+	</main>
+<?php bottom() ?>
 </body>

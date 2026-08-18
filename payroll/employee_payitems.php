@@ -61,27 +61,39 @@ menubar("employees.php");
 title(getEmployeeStr($employeeid));
 ?>
 
-	<div id="header">
-	<?php buildTabs($employeeid, 'payitems') ?>
+<main class="employee-detail-page">
+	<div class="employee-detail-tabs">
+		<?php buildTabs($employeeid, 'payitems') ?>
 	</div>
-	<div id="main">
-		<div id="contents">
+
 <form action="employee_payitems.php" method="POST">
-<input type=hidden name=employeeid value='<?php echo $employeeid ?>'/>
-<input type=hidden name=accounttype value='<?php echo $accounttype ?>'/>
-<table>
-<th><?php echo tr("Delete") ?></th>
-<th><?php echo tr("No") ?></th>
-<th><?php echo tr("Account") ?></th>
-<th><?php echo tr("Value") ?></th>
+<input type="hidden" name="employeeid" value="<?php echo htmlspecialchars($employeeid) ?>"/>
+<div class="card border-0 shadow-sm overflow-hidden">
+	<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+		<div>
+			<h2 class="h5 fw-bold mb-1"><?php etr("Pay items") ?></h2>
+			<p class="text-secondary small mb-0"><?php echo htmlspecialchars(getEmployeeStr($employeeid)) ?> &middot; <?php etr("Recurring payroll values") ?></p>
+		</div>
+		<span class="badge text-bg-light border"><?php etr("Current period") ?></span>
+	</div>
+	<div class="table-responsive">
+	<table class="table table-hover align-middle mb-0">
+	<thead><tr>
+		<th class="text-center" style="width: 80px;"><?php echo tr("Delete") ?></th>
+		<th style="width: 90px;"><?php echo tr("No") ?></th>
+		<th><?php echo tr("Account") ?></th>
+		<th style="width: 220px;"><?php echo tr("Value") ?></th>
+	</tr></thead>
+	<tbody>
 <?php
-$class = "odd";
 $i = 0;
 while ($row = fetch($rs)) {
-	echo "<input type=hidden name=no_$i value='$row->no'/>";
-    echo "<tr class='$class'>";
-	deleteColumn("employee_payitems.php?del_no=$row->no&employeeid=$employeeid");
-    echo "<td>$row->no</td>";
+    echo "<tr>";
+	echo "<td class='text-center'>";
+	echo "<input type='hidden' name='no_$i' value='" . htmlspecialchars($row->no) . "'/>";
+	deleteIcon("employee_payitems.php?del_no=$row->no&employeeid=$employeeid");
+	echo "</td>";
+    echo "<td class='font-monospace text-secondary'>" . htmlspecialchars($row->no) . "</td>";
     echo "<td>";
     comboBox("accountid_$i", $accounts, $row->accountid, false);
     echo "</td>";
@@ -89,23 +101,26 @@ while ($row = fetch($rs)) {
 	numberbox("value_$i", $row->value);
 	echo "</td>";
     echo "</tr>";
-    $class = ($class == "odd" ? "even" : "odd");
     $i++;
 }
 hidden('count', $i);
 ?>
-<tr>
-<td/>
-<td/>
+<tr class="table-light">
+<td class="text-center text-secondary fw-bold">+</td>
+<td><span class="badge text-bg-primary"><?php etr("New") ?></span></td>
 <td><?php comboBox('accountid_new', $accounts, null, true) ?></td>
-<td><input type=text name=value_new /></td>
+<td><input class="form-control" type="number" step="any" name="value_new" aria-label="<?php echo tr("New value") ?>"/></td>
 </tr>
-</table>
-<br/>
-<?php saveButton() ?>
-</form>
-		</div>
+	</tbody>
+	</table>
 	</div>
+	<div class="card-footer bg-white d-flex justify-content-between align-items-center gap-2 py-3">
+		<span class="text-secondary small"><?php echo $i ?> <?php etr("pay items") ?></span>
+		<?php saveButton() ?>
+	</div>
+</div>
+</form>
+</main>
 <?php bottom() ?>
 </body>
 </html>

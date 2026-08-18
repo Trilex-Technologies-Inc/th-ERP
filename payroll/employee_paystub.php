@@ -66,50 +66,46 @@ order by calcseq
 <body>
 <?php 
 top("employees.php", "Pay stub", $employee->givenname . ' ' . $employee->surname);
-if ($mess != null)
-	echo "<center><p>$mess</p></center>";
 ?>
 
-
+<main class="employee-detail-page">
 <?php if (!$selfservice) { ?>
-	<div id="header">
-	<?php buildTabs($employeeid, 'paystub') ?>
-	</div>
-	<div id="main">
-		<div id="contents">
+	<div class="employee-detail-tabs"><?php buildTabs($employeeid, 'paystub') ?></div>
 <?php } ?>
+<?php if ($mess != null) { ?><div class="alert alert-info" role="alert"><?php echo htmlspecialchars($mess) ?></div><?php } ?>
 
-<center>
-<form action="employee_paystub.php" method="GET">
-	<div class="container-fluid px-0 erp-form-layout">
-		<div class="row g-3 align-items-center mb-2">
-		<div class="col-12 col-md-auto"><input type="submit" name="prev" value=" < "/></div>
-		<div class="col-12 col-md-auto"><?php displayPeriod($periodid) ?></div>
-		<div class="col-12 col-md-auto"><input type="submit" name="next" value=" > "/></div>
-		</div>
+<form action="employee_paystub.php" method="GET" class="d-flex justify-content-center align-items-center gap-3 mb-3">
+	<button class="btn btn-outline-secondary rounded-circle" style="width:42px;height:42px" type="submit" name="prev" aria-label="<?php etr("Previous period") ?>">&#8249;</button>
+	<div class="text-center">
+		<div class="text-uppercase text-secondary fw-bold" style="font-size:.7rem;letter-spacing:.08em"><?php etr("Pay period") ?> #<?php echo htmlspecialchars($periodid) ?></div>
+		<div class="fw-bold mt-1"><?php displayPeriod($periodid) ?></div>
 	</div>
+	<button class="btn btn-outline-secondary rounded-circle" style="width:42px;height:42px" type="submit" name="next" aria-label="<?php etr("Next period") ?>">&#8250;</button>
 	<input type="hidden" name="employeeid" value="<?php echo $employeeid0 ?>"/>
 	<input type="hidden" name="periodid" value="<?php echo $periodid ?>"/>
 </form>
 
-<form action='employee_paystub.php' method=POST>
-<input type=hidden name=employeeid value='<?php echo $employeeid0 ?>'/>
-<table>
-<th><?php echo tr("Delete") ?></th>
+<form action="employee_paystub.php" method="POST">
+<input type="hidden" name="employeeid" value="<?php echo htmlspecialchars($employeeid0) ?>"/>
+<div class="card border-0 shadow-sm overflow-hidden">
+<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+	<div><h2 class="h5 fw-bold mb-1"><?php etr("Pay stub") ?></h2><p class="text-secondary small mb-0"><?php echo htmlspecialchars($employee->givenname . ' ' . $employee->surname) ?></p></div>
+	<span class="badge <?php echo $readonly ? 'text-bg-light border' : 'text-bg-success' ?>"><?php echo $readonly ? tr("Closed period") : tr("Current period") ?></span>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+<thead><tr><th class="text-center" style="width:75px"><?php echo tr("Delete") ?></th>
 <th><?php echo tr("Id") ?></th>
 <th><?php echo tr("Account") ?></th>
 <th><?php echo tr("Date") ?></th>
 <th><?php echo tr("Quantity") ?></th>
 <th><?php echo tr("Unit price") ?></th>
 <th><?php echo tr("Amount") ?></th>
-<th><?php echo tr("To pay") ?></th>
+<th class="text-end"><?php echo tr("To pay") ?></th></tr></thead><tbody>
 
 <?php
-$class = "odd";
 $i = 0;
 while ($row = fetch($rs)) {
-	echo "<input type=hidden name='accountid_$i' value='$row->accountid'/>";
-	echo "<input type=hidden name='payeventid_$i' value='$row->payeventid'/>";
     $href = null;
     $deletable = false;
     if ($row->derived != 1) {
@@ -117,74 +113,67 @@ while ($row = fetch($rs)) {
     	$deletable = !$readonly;
     }
     $href = "payevent.php?payeventid=$row->payeventid&back=paystub";
-    echo "<tr class='$class'>";
-    echo "<td align=center>";
+    echo "<tr>";
+    echo "<td class='text-center'>";
+	echo "<input type='hidden' name='accountid_$i' value='" . htmlspecialchars($row->accountid) . "'/><input type='hidden' name='payeventid_$i' value='" . htmlspecialchars($row->payeventid) . "'/>";
     if ($deletable)
 	    deleteIcon("employee_paystub.php?employeeid=$employeeid0&del_payeventid=$row->payeventid");
     echo "</td>";
-    echo "<td align=right><a href='$href'>$row->payeventid</a></td>";
+    echo "<td class='font-monospace'><a href='$href'>" . htmlspecialchars($row->payeventid) . "</a></td>";
 	echo "<td>";
 	if ($href != null)
 		echo "<a href='$href'>";
-	echo $row->accountid .' - '.$row->narrative;
+	echo htmlspecialchars($row->accountid . ' - ' . $row->narrative);
 	if ($href != null)
 		echo "</a>";
 	echo "</td>";
 	echo "<td>";
 	echo formatDateInterval($row->starttime, $row->endtime);
 	echo "</td>";
-	echo "<td align=right>" . formatQuantity($row->quantity, $row->inputtype) . "</td>";
-	echo "<td align=right>";
+	echo "<td class='text-end'>" . formatQuantity($row->quantity, $row->inputtype) . "</td>";
+	echo "<td class='text-end'>";
 	if ($row->unit_price != null)
 		echo formatMoney($row->unit_price);
 	echo "</td>";
-	echo "<td align=right>";
+	echo "<td class='text-end fw-semibold'>";
 	echo formatMoney($row->amount);
 	echo "</td>";
-	echo "<td align=right>";
+	echo "<td class='text-end fw-bold'>";
 	if ($row->payable != null)
 		echo formatMoney($row->amount);	
 	echo "</td>";
 	echo "</tr>\n";
-    $class = ($class == "odd" ? "even" : "odd");
     $i++;
 }
 ?>
-<input type=hidden name=count value='<?php echo $i ?>'/>
-<tr class='<?php echo $class ?>'>
-<td/>
-<td><b>Total</b></td>
-<td/>
-<td/>
-<td/>
-<td/>
+<tr class="table-light">
+<td><input type="hidden" name="count" value="<?php echo $i ?>"/></td>
+<td colspan="5"><strong><?php etr("Total payable") ?></strong></td>
 <?php
 $payable = findValue("select sum(amount)
                       from payevent pe
                       join payaccount_group g on g.accountid=pe.accountid
                       and g.groupid=" . GROUPID_PAYABLE . "
                       where employeeid=$employeeid and periodid=$periodid") ?>
-<td align=right><b><?php echo formatMoney($payable) ?></b></td>
-<td/>
+<td></td>
+<td class="text-end"><strong><?php echo formatMoney($payable) ?></strong></td>
 </tr>
 
-</table>
-<br/>
+</tbody></table></div>
+<div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+	<span class="text-secondary small"><?php echo $i ?> <?php etr("entries") ?></span>
+	<div class="d-flex flex-wrap gap-2">
 <?php
 if (!$readonly) {
 	button("Calculate", "calc");
-	echo "&nbsp;";
 	button("New", "add", "payevent.php?employeeid=$employeeid0&back=paystub");
-	echo "&nbsp;";
 	button("Print", "print", "payslip.php?employeeid=$employeeid0&periodid=$periodid");
 }
 ?>
-</form>
-</center>
-
-<?php if (!$selfservice) { ?>
-		</div>
 	</div>
-<?php } ?>
+</div>
+</div>
+</form>
+</main>
 <?php bottom() ?>
 </body>

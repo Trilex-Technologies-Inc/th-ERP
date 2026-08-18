@@ -57,7 +57,40 @@ if (isDelete()) {
 	$tripid = null;
 }
 
+$confirmError = null;
 if (array_key_exists('confirm', $_POST)) {
+	$tripForValidation = find("select unix_timestamp(endtime) as endtime, unix_timestamp(starttime) as starttime, night_allowance from trip where tripid=$tripid");
+	$configIssues = array();
+	$carProduct = findValue("select carcompensation_productid from travelconf");
+	$carPrice = isEmpty($carProduct) ? null : findValue("select price from sales_price where listid=1 and productid='$carProduct'");
+	$carAccount = isEmpty($carProduct) ? null : findValue("select expense_accountid from category c join product p on p.categoryid=c.categoryid where p.productid='$carProduct'");
+	$configuredCashAccount = findValue("select default_cash from accountconf");
+	if (isEmpty($carProduct)) $configIssues[] = tr("car compensation product");
+	if ($carPrice === null) $configIssues[] = tr("car compensation sales price");
+	if (isEmpty($carAccount)) $configIssues[] = tr("car compensation expense account");
+	if (isEmpty($configuredCashAccount)) $configIssues[] = tr("default cash account");
+	$validationDays = $tripForValidation == null ? 0 : dayDiff($tripForValidation->endtime, $tripForValidation->starttime);
+	if ($validationDays > 1) {
+		$perdiemProduct = findValue("select perdiem_productid from travelconf");
+		$perdiemPrice = isEmpty($perdiemProduct) ? null : findValue("select price from sales_price where listid=1 and productid='$perdiemProduct'");
+		$perdiemAccount = isEmpty($perdiemProduct) ? null : findValue("select expense_accountid from category c join product p on p.categoryid=c.categoryid where p.productid='$perdiemProduct'");
+		if (isEmpty($perdiemProduct)) $configIssues[] = tr("per diem product");
+		if ($perdiemPrice === null) $configIssues[] = tr("per diem sales price");
+		if (isEmpty($perdiemAccount)) $configIssues[] = tr("per diem expense account");
+	}
+	if ($tripForValidation != null && $tripForValidation->night_allowance && $validationDays > 1) {
+		$nightProduct = findValue("select night_productid from travelconf");
+		$nightPrice = isEmpty($nightProduct) ? null : findValue("select price from sales_price where listid=1 and productid='$nightProduct'");
+		$nightAccount = isEmpty($nightProduct) ? null : findValue("select expense_accountid from category c join product p on p.categoryid=c.categoryid where p.productid='$nightProduct'");
+		if (isEmpty($nightProduct)) $configIssues[] = tr("night allowance product");
+		if ($nightPrice === null) $configIssues[] = tr("night allowance sales price");
+		if (isEmpty($nightAccount)) $configIssues[] = tr("night allowance expense account");
+	}
+	if ($tripForValidation == null)
+		$configIssues[] = tr("trip record");
+	if (count($configIssues) > 0) {
+		$confirmError = tr("The trip cannot be confirmed. Configure") . ": " . implode(", ", array_unique($configIssues)) . ".";
+	} else {
 	begin();
 	$productid = findValue("
 	select carcompensation_productid from travelconf");
@@ -146,6 +179,7 @@ if (array_key_exists('confirm', $_POST)) {
 	update trip set transactionid=$transactionid
 	where tripid=$tripid");
 	commit();
+	}
 }
 
 $row = new Dummy();
@@ -179,6 +213,13 @@ $ro = $row->transactionid != null;
 <?php
 top("employees.php", "Trip");
 ?>
+<?php if ($confirmError != null) { ?>
+<div class="alert alert-danger" role="alert">
+	<strong><?php etr("Confirmation failed") ?>:</strong>
+	<?php echo htmlspecialchars($confirmError) ?>
+	<a class="alert-link ms-1" href="travelconf.php"><?php etr("Travel configuration") ?></a>
+</div>
+<?php } ?>
 <?php
 $title = tr("Trip");
 if (!isEmpty($tripid))

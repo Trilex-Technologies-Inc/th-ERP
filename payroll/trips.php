@@ -42,11 +42,10 @@ if ($mess != null)
 ?>
 
 
-	<div id="header">
-	<?php buildTabs($employeeid, 'paystub') ?>
+<main class="employee-detail-page">
+	<div class="employee-detail-tabs">
+		<?php buildTabs($employeeid, 'trips') ?>
 	</div>
-	<div id="main">
-		<div id="contents">
 
 <form action="trips.php" method="POST">
 <input type="hidden" name="employeeid" value="<?php echo htmlspecialchars($employeeid0) ?>"/>
@@ -96,7 +95,6 @@ if ($i == 0)
 </div>
 </form>
 
-		</div>
-	</div>
+</main>
 <?php bottom() ?>
 </body>
