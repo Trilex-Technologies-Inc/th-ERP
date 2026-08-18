@@ -192,6 +192,58 @@ input[type=submit]:hover, input[type=button]:hover, button:not(.sidebar-toggle):
 .form-label, label { color: #364052; }
 input[type=checkbox], input[type=radio] { accent-color: var(--sb-primary); }
 .buttonrow { margin: 12px 0; }
+
+.erp-delete-action {
+  align-items: center;
+  background: #fff1f2 !important;
+  border: 1px solid #fecdd3 !important;
+  border-radius: .55rem;
+  color: #dc2626 !important;
+  cursor: pointer;
+  display: inline-flex;
+  height: 2.25rem;
+  justify-content: center;
+  padding: 0 !important;
+  text-decoration: none !important;
+  transition: background-color .16s ease, border-color .16s ease, color .16s ease, box-shadow .16s ease, transform .16s ease;
+  vertical-align: middle;
+  width: 2.25rem;
+}
+
+.erp-delete-action:hover {
+  background: #dc2626 !important;
+  border-color: #dc2626 !important;
+  color: #fff !important;
+  transform: translateY(-1px);
+}
+
+.erp-delete-action:focus-visible {
+  box-shadow: 0 0 0 .2rem rgba(220, 38, 38, .22);
+  outline: 0;
+}
+
+.erp-delete-action:active {
+  background: #b91c1c !important;
+  border-color: #b91c1c !important;
+  transform: translateY(0);
+}
+
+.erp-delete-action:disabled,
+.erp-delete-action[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: .45;
+  transform: none;
+}
+
+.erp-delete-icon {
+  fill: none;
+  height: 1.1rem;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 1.8;
+  width: 1.1rem;
+}
 .card-footer:has(input[name='save']) {
   display: flex; align-items: center; justify-content: flex-end; gap: .65rem;
   min-height: 70px; padding: .85rem 1rem !important; background: #fff;
