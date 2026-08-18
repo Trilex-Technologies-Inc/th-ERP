@@ -51,16 +51,13 @@ styleSheet();
 
 <form action="productionorders.php" method=POST>
 <table>
-<th><?php etr("Delete") ?></th>
 <th><?php etr("Id") ?></th>
 <th><?php etr("Date") ?></th>
 <th><?php etr("Finished") ?></th>
 <?php
     $class = "odd";
-    $i = 0;
     while ($row = fetch_object($rs)) {
         echo "<tr class='$class'>";
-    	echo "<td align=center><input type=checkbox name='del_$i' value=1/></td>";
         echo "<td><a href='productionorder.php?orderid=$row->orderid'>$row->orderid</a></td>";
         echo "<td>" . date(DATE_PATTERN, $row->createdtime) . "</td>";
         if (isEmpty($row->transactionid))
@@ -69,14 +66,12 @@ styleSheet();
         	echo "<td align=center>X</td>";
         echo "</tr>";
         $class = ($class == "odd" ? "even" : "odd");
-        $i++;
     }
 ?>
 </table>
 <br/>
 <?php newButton("productionorder.php?action=create") ?>
 &nbsp;
-<?php saveButton() ?>
 </form>
 <?php bottom() ?>
 </body>

@@ -158,9 +158,17 @@ function searchButton()
 
 function deleteButton()
 {
-	$confirmMessage = htmlspecialchars(json_encode(tr("Are you sure you want to delete this record?")), ENT_QUOTES, 'UTF-8');
+	deleteSubmitIcon('delete');
+}
+
+function deleteSubmitIcon($name = 'delete', $confirmText = null)
+{
+	if ($confirmText === null)
+		$confirmText = tr("Are you sure you want to delete this record?");
+	$confirmMessage = htmlspecialchars(json_encode($confirmText), ENT_QUOTES, 'UTF-8');
 	$successMessage = htmlspecialchars(json_encode(tr("Record deleted")), ENT_QUOTES, 'UTF-8');
-	echo "<input type='submit' class='btn btn-outline-danger' value='" . htmlspecialchars(tr("Delete"), ENT_QUOTES, 'UTF-8') . "' name='delete' onclick='return thERPConfirmDeleteSubmit($confirmMessage, $successMessage)'>";
+	$nameAttribute = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+	echo "<button type='submit' class='erp-delete-action border-0 bg-transparent p-0' name='$nameAttribute' value='1' aria-label='" . htmlspecialchars(tr("Delete"), ENT_QUOTES, 'UTF-8') . "' onclick='return thERPConfirmDeleteSubmit($confirmMessage, $successMessage)'>" . deleteIconImage() . "</button>";
 }
 
 
@@ -491,7 +499,12 @@ function formatMoney($amount)
 
 function deleteIcon($href)
 {
-	echo deleteLink($href, "<img src='../images/delete.png' border='0' alt=''>");
+	echo deleteLink($href, deleteIconImage());
+}
+
+function deleteIconImage()
+{
+	return "<img src='../images/delete.png' border='0' alt=''>";
 }
 
 function deleteLink($href, $label)

@@ -132,7 +132,7 @@ while ($row = fetch($rs)) {
 <div class="card-footer bg-white d-flex flex-wrap justify-content-between gap-2 py-3">
 	<div>
 	<?php if ($numrows > 0) { ?>
-		<button type="submit" name="delete_last" value="1" class="btn btn-outline-danger" onclick="return thERPConfirmDeleteSubmit(<?php echo htmlspecialchars(json_encode(tr('Delete the latest schedule assignment?')), ENT_QUOTES) ?>, <?php echo htmlspecialchars(json_encode(tr('Record deleted')), ENT_QUOTES) ?>)"><?php etr("Delete latest") ?></button>
+		<?php deleteSubmitIcon('delete_last', tr('Delete the latest schedule assignment?')) ?>
 	<?php } ?>
 	</div>
 	<input type="submit" name="save" value="<?php echo tr("Save") ?>"/>

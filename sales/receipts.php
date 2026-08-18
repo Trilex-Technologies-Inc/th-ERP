@@ -50,7 +50,6 @@ $customers = rs2array(query("select customerid, name from customer"));
 			<table class="table table-sm table-striped table-hover align-middle w-100">
 				<thead>
 					<tr>
-						<th><?php etr("Delete") ?></th>
 						<th><?php etr("Id") ?></th>
 						<th><?php etr("Customer") ?></th>
 						<th><?php etr("Date") ?></th>
@@ -60,17 +59,14 @@ $customers = rs2array(query("select customerid, name from customer"));
 				<tbody>
 					<?php
 					$class = "odd";
-					$i = 0;
 					while ($row = fetch_object($rs)) {
 						echo "<tr class='$class'>";
-						echo "<td class='text-center'><input type=checkbox name='del_$i' value=1/></td>";
 						echo "<td><a href='receipt.php?receiptid=$row->receiptid'>$row->receiptid</a></td>";
 						echo "<td>$row->customername</td>";
 						echo "<td>" . date(DATE_PATTERN, $row->receiptdate) . "</td>";
 						echo "<td class='text-end'>" . formatMoney($row->amount) . "</td>";
 						echo "</tr>";
 						$class = ($class == "odd" ? "even" : "odd");
-						$i++;
 					}
 					?>
 				</tbody>
@@ -78,7 +74,6 @@ $customers = rs2array(query("select customerid, name from customer"));
 		</div>
 		<div class="d-flex gap-2">
 			<td><?php newButton("customers.php?mode=receipt") ?></td>
-			<td><?php saveButton() ?></td>
 		</div>
 	</form>
 	<?php bottom() ?>

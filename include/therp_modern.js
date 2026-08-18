@@ -100,6 +100,10 @@
 	  form.addEventListener('submit', function (event) {
 		var selectedDeletes = form.querySelectorAll('input[type="checkbox"][name^="del_"]:checked');
 		if (!selectedDeletes.length) return;
+		if (form.dataset.deleteConfirmed === '1') {
+		  delete form.dataset.deleteConfirmed;
+		  return;
+		}
 		if (!window.confirm('Are you sure you want to delete the selected records?')) {
 		  event.preventDefault();
 		  return;
@@ -108,6 +112,45 @@
 		  window.sessionStorage.setItem(deleteNoticeKey, 'Selected records deleted');
 		} catch (error) {
 		  // Form submission still works when browser storage is unavailable.
+		}
+	  });
+	});
+
+	document.querySelectorAll('input[type="checkbox"][name^="del_"]').forEach(function (checkbox) {
+	  checkbox.hidden = true;
+	  var deleteControl = document.createElement('button');
+	  deleteControl.type = 'button';
+	  deleteControl.className = 'erp-delete-action border-0 bg-transparent p-0';
+	  deleteControl.setAttribute('aria-label', 'Delete');
+	  deleteControl.innerHTML = "<img src='../images/delete.png' border='0' alt=''>";
+	  checkbox.insertAdjacentElement('afterend', deleteControl);
+	  deleteControl.addEventListener('click', function () {
+		if (!window.confirm('Are you sure you want to delete this record?')) return;
+		var form = checkbox.form;
+		if (!form) return;
+		checkbox.checked = true;
+		form.dataset.deleteConfirmed = '1';
+		try {
+		  window.sessionStorage.setItem(deleteNoticeKey, 'Record deleted');
+		} catch (error) {
+		  // Form submission still works when browser storage is unavailable.
+		}
+		if (typeof form.requestSubmit === 'function') {
+		  var saveControl = form.querySelector('[type="submit"][name="save"]');
+		  if (saveControl) {
+			form.requestSubmit(saveControl);
+		  } else {
+			form.requestSubmit();
+		  }
+		} else {
+		  if (!form.querySelector('input[name="save"]')) {
+			var saveInput = document.createElement('input');
+			saveInput.type = 'hidden';
+			saveInput.name = 'save';
+			saveInput.value = 'Save';
+			form.appendChild(saveInput);
+		  }
+		  form.submit();
 		}
 	  });
 	});

@@ -116,7 +116,7 @@ while ($rec = fetch($q)) {
 	$q2 = sql($sql);
 	$first = true;
 	while ($rec = fetch($q2)) {
-		echo "<span class='badge text-bg-light border me-1'>" . htmlspecialchars($rec->description) . " " . deleteLink("projects.php?del_projectid=$projectid&delcat=true&del_categoryid=$rec->categoryid", tr("Delete")) . "</span>";
+		echo "<span class='badge text-bg-light border me-1'>" . htmlspecialchars($rec->description) . " " . deleteLink("projects.php?del_projectid=$projectid&delcat=true&del_categoryid=$rec->categoryid", deleteIconImage()) . "</span>";
 		$first = false;
 	}
 	if (!$first)

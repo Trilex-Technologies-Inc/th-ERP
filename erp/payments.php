@@ -43,31 +43,26 @@
 
 <form action="payments.php" method=POST>
 <div class="card border-0 shadow-sm overflow-hidden"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
-<th><?php etr("Delete") ?></th>
 <th><?php etr("Id") ?></th>
 <th><?php etr("Supplier") ?></th>
 <th><?php etr("Date") ?></th>
 <th><?php etr("Amount") ?></th>
 <?php
     $class = "odd";
-    $i = 0;
     while ($row = fetch_object($rs)) {
         echo "<tr class='$class'>";
-    	echo "<td align=center><input type=checkbox name='del_$i' value=1/></td>";
         echo "<td><a href='payment.php?paymentid=$row->paymentid'>$row->paymentid</a></td>";
         echo "<td>$row->suppliername</td>";
         echo "<td>" . date(DATE_PATTERN, $row->paymentdate) . "</td>";
 		echo "<td>" . formatMoney($row->amount) . "</td>";
         echo "</tr>";
         $class = ($class == "odd" ? "even" : "odd");
-        $i++;
     }
 ?>
 </table></div></div>
 <div class="container-fluid px-0 erp-form-layout">
 <div class="row g-3 align-items-center mb-2">
 <div class="col-12 col-md-auto"><?php newButton("suppliers.php?mode=payment") ?></div>
-<div class="col-12 col-md-auto"><?php saveButton() ?></div>
 </div>
 </div>
 </form>
