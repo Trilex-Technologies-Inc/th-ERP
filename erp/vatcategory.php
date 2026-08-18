@@ -75,7 +75,7 @@
 		</div>
 	</div>
 	<div class="card-footer bg-white d-flex justify-content-between align-items-center flex-wrap gap-3 px-4 py-3">
-		<div><?php if (!$new) { ?><button class="btn btn-outline-danger" type="submit" name="delete" value="1" onclick="return confirm('<?php echo htmlspecialchars(tr("Delete this VAT category?"), ENT_QUOTES) ?>')"><?php etr("Delete category") ?></button><?php } ?></div>
+		<div><?php if (!$new) { ?><button class="btn btn-outline-danger" type="submit" name="delete" value="1" onclick="return thERPConfirmDeleteSubmit(<?php echo htmlspecialchars(json_encode(tr('Delete this VAT category?')), ENT_QUOTES) ?>, <?php echo htmlspecialchars(json_encode(tr('Record deleted')), ENT_QUOTES) ?>)"><?php etr("Delete category") ?></button><?php } ?></div>
 		<div class="d-flex gap-2"><a class="btn btn-outline-secondary" href="vatcategories.php"><?php etr("Cancel") ?></a><?php saveButton() ?></div>
 	</div>
 </section>

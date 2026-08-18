@@ -125,7 +125,7 @@ title("<a href='policies.php'>" . tr("Policies") . "</a> > " . htmlspecialchars(
 					<div class="card-footer bg-white d-flex flex-wrap gap-2 py-3">
 						<input type="submit" name="save" value="<?php echo tr("Save") ?>"/>
 						<?php if (!$new) { ?>
-							<button class="btn btn-outline-danger" type="submit" name="delete" value="1"><?php echo tr("Delete") ?></button>
+							<button class="btn btn-outline-danger" type="submit" name="delete" value="1" onclick="return thERPConfirmDeleteSubmit(<?php echo htmlspecialchars(json_encode(tr('Are you sure you want to delete this record?')), ENT_QUOTES) ?>, <?php echo htmlspecialchars(json_encode(tr('Record deleted')), ENT_QUOTES) ?>)"><?php echo tr("Delete") ?></button>
 						<?php } ?>
 						<a class="btn btn-outline-secondary" href="policies.php"><?php etr("Back") ?></a>
 					</div>

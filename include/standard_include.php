@@ -158,7 +158,9 @@ function searchButton()
 
 function deleteButton()
 {
-	return button("Delete", "delete", null);
+	$confirmMessage = htmlspecialchars(json_encode(tr("Are you sure you want to delete this record?")), ENT_QUOTES, 'UTF-8');
+	$successMessage = htmlspecialchars(json_encode(tr("Record deleted")), ENT_QUOTES, 'UTF-8');
+	echo "<input type='submit' class='btn btn-outline-danger' value='" . htmlspecialchars(tr("Delete"), ENT_QUOTES, 'UTF-8') . "' name='delete' onclick='return thERPConfirmDeleteSubmit($confirmMessage, $successMessage)'>";
 }
 
 
@@ -489,9 +491,15 @@ function formatMoney($amount)
 
 function deleteIcon($href)
 {
-	echo "<a href='$href'>";
-	image("delete.png");
-	echo "</a>";
+	echo deleteLink($href, "<img src='../images/delete.png' border='0' alt=''>");
+}
+
+function deleteLink($href, $label)
+{
+	$hrefAttribute = htmlspecialchars($href, ENT_QUOTES, 'UTF-8');
+	$confirmMessage = htmlspecialchars(json_encode(tr("Are you sure you want to delete this record?")), ENT_QUOTES, 'UTF-8');
+	$successMessage = htmlspecialchars(json_encode(tr("Record deleted")), ENT_QUOTES, 'UTF-8');
+	return "<a href='$hrefAttribute' class='erp-delete-action' aria-label='" . htmlspecialchars(tr("Delete"), ENT_QUOTES, 'UTF-8') . "' onclick='return thERPConfirmDelete(this.href, $confirmMessage, $successMessage)'>$label</a>";
 }
 
 function deleteColumn($href)
