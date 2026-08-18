@@ -15,11 +15,14 @@
 		$barcode=getParam("barcode");
 		if (isNew()) {
 			if (isEmpty($productid)) {
-				$productid = findValue("select max(lpad(productid, 32, ' ')) from product", 0);
-				$productid++;
+				$productid = (int)findValue(
+					"select max(cast(productid as unsigned)) from product
+					 where productid regexp '^[0-9]+$'",
+					0
+				) + 1;
 			}
-			if ($productid < 1000)
-				$productid += 1000;
+			if (is_numeric($productid) && (int)$productid < 1000)
+				$productid = (int)$productid + 1000;
 			if (isEmpty($unittype)) {
 				$unittype = findValue("select unittype from category
                                        where categoryid=$categoryid");
