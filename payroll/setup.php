@@ -3,13 +3,19 @@ include("include.php");
 
 if (getParam("setup") == "th") {
 	tx("runScript", array("../sql/thai-payroll.sql"));
+	header("Location: setup.php?loaded=th");
+	die;
 }
 if (getParam("setup") == "se") {
 	tx("runScript", array("../sql/clean.sql"));
 	tx("runScript", array("../sql/swedish-payroll.sql"));
+	header("Location: setup.php?loaded=se");
+	die;
 }
 if (getParam("setup") == "demo") {
 	tx("runScript", array("../sql/demodata.sql"));
+	header("Location: setup.php?loaded=demo");
+	die;
 }
 
 ?>
@@ -26,6 +32,16 @@ if (getParam("setup") == "demo") {
 <?php title(tr("Setup")) ?>
 
 <main class="container-fluid px-0">
+	<?php if (in_array(getParam("loaded"), array("th", "se", "demo"))) { ?>
+	<div class="alert alert-success d-flex align-items-center gap-2" role="status">
+		<span aria-hidden="true">&#10003;</span>
+		<span><?php
+			if (getParam("loaded") == "th") echo tr("Thai payroll setup loaded successfully");
+			else if (getParam("loaded") == "se") echo tr("Swedish payroll setup loaded successfully");
+			else echo tr("Demo data loaded successfully");
+		?></span>
+	</div>
+	<?php } ?>
 	<div class="card border-0 shadow-sm overflow-hidden">
 		<div class="card-header bg-white py-3">
 			<h2 class="h5 fw-bold mb-1"><?php echo tr("Setup") ?></h2>

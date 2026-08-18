@@ -1,21 +1,21 @@
-INSERT INTO `advanced_percent` (`apid`,`name`,`description`) VALUES 
+INSERT IGNORE INTO `advanced_percent` (`apid`,`name`,`description`) VALUES
  (1,'th_tax_ap','');
 
-INSERT INTO `ap_bracket` (`apid`,`bracketid`,`ceiling`,`percent`) VALUES 
+INSERT IGNORE INTO `ap_bracket` (`apid`,`bracketid`,`ceiling`,`percent`) VALUES
  (1,1,100000,0),
  (1,2,500000,10),
  (1,3,1000000,20),
  (1,4,4000000,30),
  (1,5,999999999,37);
 
- INSERT INTO `attribute` (`attributeid`,`name`, description, object) VALUES 
+ INSERT IGNORE INTO `attribute` (`attributeid`,`name`, description, object) VALUES
  (1,'salary','Salary', 1),
  (2,'sickdays_per_year', 'Sick leave days per year', 1),
  (3,'hourrate', 'Hour rate', 1),
  (4,'hours_per_day', 'Hours per day', 1),
  (5,'late_arrival_penalty', 'Late arrival penalty', 1);
 
-INSERT INTO `payaccount` (`accountid`,`formula`,`calcseq`,`inputtype`,`glaccountid`, description) VALUES 
+INSERT IGNORE INTO `payaccount` (`accountid`,`formula`,`calcseq`,`inputtype`,`glaccountid`, description) VALUES
  (1010,'attribute(salary)',1010,0,7040, 'Monthly salary'),
  (1020,'attribute(hourrate)',1020,1,NULL,'Hourly pay'),
  (1030,'attribute(hourrate) * attribute(hours_per_day)',1030,2,NULL,'Daily pay'),
@@ -41,11 +41,11 @@ INSERT INTO `payaccount` (`accountid`,`formula`,`calcseq`,`inputtype`,`glaccount
  (5010,'(-1) * periodSum(earnings) * 0.05',5010,0,NULL,'Social security fund - employeer'),
  (5020,'(-1) * periodSum(earnings) * 0.05',5020,0,NULL,'Social security fund - employee'),
  (9008,'periodSum(taxable)',9008,0,NULL,'Taxable sum');
-INSERT INTO `payaccount` (`accountid`,`formula`,`calcseq`,`inputtype`,`glaccountid`, description) VALUES 
+INSERT IGNORE INTO `payaccount` (`accountid`,`formula`,`calcseq`,`inputtype`,`glaccountid`, description) VALUES
  (9009,'advanced_percent(th_tax_ap, 12*periodSum(taxable))',9009,0,NULL,'Effective tax percent'),
  (9010,'(-1) * advanced_percent(th_tax_ap, 12*periodSum(taxable)) * periodSum(taxable)',9010,0,NULL, 'Tax');
 
- INSERT INTO `payaccountgroup` (`groupid`,`name`,`report`, description) VALUES 
+ INSERT IGNORE INTO `payaccountgroup` (`groupid`,`name`,`report`, description) VALUES
  (1,'payable',1, 'Payable'),
  (2,'taxable',NULL, 'Taxable'),
  (3,'tax',1, 'Skatt'),
@@ -55,7 +55,7 @@ INSERT INTO `payaccount` (`accountid`,`formula`,`calcseq`,`inputtype`,`glaccount
  (22,'attendence_hourly',NULL, 'Attendence (hourly)'),
  (30,'expenses',NULL, 'Expenses');
 
-INSERT INTO `payaccount_group` (`groupid`,`accountid`) VALUES 
+INSERT IGNORE INTO `payaccount_group` (`groupid`,`accountid`) VALUES
  (1,1010),
  (1,1020),
  (1,1030),
@@ -110,26 +110,36 @@ INSERT INTO `payaccount_group` (`groupid`,`accountid`) VALUES
  (30,3010),
  (30,3020);
 
-INSERT INTO `policy` (`policyid`) VALUES 
+INSERT IGNORE INTO `policy` (`policyid`) VALUES
  (1),
  (2);
 
-INSERT INTO `policy_accountgroup` (`policyid`,`groupid`) VALUES 
+INSERT IGNORE INTO `policy_accountgroup` (`policyid`,`groupid`) VALUES
  (1,21),
  (1,30),
  (2,22),
  (2,30);
 
-INSERT INTO `policy_attribute` (`policyid`,`attributeid`) VALUES 
+INSERT IGNORE INTO `policy_attribute` (`policyid`,`attributeid`) VALUES
  (1,1),
  (1,5),
  (2,3);
 
-insert into policy_attribute_value (policyid, attributeid, fromtime, regtime, value) values
- (1,2,'2007-01-01',now(),30),
- (2,4,'2007-01-01',now(),8);
+INSERT INTO policy_attribute_value (policyid, attributeid, fromtime, regtime, value)
+SELECT 1, 2, '2007-01-01', NOW(), 30
+WHERE NOT EXISTS (
+ SELECT 1 FROM policy_attribute_value
+ WHERE policyid = 1 AND attributeid = 2 AND fromtime = '2007-01-01'
+);
 
-INSERT INTO `policy_description` (`policyid`,`language`,`description`) VALUES 
+INSERT INTO policy_attribute_value (policyid, attributeid, fromtime, regtime, value)
+SELECT 2, 4, '2007-01-01', NOW(), 8
+WHERE NOT EXISTS (
+ SELECT 1 FROM policy_attribute_value
+ WHERE policyid = 2 AND attributeid = 4 AND fromtime = '2007-01-01'
+);
+
+INSERT IGNORE INTO `policy_description` (`policyid`,`language`,`description`) VALUES
  (1,'en','Salaried'),
  (1,'sv','Månadsavlönad'),
  (1,'th','Salaried'),
@@ -137,7 +147,7 @@ INSERT INTO `policy_description` (`policyid`,`language`,`description`) VALUES
  (2,'sv','Timavlönad'),
  (2,'th','Timavlönad');
 
-INSERT INTO `policy_payitem` (`policyid`,`no`,`fromperiodid`,`toperiodid`,`amount`,`accountid`) VALUES 
+INSERT IGNORE INTO `policy_payitem` (`policyid`,`no`,`fromperiodid`,`toperiodid`,`amount`,`accountid`) VALUES
  (1,1,3,NULL,NULL,1010),
  (1,2,3,NULL,NULL,5010),
  (1,3,3,NULL,NULL,5020),
@@ -150,4 +160,3 @@ INSERT INTO `policy_payitem` (`policyid`,`no`,`fromperiodid`,`toperiodid`,`amoun
  (2,3,5,NULL,NULL,9010),
  (2,4,5,NULL,NULL,9008),
  (2,5,5,NULL,NULL,9009);
-

@@ -2,7 +2,7 @@
 include('include.php');
 include('policy.inc');
 
-$policyid = getParam('policyid');
+$policyid = requirePolicyId(getParam('policyid'));
 $periodid = getCurrentPeriod();
 
 $del_no = getParam('del_no');

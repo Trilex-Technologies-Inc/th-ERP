@@ -3,6 +3,8 @@
 	include('policy.inc');
 
 	$policyid = getParam('policyid');
+	if (!isEmpty($policyid))
+		$policyid = requirePolicyId($policyid);
 	$periodid = getCurrentPeriod();
 
 	if (isDelete()) {
@@ -23,6 +25,8 @@
 			sql("insert into policy_description (policyid, language, description)
 			     select $policyid, language, '$description'
 			     from language");
+			header("Location: policy.php?policyid=" . urlencode($policyid));
+			die;
 		} else {
 			$sql = "
 			update policy 

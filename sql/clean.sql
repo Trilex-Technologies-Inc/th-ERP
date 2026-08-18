@@ -1,3 +1,6 @@
+delete from pos_return_item;
+delete from pos_return;
+delete from pos_payment;
 delete from receipt_allocation;
 delete from stockmove;
 delete from salesorder_item;

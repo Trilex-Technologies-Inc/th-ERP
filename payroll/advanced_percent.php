@@ -119,12 +119,19 @@ if ($bracketids != null) {
 	echo "</tr>";
 	echo "</tbody></table></div>";
 	echo "<input type='hidden' name='count' value='$i'/>";
-	echo "<div class='card-footer bg-white d-flex flex-wrap gap-2 py-3'>";
+	echo "</div>";
 }
 ?>
-<?php saveButton() ?>
-<a class="btn btn-outline-secondary" href="advanced_percents.php"><?php etr("Back") ?></a>
-<?php if ($bracketids != null) echo "</div></div>"; ?>
+<div class="advanced-percent-actions" role="group" aria-label="<?php etr("Form actions") ?>">
+	<a class="advanced-percent-back" href="advanced_percents.php">
+		<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></svg>
+		<span><?php etr("Back") ?></span>
+	</a>
+	<button class="advanced-percent-save" type="submit" name="save" value="Save">
+		<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5zM8 3v6h8V3M8 21v-7h8v7"/></svg>
+		<span><?php etr("Save") ?></span>
+	</button>
+</div>
 <?php if ($new) { ?><input type="hidden" name="new" value="1"/><?php } ?>
 </form>
 <?php bottom() ?>

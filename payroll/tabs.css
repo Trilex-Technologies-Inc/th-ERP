@@ -60,6 +60,13 @@
 	box-shadow: 0 .25rem .7rem rgba(75, 95, 215, .18);
 }
 
+.policy-tabs-list span.disabled {
+	color: #a2a9b7;
+	background: #f5f6f8;
+	border-color: #eceef2;
+	cursor: not-allowed;
+}
+
 #main {
 	clear: both;
 	background: transparent;
