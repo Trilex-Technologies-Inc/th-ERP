@@ -55,80 +55,70 @@ if (!isEmpty($salesorderid)) {
 	title("<a href='transactions.php'>" .tr("Transactions") . "</a> > $transactionid");
 ?>
 
+<main class="container-fluid px-0">
 <form action="transaction.php" method="POST">
-<input type=hidden name=transactionid value='<?php echo $transactionid ?>'/>
-<div class="container-fluid px-0 erp-form-layout">
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Id") ?>:</div><div class="col-12 col-md-auto"><?php echo $trans->transactionid ?></div>
-</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Narrative") ?>:</div><div class="col-12 col-md-auto"><?php echo $trans->narrative ?></div>
-</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Time") ?>:</div><div class="col-12 col-md-auto"><?php echo formatDate($trans->transtime) . ' ' . date('H:i', $trans->transtime) ?></div></div>
-<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Created by") ?>:</div><div class="col-12 col-md-auto"><?php echo $trans->createdby ?></div></div>
-<div class="row g-3 align-items-center mb-2">
-<div class="col-12 col-md-auto">
-<?php
-if (!$trans->valid)
-	echo tr("This transaction is invalid, because it doesn't balance.");
-?>
-</div>
-</div>
-<?php
-	if ($cancel_transid != null) {
-		echo "<div class='row g-3 align-items-center mb-2'>";
-		echo "<div class='col-12 col-md-auto'>";
-		echo tr("This transaction is cancelled") . "  <a href='transaction.php?transactionid=$cancel_transid'>" . tr("Show transaction") . "</a>";
-		echo "</div>";
-		echo "</div>";
-	}
-?>
-</div>
+<input type="hidden" name="transactionid" value="<?php echo htmlspecialchars($transactionid) ?>"/>
+
+<section class="card border-0 shadow-sm mb-4 overflow-hidden">
+	<div class="card-body p-4 p-lg-5">
+		<div class="d-flex flex-column flex-lg-row justify-content-between gap-4">
+			<div class="d-flex align-items-start gap-3">
+				<span class="dashboard-icon d-inline-flex align-items-center justify-content-center rounded-3 bg-primary-subtle text-primary fs-4 flex-shrink-0" aria-hidden="true">⇄</span>
+				<div><span class="text-secondary small text-uppercase fw-bold"><?php etr("General ledger") ?></span><h1 class="h3 fw-bold mt-1 mb-2"><?php echo htmlspecialchars($trans->narrative) ?></h1><p class="text-secondary mb-0"><?php etr("Transaction") ?> <span class="font-monospace">#<?php echo htmlspecialchars($trans->transactionid) ?></span></p></div>
+			</div>
+			<div><span class="badge rounded-pill <?php echo $cancel_transid != null ? 'text-bg-secondary' : ($trans->valid ? 'text-bg-success' : 'text-bg-danger') ?> px-3 py-2"><?php echo $cancel_transid != null ? tr("Cancelled") : ($trans->valid ? tr("Balanced") : tr("Invalid")) ?></span></div>
+		</div>
+	</div>
+	<div class="card-footer bg-white px-4 px-lg-5 py-3">
+		<div class="row g-3">
+			<div class="col-12 col-sm-6 col-lg-3"><span class="d-block text-secondary small"><?php etr("Transaction ID") ?></span><strong class="font-monospace">#<?php echo htmlspecialchars($trans->transactionid) ?></strong></div>
+			<div class="col-12 col-sm-6 col-lg-3"><span class="d-block text-secondary small"><?php etr("Date and time") ?></span><strong><?php echo formatDate($trans->transtime) . ' ' . date('H:i', $trans->transtime) ?></strong></div>
+			<div class="col-12 col-sm-6 col-lg-3"><span class="d-block text-secondary small"><?php etr("Created by") ?></span><strong><?php echo htmlspecialchars($trans->createdby) ?></strong></div>
+			<div class="col-12 col-sm-6 col-lg-3"><span class="d-block text-secondary small"><?php etr("Dimension") ?></span><strong><?php foreach ($dims as $dimension) { if ($dimension[0] == $dimid) { echo htmlspecialchars($dimension[1]); break; } } ?></strong></div>
+		</div>
+	</div>
+</section>
+
+<?php if (!$trans->valid) { ?><div class="alert alert-danger d-flex align-items-center gap-2" role="alert"><strong aria-hidden="true">!</strong><span><?php etr("This transaction is invalid because it does not balance.") ?></span></div><?php } ?>
+<?php if ($cancel_transid != null) { ?><div class="alert alert-secondary d-flex justify-content-between align-items-center flex-wrap gap-2" role="status"><span><?php etr("This transaction has been cancelled.") ?></span><a class="alert-link" href="transaction.php?transactionid=<?php echo urlencode($cancel_transid) ?>"><?php etr("Show cancellation transaction") ?> &#8594;</a></div><?php } ?>
 <?php
 if (count($dims) > 1) {
-	echo "<div id=header>";
-	echo "<ul id=primary>";
+	echo "<nav class='mb-3' aria-label='" . tr("Dimensions") . "'><ul class='nav nav-tabs'>";
 	for ($i=0; $i < count($dims); $i++) {
-		$name = $dims[$i][1];
+		$name = htmlspecialchars($dims[$i][1]);
 		$currDimid = $dims[$i][0];
 		if ($dimid == $currDimid)
-			echo "<li><span>$name</span></li>";
+			echo "<li class='nav-item'><span class='nav-link active' aria-current='page'>$name</span></li>";
 		else {
 			$href = "transaction.php?";
 			$href .= "transactionid=$transactionid&dimid=$currDimid";
-			echo "<li><a href='$href'>$name</a></li>";
+			echo "<li class='nav-item'><a class='nav-link' href='" . htmlspecialchars($href) . "'>$name</a></li>";
 		}		
 	}
-	echo "</div>";
-	echo "<div id=main>";
-	echo "<div id='contents'>";
+	echo "</ul></nav>";
 }	
 
 ?>
-<div class="card border-0 shadow-sm">
-<div class="card-header bg-body-tertiary"><div class="row fw-semibold"><div class="col-8"><?php etr("Account") ?></div><div class="col-4 text-end"><?php etr("Amount") ?></div></div></div>
-<div class="list-group list-group-flush">
+<section class="card border-0 shadow-sm overflow-hidden">
+<div class="card-header bg-white d-flex justify-content-between align-items-center px-4 py-3"><div><span class="text-secondary small text-uppercase fw-bold"><?php etr("Posting details") ?></span><h2 class="h5 fw-bold mb-0 mt-1"><?php etr("Transaction lines") ?></h2></div></div>
+<div class="table-responsive"><table class="table table-hover align-middle mb-0">
+<thead class="table-light"><tr><th style="width:130px"><?php etr("Account ID") ?></th><th><?php etr("Account") ?></th><th class="text-end" style="width:220px"><?php etr("Amount") ?></th></tr></thead><tbody>
 <?php
 $balance = 0;
+$partCount = 0;
 while ($part = fetch($parts)) {
-	echo "<div class='list-group-item'><div class='row align-items-center'><div class='col-8'>$part->accountid - $part->name</div><div class='col-4 text-end'>";
-	printf('%9.2f', $part->amount);
-	echo "</div></div></div>";
+	$partCount++;
+	echo "<tr><td class='font-monospace text-secondary'>" . htmlspecialchars($part->accountid) . "</td><td class='fw-semibold'>" . htmlspecialchars($part->name) . "</td><td class='text-end text-nowrap fw-semibold'>" . formatMoney($part->amount) . "</td></tr>";
 	$balance += $part->amount;
 }
+if ($partCount == 0)
+	echo "<tr><td colspan='3' class='text-center text-secondary py-4'>" . tr("No transaction lines") . "</td></tr>";
 ?>
-</div></div>
-<?php
-if ($balance != 0) {
-	echo "<p class=error>" . tr("ERROR - Transaction doesn't balance") . "</p>";
-}
-
-if (count($dims) > 1) {
-	echo "</div></div>";
-}	
-
-?>
-<br/>
-<?php
-if ($cancel_transid == null)
-	button("Cancel transaction", "cancel");
-?>
+</tbody><tfoot class="table-light"><tr><td colspan="2" class="fw-bold"><?php etr("Balance") ?></td><td class="text-end fw-bold <?php echo $balance == 0 ? 'text-success' : 'text-danger' ?>"><?php echo formatMoney($balance) ?></td></tr></tfoot>
+</table></div>
+<div class="card-footer bg-white d-flex justify-content-between align-items-center flex-wrap gap-3 px-4 py-3"><span class="text-secondary small"><?php echo $partCount ?> <?php etr("transaction lines") ?></span><?php if ($cancel_transid == null) { ?><button class="btn btn-outline-danger" type="submit" name="cancel" value="1" onclick="return confirm('<?php echo htmlspecialchars(tr("Cancel this transaction?"), ENT_QUOTES) ?>')"><?php etr("Cancel transaction") ?></button><?php } ?></div>
+</section>
 </form>
+</main>
 <?php bottom() ?>
 </body>
