@@ -139,7 +139,7 @@
 	if (!isEmpty($productid)) {
 		$quantity = findValue("
 		select reorder_qty from product 
-		where productid=$productid");
+		where productid=" . sql_string($productid));
 	}
 
 	$to = null;

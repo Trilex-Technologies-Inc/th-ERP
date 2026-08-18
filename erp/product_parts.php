@@ -5,16 +5,17 @@
 	checkPermission(PERMISSIONID_MANAGE_PRODUCTS);
 
 	$productid = getParam('productid');
+	$productidSql = sql_string($productid);
 
 	$del_childid = getParam('del_childid');
 	if (!isEmpty($del_childid)) {
-		sql("delete from bom where parentid=$productid and childid=$del_childid");
+		sql("delete from bom where parentid=$productidSql and childid=" . sql_string($del_childid));
 	}
 	$childid_new = getParam('childid_new');
 	if (!isEmpty($childid_new)) {
 		$quantity_new = getParam('quantity_new');
 		sql("insert into bom (parentid, childid, quantity)
-             values ($productid, $childid_new, $quantity_new)");
+		     values ($productidSql, " . sql_string($childid_new) . ", $quantity_new)");
 	}
 
 	$parts = null;
@@ -22,10 +23,10 @@
 		$parts = query("select childid, model, bom.quantity
 		                from bom
 						join product p on p.productid=bom.childid
-						where parentid=$productid");
+						where parentid=$productidSql");
 	}
 
-	$model = isEmpty($productid) ? '' : findValue("select model from product where productid=$productid", '');
+	$model = isEmpty($productid) ? '' : findValue("select model from product where productid=$productidSql", '');
 	$new = isEmpty($model);
 	$allProducts = rs2array(query("select productid, model from product"));
 ?>

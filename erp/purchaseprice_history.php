@@ -1,6 +1,7 @@
 <?php
 include('include.php');
 $productid = getParam('productid');
+$productidSql = sql_string($productid);
 
 $sql = "
 select
@@ -10,12 +11,12 @@ select
   unix_timestamp(orderdate) as orderdate
 from purchaseorder_item pi
 join purchaseorder po on po.orderid=pi.orderid
-where productid=$productid
+where productid=$productidSql
 ";
 
 $rs = query($sql);
 
-$model = findValue("select model from product where productid=$productid");
+$model = findValue("select model from product where productid=$productidSql");
 ?>
 
 <head>

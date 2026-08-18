@@ -37,7 +37,7 @@ function buildLink($href, $text, $productid)
 
 function buildHeader($productid)
 {
-	$model = findValue("select model from product where productid=$productid");
+	$model = findValue("select model from product where productid=" . sql_string($productid));
 	title("<a href='products.php'>" . tr("Products") . "</a> > $model");
 	echo "<div class='container-fluid px-0 erp-form-layout'>";
 	echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'>" . tr("Productno") . ":</div>";

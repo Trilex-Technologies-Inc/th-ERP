@@ -269,7 +269,8 @@ function cancel_transaction($transid, $narrative = null)
 
 function move_stock($productid, $diff, $narrative, $accountid, $transid = null)
 {
-	$standardCost = findValue("select purchase_price from product where productid=$productid");
+	$productidSql = sql_string($productid);
+	$standardCost = findValue("select purchase_price from product where productid=$productidSql");
 	$amount = $diff * $standardCost;
 	if ($transid == null) {
 		sql("insert into transaction (transtime, narrative, createdtime) values (now(), '$narrative', now())");
@@ -281,7 +282,7 @@ function move_stock($productid, $diff, $narrative, $accountid, $transid = null)
 	sql("insert into transaction_part (transactionid, accountid, amount)
 		 values ($transid, $accountid, (-1) * $amount)");
 	sql("insert into stockmove (productid, diff, narrative, transactionid)
-	     values ($productid, $diff, '$narrative', $transid)");
+	     values ($productidSql, $diff, '$narrative', $transid)");
 }
 
 function getCreditLength($supplierid)

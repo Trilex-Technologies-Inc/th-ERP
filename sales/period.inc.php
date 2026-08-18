@@ -64,7 +64,7 @@ function createTimeDebitInvoices()
 		$vat = $row->percent;
 		sql("
 		insert into salesorder_item (orderid, no, productid, quantity, unitprice, vat)
-		values ($orderid, $no, $row->productid, $hours, $row->price, $vat)");
+		values ($orderid, $no, " . sql_string($row->productid) . ", $hours, $row->price, $vat)");
 		$no++;
 		$lastCustomerid = $row->customerid;
 		sql("

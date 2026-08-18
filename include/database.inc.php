@@ -147,6 +147,15 @@ function insert_id()
     return mysqli_insert_id(db_connection());
 }
 
+/** Quote a scalar as a SQL string literal for legacy interpolated queries. */
+function sql_string($value)
+{
+    if ($value === null) {
+        return 'NULL';
+    }
+    return "'" . mysqli_real_escape_string(db_connection(), (string)$value) . "'";
+}
+
 function findValue($sql, $default = null)
 {
     $rs = query($sql);

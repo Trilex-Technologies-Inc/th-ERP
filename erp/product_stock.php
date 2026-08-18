@@ -6,12 +6,13 @@
 
 	function changeQuantity($productid, $locationid, $diff, $createtrans)
 	{
+		$productidSql = sql_string($productid);
 		$narrative = tr("Stock adjustment");
 		$transid = "null";
 		if ($createtrans) {
 			$finished_goods = findValue("select finished_goods from accountconf");
 			$inventory_adjustment = findValue("select inventory_adjustment from accountconf");
-			$standardCost = findValue("select purchase_price from product where productid=$productid");
+			$standardCost = findValue("select purchase_price from product where productid=$productidSql");
 			sql("insert into transaction (narrative, transtime, createdtime)
 				 values ('$narrative', now(), now())");
 			$transid = insert_id();
@@ -23,12 +24,12 @@
 				 values ($transid, $inventory_adjustment, $amount)");
 		}
 		sql("insert into stockmove (productid, diff, narrative, transactionid, locationid)
-			 values ($productid, $diff, '$narrative', $transid, $locationid)");
-		$parts = query("select childid, quantity from bom where parentid=$productid");
+			 values ($productidSql, $diff, '$narrative', $transid, $locationid)");
+		$parts = query("select childid, quantity from bom where parentid=$productidSql");
 		while ($row = fetch($parts)) {
 			$childdiff = $diff * $row->quantity;
 			sql("insert into stockmove (productid, diff, narrative, transactionid, locationid)
-				 values ($row->childid, $childdiff, '$narrative', $transid, $locationid)");
+				 values (" . sql_string($row->childid) . ", $childdiff, '$narrative', $transid, $locationid)");
 		}
 	}
 
@@ -39,6 +40,7 @@
 	}
 
 	$productid = getParam('productid');
+	$productidSql = sql_string($productid);
 	if (isSave()) {
 		$reorder_level = prepParam('reorder_level');
 		$reorder_qty = prepParam('reorder_qty');
@@ -46,7 +48,7 @@
 		update product set 
 			reorder_level=$reorder_level,
 			reorder_qty=$reorder_qty
-		where productid=$productid");		
+		where productid=$productidSql");
 		
 		$rs = query("select locationid from location");
 		while ($row = fetch($rs)) {
@@ -88,11 +90,11 @@
 		$rec = new Dummy();
 	}
 
-	$productid2 = isEmpty($productid) ? 0 : $productid;
+	$productid2Sql = isEmpty($productid) ? "''" : $productidSql;
 	$rs = query("
 	select l.locationid, sum(diff) as quantity, l.name as location
 	from location l
-	left outer join stockmove m on l.locationid=m.locationid and productid=$productid2
+	left outer join stockmove m on l.locationid=m.locationid and productid=$productid2Sql
 	group by l.locationid");
 
 	$locations = rs2array(query("select locationid, name from location"));

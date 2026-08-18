@@ -882,7 +882,7 @@ function prepStringParam($param)
 	$value = getParam($param);
 	if (isEmpty($value))
 		return "null";
-	return "'$value'";
+	return sql_string($value);
 }
 
 function th($header, $href = null, $width = null)

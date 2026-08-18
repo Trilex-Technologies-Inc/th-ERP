@@ -3,19 +3,19 @@ include('../include/therp_include.php');
 
 function deleteProduct($productid)
 {	
-	$productid = addslashes($productid);
-	$count = findValue("select count(*) from salesorder_item where productid='$productid'", 0);
-	$count += findValue("select count(*) from purchaseorder_item where productid='$productid'", 0);
-	$count += findValue("select count(*) from stockmove where productid='$productid'", 0);
-	$count += findValue("select count(*) from bom where parentid='$productid' or childid='$productid'", 0);
+	$productidSql = sql_string($productid);
+	$count = findValue("select count(*) from salesorder_item where productid=$productidSql", 0);
+	$count += findValue("select count(*) from purchaseorder_item where productid=$productidSql", 0);
+	$count += findValue("select count(*) from stockmove where productid=$productidSql", 0);
+	$count += findValue("select count(*) from bom where parentid=$productidSql or childid=$productidSql", 0);
 	if ($count > 0) {
 		// Products referenced by orders, stock movements, or BOMs must remain
 		// available to preserve historical and manufacturing relationships.
-		sql("update product set active=0 where productid='$productid'");
+		sql("update product set active=0 where productid=$productidSql");
 	} else {
-		$oscommerceid = findValue("select oscommerceid from product where productid='$productid'", null);
-		sql("delete from sales_price where productid='$productid'");
-		sql("delete from product where productid='$productid'");
+		$oscommerceid = findValue("select oscommerceid from product where productid=$productidSql", null);
+		sql("delete from sales_price where productid=$productidSql");
+		sql("delete from product where productid=$productidSql");
 		if (oscommerce()) {
 			if (!isEmpty($oscommerceid))
 				sql("delete from products where products_id=$oscommerceid");

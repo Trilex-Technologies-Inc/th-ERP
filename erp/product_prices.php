@@ -5,6 +5,7 @@
 	checkPermission(PERMISSIONID_MANAGE_PRODUCTS);
 
 	$productid = getParam('productid');
+	$productidSql = sql_string($productid);
 	$new = true;
 	if (isSave()) {
 		$purchase_price = prepNull(getParam('purchase_price'));
@@ -30,11 +31,11 @@
 				$price = prepNull($price);
 				sql("
 				update sales_price set price=$price
-				where productid=$productid and listid=$row->listid");
+				where productid=$productidSql and listid=$row->listid");
 				if (affected_rows() == 0) {
 					sql("
 					insert into sales_price (productid, listid, price)
-					values ($productid, $row->listid, $price)");
+					values ($productidSql, $row->listid, $price)");
 				}
 				if ($row->listid == $osclistid) {
 					sql("
@@ -53,7 +54,7 @@
 				$price = prepNull($price);
 				sql("
 				update supplier_price set price=$price
-				where productid=$productid and supplierid=$supplierid");
+				where productid=$productidSql and supplierid=$supplierid");
 			}
 			$i++;
 		}
@@ -62,7 +63,7 @@
 			$price = getParam("purchaseprice_new");
 			sql("
 			insert into supplier_price (supplierid, productid, price)
-			values ($supplierid, $productid, $price)");
+			values ($supplierid, $productidSql, $price)");
 		}
 	}
 
@@ -151,7 +152,7 @@ title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 		$rs = query("
 		select pl.listid, pl.description, price
 		from pricelist pl
-		left outer join sales_price sp on sp.listid=pl.listid and sp.productid=$productid2
+		left outer join sales_price sp on sp.listid=pl.listid and sp.productid=" . sql_string($productid2) . "
 		");
 		while ($row = fetch($rs)) {
 			echo "<div class='supplier-code-row'>";
@@ -175,7 +176,7 @@ title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 		select sp.supplierid, name, price
 		from supplier_price sp
 		join supplier s on s.supplierid=sp.supplierid
-		where productid=$productid
+		where productid=$productidSql
 		");
 		$i = 0;
 		while ($row = fetch($rs)) {

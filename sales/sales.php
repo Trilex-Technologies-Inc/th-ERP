@@ -7,6 +7,7 @@ $unpaid = getParam('unpaid');
 $overdue = getParam('overdue');
 $uninvoiced = getParam('uninvoiced');
 $productid = getParam('productid');
+$productidSql = sql_string($productid);
 $credit_orgid = getParam('credit_orgid');
 
 $starttime = parseDate(getParam('starttime'));
@@ -49,7 +50,7 @@ if ($uninvoiced)
 if ($overdue)
 	$sql .= " and duedate < now() ";
 if (!isEmpty($productid)) {
-	$sql .= " and exists (select * from salesorder_item soi2 where soi2.orderid=so.orderid and soi2.productid=$productid) ";
+	$sql .= " and exists (select * from salesorder_item soi2 where soi2.orderid=so.orderid and soi2.productid=$productidSql) ";
 }
 if (!isEmpty($credit_orgid))
 	$sql .= " and credit_orgid=$credit_orgid ";

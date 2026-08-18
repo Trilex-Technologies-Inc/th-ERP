@@ -1,15 +1,16 @@
 <?php
 function add_orderitem($orderid, $productid, $quantity)
 {
-	$count = findValue("select count(*) from product where productid=$productid", 0);
+	$productidSql = sql_string($productid);
+	$count = findValue("select count(*) from product where productid=$productidSql", 0);
 	if ($count == 0) {
 		return tr("Product $productid doesn't exists!");
 	}
 	$no = findValue("select max(no) from productionorder_item where orderid=$orderid", 0);
 	$no++;
-	$description = findValue("select description from product where productid=$productid");	
+	$description = findValue("select description from product where productid=$productidSql");
 	$sql = "insert into productionorder_item (orderid, no, productid, quantity)
-			values ($orderid, $no, $productid, $quantity)";
+			values ($orderid, $no, $productidSql, $quantity)";
 	sql($sql);
 }
 
@@ -33,7 +34,7 @@ function finish_productionorder($orderid)
     while ($row = fetch($rs)) {
 		$diff = (-1) * $row->bomq * $row->orderq;
 		sql("insert into stockmove (productid, diff, narrative, transactionid, productionorderid, createdby)
-		     values ($row->childid, $diff, '$narrative', $transactionid, $orderid, '" . getUser() . "')");
+		     values (" . sql_string($row->childid) . ", $diff, '$narrative', $transactionid, $orderid, '" . getUser() . "')");
 		$price += $row->purchase_price * $row->bomq * $row->orderq;
 	}
 	$rs = query("select poi.productid, 
@@ -44,7 +45,7 @@ function finish_productionorder($orderid)
 				where po.orderid=$orderid");
     while ($row = fetch($rs)) {
 		sql("insert into stockmove (productid, diff, narrative, transactionid, productionorderid, createdby)
-		     values ($row->productid, $row->orderq, '$narrative', $transactionid, $orderid, '" . getUser() . "')");
+		     values (" . sql_string($row->productid) . ", $row->orderq, '$narrative', $transactionid, $orderid, '" . getUser() . "')");
 	}
 	$rawmaterial = findValue("select raw_material from accountconf");
 	$finishedgoods= findValue("select finished_goods from accountconf");

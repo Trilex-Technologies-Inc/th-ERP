@@ -2,6 +2,7 @@
 include('include.php');
 
 $productid = getParam('productid');
+$productidSql = sql_string($productid);
 $locationid = getParam('locationid');
 $salesorderid = getParam('salesorderid');
 $purchaseorderid = getParam('purchaseorderid');
@@ -39,17 +40,17 @@ if (!isEmpty($movesorderid))
 if (!isEmpty($productionorderid))
 	$sql .= "join productionorder pro on pro.orderid=m.productionorderid and pro.orderid=$productionorderid ";
 if (!isEmpty($productid)) {
-	$sql .= "where p.productid=$productid ";
+	$sql .= "where p.productid=$productidSql ";
 	$sql .= "and transtime between from_unixtime($date) and from_unixtime($endtime) ";
 
 	$startBalance = findValue("select sum(diff)
 		                           from stockmove m
 		                           join transaction t on t.transactionid=m.transactionid
-		                           where productid=$productid and t.transtime < from_unixtime($date) $locationSQL");
+		                           where productid=$productidSql and t.transtime < from_unixtime($date) $locationSQL");
 	$endBalance = findValue("select sum(diff)
 		                           from stockmove m
 		                           join transaction t on t.transactionid=m.transactionid
-		                           where productid=$productid and t.transtime < from_unixtime($endtime) $locationSQL");
+		                           where productid=$productidSql and t.transtime < from_unixtime($endtime) $locationSQL");
 }
 $sql .= $locationSQL;
 $sql .= "order by moveid desc";
@@ -73,7 +74,7 @@ $locations = rs2array(query("select locationid, name from location"));
 	if (!isEmpty($salesorderid))
 		$title = tr("Sales orders") . " > <a href='salesorder.php?orderid=$salesorderid'>$salesorderid</a> > ";
 	else if (!isEmpty($productid)) {
-		$model = findValue("select model from product where productid=$productid");
+		$model = findValue("select model from product where productid=$productidSql");
 		$title = tr("Products") . " > <a href='product.php?productid=$productid'>$model</a> > ";
 	}
 	$title .= tr("Stock moves");

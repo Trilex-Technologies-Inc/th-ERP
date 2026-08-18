@@ -104,7 +104,7 @@
 				$productcode = prepNull($productcode);
 				sql("
 				update supplier_price set supplier_productcode='$productcode'
-				where productid=$productid and supplierid=$supplierid");
+				where productid=" . sql_string($productid) . " and supplierid=$supplierid");
 			}
 			$i++;
 		}
@@ -113,7 +113,7 @@
 			$productcode_new = getParam("productcode_new");
 			sql("
 			insert into supplier_price (supplierid, productid, price, supplier_productcode)
-			values ($supplierid, $productid, null, '$productcode_new')");
+			values ($supplierid, " . sql_string($productid) . ", null, '$productcode_new')");
 		}
 
 	}
@@ -250,7 +250,7 @@ title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 			select sp.supplierid, name, supplier_productcode
 			from supplier_price sp
 			join supplier s on s.supplierid=sp.supplierid
-			where productid=$productid
+			where productid=" . sql_string($productid) . "
 			");
 			$i = 0;
 			while ($row = fetch($rs)) {

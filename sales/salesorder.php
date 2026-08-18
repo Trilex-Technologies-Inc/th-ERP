@@ -237,7 +237,7 @@
 		$purchaseprice_new = findValue("
 		select purchase_price
 		from product
-		where productid=$productid");
+		where productid=" . sql_string($productid));
 	}
 
 	$customer = null;

@@ -150,11 +150,11 @@
 		$unitprice = findValue("
 		select price
 		from supplier_price
-		where productid=$productid
+		where productid=" . sql_string($productid) . "
 		and supplierid=$supplierid");
 		$quantity = findValue("
 		select reorder_qty from product 
-		where productid=$productid");
+		where productid=" . sql_string($productid));
 	}
 
 	$supplier = null;

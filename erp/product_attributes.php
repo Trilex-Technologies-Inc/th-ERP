@@ -5,6 +5,7 @@
 	checkPermission(PERMISSIONID_MANAGE_PRODUCTS);
 
 	$productid = getParam('productid');
+	$productidSql = sql_string($productid);
 	$new = true;
 	if (isSave()) {
 		$count = getParam("count");
@@ -16,7 +17,7 @@
 			if ($optionid != $old_optionid) {
 				sql("
 				update product_attribute_option_value set optionid=$optionid
-				where productid=$productid and attributeid=$attributeid");
+				where productid=$productidSql and attributeid=$attributeid");
 			}
 			$i++;
 		}
@@ -25,7 +26,7 @@
 			$optionid = getParam("optionid_new");
 			sql("
 			insert into product_attribute_option_value (attributeid, productid, optionid)
-			values ($attributeid, $productid, $optionid)");
+			values ($attributeid, $productidSql, $optionid)");
 		}
 	}
 	
@@ -33,7 +34,7 @@
 	if (!isEmpty($del_attributeid)) {
 		sql("
 		delete from product_attribute_option_value
-		where productid=$productid and attributeid=$del_attributeid");
+		where productid=$productidSql and attributeid=$del_attributeid");
 	}
 
 	$attributes = rs2array(query("
@@ -47,7 +48,7 @@
 		select optionid, description from attribute_option
 		where attributeid=$attributeid"));
 	}
-	$model = isEmpty($productid) ? '' : findValue("select model from product where productid=$productid", '');
+	$model = isEmpty($productid) ? '' : findValue("select model from product where productid=$productidSql", '');
 	$new = isEmpty($model);
 
 ?>
@@ -120,7 +121,7 @@ title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 			from product_attribute_option_value v
 			join attribute_option o on o.attributeid=v.attributeid and o.optionid=v.optionid
 			join attribute a on a.attributeid=v.attributeid
-			where productid=$productid2 and a.object=" . ATTR_OBJECT_PRODUCT);
+			where productid=" . sql_string($productid2) . " and a.object=" . ATTR_OBJECT_PRODUCT);
 			$i = 0;
 			while ($row = fetch($rs)) {
 				hidden("attributeid_$i", $row->attributeid);
