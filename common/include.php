@@ -13,6 +13,8 @@ function menubar($currentHref = null)
 			menu('security.php', 'Security', $percent, true, $currentHref);
 			menu('languages.php', 'Languages', $percent, true, $currentHref);
 			menu('companyinfo.php', 'Company info', $percent, true, $currentHref);
+			if (hasPermission(PERMISSION_ADMINISTRATE_USERS))
+				menu('module_manager.php', 'Modules', $percent, true, $currentHref);
 			menu('help.php', 'Help', $percent, false, $currentHref);
 	echo "</div>";
 	echo "</nav>";

@@ -71,7 +71,7 @@ $templates[] = array('se', 'Swedish');
 		<div class="row g-3 mb-4">
 			<div class="col-md-4">
 				<label class="form-label"><?php etr("Template") ?></label>
-				<?php combobox('invoice_template', $templates, $invoice_template) ?>
+					<?php combobox('invoice_template', $templates, $invoice_template, false) ?>
 			</div>
 		</div>
 

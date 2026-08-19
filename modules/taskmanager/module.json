@@ -1,0 +1,9 @@
+{
+  "id": "taskmanager",
+  "title": "Task Manager",
+  "description": "Create, prioritize, complete, and track personal tasks.",
+  "version": "1.0.0",
+  "author": "thERP",
+  "icon": "&#10003;",
+  "default_action": "main"
+}

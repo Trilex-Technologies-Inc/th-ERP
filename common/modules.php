@@ -1,4 +1,12 @@
-<?php include("include.php") ?>
+<?php
+include("include.php");
+require_once('../include/module_system.php');
+$optionalModules = array();
+foreach ((new ThERPModuleManager())->all() as $optionalName => $optionalModule) {
+	if ($optionalModule['enabled'])
+		$optionalModules[$optionalName] = $optionalModule;
+}
+?>
 
 <head>
 <title>thERP</title>
@@ -40,7 +48,7 @@ title(tr("Select module"));
 
 	<div class="module-picker-heading">
 		<div><span><?php etr("Modules") ?></span><h2><?php etr("Business areas") ?></h2></div>
-		<small>7 <?php etr("available") ?></small>
+		<small><?php echo 7 + count($optionalModules) ?> <?php etr("available") ?></small>
 	</div>
 
 	<nav class="module-grid" aria-label="<?php etr("Module navigation") ?>">
@@ -72,6 +80,12 @@ title(tr("Select module"));
 			<span class="module-card-icon module-icon-common" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10ZM9 12l2 2 4-5"/></svg></span>
 			<span class="module-card-copy"><strong><?php etr("Common") ?></strong><small><?php etr("Security") ?> · <?php etr("Languages") ?> · <?php etr("Company info") ?></small></span><span class="module-card-arrow" aria-hidden="true">&#8594;</span>
 		</a>
+		<?php foreach ($optionalModules as $optionalName => $optionalModule) { ?>
+		<a class="module-card" href="<?php echo htmlspecialchars(moduleUrl($optionalName, $optionalModule['default_action'])) ?>">
+			<span class="module-card-icon module-icon-optional" aria-hidden="true"><?php echo $optionalModule['icon'] ?></span>
+			<span class="module-card-copy"><strong><?php echo htmlspecialchars($optionalModule['title']) ?></strong><small><?php echo htmlspecialchars($optionalModule['description']) ?></small></span><span class="module-card-arrow" aria-hidden="true">&#8594;</span>
+		</a>
+		<?php } ?>
 	</nav>
 </main>
 <?php bottom() ?>
