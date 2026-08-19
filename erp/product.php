@@ -5,6 +5,7 @@
 	checkPermission(PERMISSIONID_MANAGE_PRODUCTS);
 
 	$productid = getParam('productid');
+	$saveError = null;
 	$new = true;
 	if (isSave()) {
 		$productid = getParam('productid');
@@ -23,6 +24,12 @@
 			}
 			if (is_numeric($productid) && (int)$productid < 1000)
 				$productid = (int)$productid + 1000;
+			if (findValue(
+				"select count(*) from product where productid=" . sql_string($productid),
+				0
+			) > 0) {
+				$saveError = tr("Product number already exists.");
+			} else {
 			if (isEmpty($unittype)) {
 				$unittype = findValue("select unittype from category
                                        where categoryid=$categoryid");
@@ -69,9 +76,10 @@
 				values ($oscommerceid, $categories_id)");
 				sql("
 				update product set oscommerceid=$oscommerceid
-				where productid='$productid'");
+					where productid='$productid'");
+				}
 			}
-		} else {
+			} else {
             $updateSQL =
     			"update product set
     				model='$model',
@@ -97,7 +105,8 @@
 				where products_id=$oscommerceid and language_id=$languages_id");
     		}
 		}
-		$count = getParam("supplier_count");
+			if ($saveError == null) {
+			$count = getParam("supplier_count");
 		$i = 0;
 		while ($i < $count) {
 			$supplierid = getParam("supplierid_$i");
@@ -116,8 +125,9 @@
 			$productcode_new = getParam("productcode_new");
 			sql("
 			insert into supplier_price (supplierid, productid, price, supplier_productcode)
-			values ($supplierid, " . sql_string($productid) . ", null, '$productcode_new')");
-		}
+				values ($supplierid, " . sql_string($productid) . ", null, '$productcode_new')");
+			}
+			}
 
 	}
 
@@ -128,7 +138,7 @@
 
 	$rec = new Dummy();
 	$parts = null;
-	if (!isEmpty($productid)) {
+		if (!isEmpty($productid) && $saveError == null) {
 	    $selectSQL =
 		"select p.productid,
 		       model,
@@ -150,9 +160,16 @@
 			$new = false;
 		}
 	}
-	if ($rec == null) {
-		$rec = new Dummy();
-	}
+		if ($rec == null) {
+			$rec = new Dummy();
+		}
+		if ($saveError != null) {
+			$rec->model = getParam('model');
+			$rec->description = getParam('description');
+			$rec->categoryid = getParam('categoryid');
+			$rec->barcode = getParam('barcode');
+			$rec->unittype = getParam('unittype');
+		}
 
 	$categories = rs2array(query("select categoryid, description from category"));
 	$unittypes = rs2array(query("select unittype, description from unittype"));
@@ -178,6 +195,9 @@ if ($new)
 title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 ?>
 <form name="postform" action="product.php" method="POST" class="product-editor">
+<?php if ($saveError != null) { ?>
+	<div class="alert alert-danger" role="alert"><?php echo htmlspecialchars($saveError) ?></div>
+<?php } ?>
 <div class="product-editor-intro">
 	<div class="product-editor-icon" aria-hidden="true">
 		<svg viewBox="0 0 24 24"><path d="M20 13V7a2 2 0 0 0-1-1.73l-6-3.46a2 2 0 0 0-2 0L5 5.27A2 2 0 0 0 4 7v6a2 2 0 0 0 1 1.73l6 3.46a2 2 0 0 0 2 0l6-3.46A2 2 0 0 0 20 13ZM4.27 6 12 10.5 19.73 6M12 22V10.5"/></svg>
@@ -199,7 +219,7 @@ title("<a href='products.php'>" . tr("Products") . "</a> > $title");
 			<div class="col-12 col-md-5">
 				<label class="form-label fw-semibold" for="productid"><?php etr("Productno") ?></label>
 				<?php if ($new) { ?>
-					<div class="product-field"><?php numberbox('productid', '') ?></div>
+					<div class="product-field"><?php numberbox('productid', $saveError == null ? '' : $productid) ?></div>
 					<small class="form-text"><?php etr("Leave empty for auto generated") ?></small>
 				<?php } else { ?>
 					<div class="product-readonly-value"><?php echo htmlspecialchars($productid) ?></div>

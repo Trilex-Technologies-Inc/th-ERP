@@ -136,49 +136,48 @@ if (!isEmpty($orderid)) {
 	title(tr('Point of sale')); ?>
 
 	<style>
+		.erp-pos { --pos-primary: #4b5fd7; --pos-primary-dark: #3547b7; --pos-green: #169b62; --pos-ink: #1f2937; --pos-muted: #7a8495; --pos-line: #e3e7ee; max-width: 1440px; margin: auto }
 		.erp-pos-sales-detail { margin: 0 auto 14px; overflow: hidden; background: #fff; border: 1px solid #dfe3e8; border-radius: 12px; box-shadow: 0 5px 18px rgba(28,39,60,.06) }
 		.erp-pos-sales-detail-head { display: flex; align-items: center; justify-content: space-between; padding: 10px 18px; color: #344054; background: #f8f9fb; border-bottom: 1px solid #e8ebef; font-size: .8rem }
 		.erp-pos-sales-detail-head span { color: #87909d; font-size: .72rem }
 		.erp-pos-sale-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: .75rem; padding: 10px 18px; color: #344054; border-bottom: 1px solid #edf0f3; font-size: .78rem; text-decoration: none }
 		.erp-pos-sale-row:last-child { border-bottom: 0 }.erp-pos-sale-row:hover { color: #4455bc; background: #f8f9ff }.erp-pos-sale-row time { color: #87909d }.erp-pos-sale-row strong { color: #1b8e5a; text-align: right }.erp-pos-sales-empty { padding: 12px 18px; color: #87909d; font-size: .78rem }
-		.erp-pos {
-			max-width: 1440px;
-			margin: auto
-		}
-
 		.erp-pos-shell {
 			display: grid;
 			grid-template-columns: minmax(0, 1.55fr) minmax(380px, .8fr);
-			min-height: 720px;
+			min-height: min(720px, calc(100vh - 118px));
 			overflow: hidden;
-			background: #f5f7fa;
-			border: 1px solid #d7dce3;
+			background: #f8f9fc;
+			border: 1px solid var(--pos-line);
 			border-radius: 16px;
-			box-shadow: 0 15px 45px rgba(28, 39, 60, .12)
+			box-shadow: 0 16px 44px rgba(30, 41, 59, .09)
 		}
 
 		.erp-pos-catalog {
 			display: flex;
 			min-width: 0;
 			flex-direction: column;
-			padding: 22px
+			padding: 24px
 		}
 
 		.erp-pos-top {
 			display: flex;
 			align-items: center;
 			gap: 12px;
-			margin-bottom: 18px
+			margin-bottom: 20px
 		}
 
 		.erp-pos-top h1 {
 			margin: 0;
-			font-size: 1.45rem !important
+			color: var(--pos-ink);
+			font-size: 1.5rem !important;
+			font-weight: 800 !important;
+			letter-spacing: -.025em
 		}
 
 		.erp-pos-top p {
 			margin: 2px 0 0;
-			color: #718096;
+			color: var(--pos-muted);
 			font-size: .78rem
 		}
 
@@ -190,43 +189,55 @@ if (!isEmpty($orderid)) {
 
 		.erp-pos-search input {
 			width: 100%;
-			height: 44px;
-			padding: 0 16px 0 42px;
-			border: 1px solid #d7dce3;
-			border-radius: 10px
+			height: 46px;
+			padding: 0 16px 0 44px !important;
+			background: #fff;
+			border: 1px solid #d6dce6 !important;
+			border-radius: 11px !important;
+			box-shadow: 0 2px 6px rgba(30, 41, 59, .03)
 		}
 
 		.erp-pos-search span {
 			position: absolute;
 			left: 15px;
-			top: 11px;
-			color: #87909d
+			top: 12px;
+			z-index: 1;
+			color: #8b95a5;
+			font-size: 1rem;
+			pointer-events: none
 		}
 
 		.erp-product-grid {
 			display: grid;
 			grid-template-columns: repeat(4, minmax(0, 1fr));
-			gap: 11px;
+			gap: 12px;
 			overflow: auto;
-			padding: 2px
+			padding: 2px 4px 8px 2px
 		}
 
-		.erp-product {
-			min-height: 112px;
-			padding: 14px;
-			color: #243047;
-			background: #fff;
-			border: 1px solid #dfe3e8;
-			border-radius: 12px;
-			text-align: left;
-			transition: .15s
+		.erp-pos .erp-product-grid > button.erp-product {
+			position: relative;
+			min-height: 176px;
+			padding: 14px 14px 50px !important;
+			color: var(--pos-ink) !important;
+			background: #fff !important;
+			border: 1px solid var(--pos-line) !important;
+			border-radius: 13px !important;
+			box-shadow: 0 3px 10px rgba(30, 41, 59, .045) !important;
+			text-align: left !important;
+			transition: border-color .16s ease, box-shadow .16s ease, transform .16s ease
 		}
 
-		.erp-product:hover {
-			border-color: #667eea;
-			box-shadow: 0 7px 18px rgba(66, 82, 160, .13);
+		.erp-pos .erp-product-grid > button.erp-product:hover {
+			color: var(--pos-ink) !important;
+			background: #fff !important;
+			border-color: #aeb8ef !important;
+			box-shadow: 0 10px 24px rgba(66, 82, 160, .13) !important;
 			transform: translateY(-2px)
 		}
+
+		.erp-pos .erp-product-grid > button.erp-product:focus-visible { outline: 3px solid rgba(75,95,215,.2); outline-offset: 2px }
+		.erp-pos .erp-product-grid > button.erp-product::after { position: absolute; right: 12px; bottom: 12px; display: grid; width: 26px; height: 26px; place-items: center; color: var(--pos-primary); background: #eef0ff; border-radius: 8px; content: "+"; font-size: 1rem; font-weight: 800 }
 
 		.erp-product strong,
 		.erp-product small {
@@ -235,20 +246,32 @@ if (!isEmpty($orderid)) {
 
 		.erp-product strong {
 			overflow: hidden;
-			font-size: .86rem;
-			text-overflow: ellipsis
+			color: var(--pos-ink) !important;
+			font-size: .88rem;
+			line-height: 1.4;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 2
 		}
 
 		.erp-product small {
 			margin-top: 6px;
-			color: #7b8492;
-			font-size: .7rem
+			color: var(--pos-muted) !important;
+			font-size: .72rem;
+			line-height: 1.55;
+			display: -webkit-box;
+			overflow: hidden;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 3
 		}
 
 		.erp-product em {
 			display: block;
+			position: absolute;
+			bottom: 16px;
+			left: 14px;
 			margin-top: 12px;
-			color: #4e5fc7;
+			color: var(--pos-primary) !important;
 			font-size: .75rem;
 			font-style: normal;
 			font-weight: 800
@@ -266,7 +289,7 @@ if (!isEmpty($orderid)) {
 			min-width: 0;
 			flex-direction: column;
 			background: #fff;
-			border-left: 1px solid #dfe3e8
+			border-left: 1px solid var(--pos-line)
 		}
 
 		.erp-cart-head {
@@ -279,7 +302,9 @@ if (!isEmpty($orderid)) {
 
 		.erp-cart-head h2 {
 			margin: 0;
-			font-size: 1.1rem !important
+			color: var(--pos-ink);
+			font-size: 1.1rem !important;
+			font-weight: 800 !important
 		}
 
 		.erp-cart-head small {
@@ -305,6 +330,10 @@ if (!isEmpty($orderid)) {
 			color: #9098a4;
 			text-align: center
 		}
+
+		.erp-cart-empty .empty-icon { display: grid; width: 58px; height: 58px; margin: 0 auto 13px; place-items: center; color: #7482d6; background: #f0f2ff; border-radius: 18px; font-size: 1.55rem }
+		.erp-cart-empty strong { color: #3f4858; font-size: .92rem }
+		.erp-cart-empty small { display: inline-block; margin-top: 4px; color: #929baa }
 
 		.erp-cart-line {
 			display: grid;
@@ -346,7 +375,7 @@ if (!isEmpty($orderid)) {
 
 		.erp-cart-summary {
 			padding: 18px 20px;
-			background: #f8f9fb;
+			background: #fafbfc;
 			border-top: 1px solid #e1e5ea
 		}
 
@@ -362,7 +391,9 @@ if (!isEmpty($orderid)) {
 		}
 
 		.erp-total strong {
-			font-size: 1.65rem
+			color: var(--pos-ink);
+			font-size: 1.7rem;
+			letter-spacing: -.03em
 		}
 
 		.erp-pos-actions {
@@ -385,26 +416,37 @@ if (!isEmpty($orderid)) {
 			grid-column: 1/-1;
 			min-height: 58px !important;
 			color: #fff;
-			background: #18a66a;
-			border: 0;
+			background: var(--pos-green) !important;
+			border: 1px solid var(--pos-green) !important;
 			font-size: 1rem
 		}
 
+		.erp-pay:hover { background: #118454 !important; border-color: #118454 !important }
+
 		.erp-pay:disabled {
-			background: #aab4b0
+			color: #8a9490 !important;
+			background: #e6eae8 !important;
+			border-color: #e6eae8 !important;
+			box-shadow: none !important;
+			cursor: not-allowed
 		}
 
 		.erp-secondary {
-			color: #344054;
-			background: #fff;
-			border: 1px solid #ccd2da
+			color: #344054 !important;
+			background: #fff !important;
+			border: 1px solid #ccd2da !important
 		}
 
+		.erp-secondary:hover { color: var(--pos-primary) !important; background: #f7f8ff !important; border-color: #aeb8ef !important }
+		.erp-secondary:disabled { color: #a1a8b3 !important; background: #f5f6f8 !important; border-color: #e2e5ea !important; box-shadow: none !important; cursor: not-allowed }
+
 		.erp-new {
-			color: #fff;
-			background: #4455bc;
-			border: 1px solid #4455bc
+			color: #fff !important;
+			background: var(--pos-primary);
+			border: 1px solid var(--pos-primary)
 		}
+
+		.erp-new:hover, .erp-new:visited { color: #fff !important }
 
 		.erp-pay-dialog {
 			width: min(420px, 92vw);
@@ -474,7 +516,13 @@ if (!isEmpty($orderid)) {
 			}
 		}
 
+		@media(max-width:760px) {
+			.erp-pos-toolbar { grid-template-columns: repeat(2,minmax(0,1fr)) }
+			.erp-pos-today { align-items: flex-start; flex-direction: column }
+		}
+
 		@media(max-width:600px) {
+			.erp-pos-shell { border-radius: 12px }
 			.erp-pos-catalog {
 				padding: 14px
 			}
@@ -492,6 +540,11 @@ if (!isEmpty($orderid)) {
 			.erp-product-grid {
 				grid-template-columns: repeat(2, 1fr)
 			}
+
+			.erp-pos .erp-product-grid > button.erp-product { min-height: 160px; padding: 12px 12px 46px !important }
+			.erp-product em { left: 12px }
+			.erp-cart-head { align-items: flex-start; gap: 12px; flex-direction: column }
+			.erp-cart-head select { width: 100%; max-width: none }
 
 			.erp-cart-line {
 				grid-template-columns: 1fr 62px 70px 26px
@@ -527,7 +580,7 @@ if (!isEmpty($orderid)) {
 				</header>
 				<div class="erp-product-grid" id="product-grid"><?php $productCount = 0;
 																while ($product = fetch($products)) {
-																	$productCount++; ?><button class="erp-product" type="submit" name="productid" value="<?php echo htmlspecialchars($product->productid) ?>" data-search="<?php echo htmlspecialchars(strtolower($product->productid . ' ' . $product->model . ' ' . $product->barcode . ' ' . $product->description)) ?>" onclick="setAction('add')"><strong><?php echo htmlspecialchars($product->model) ?></strong><small><?php echo htmlspecialchars($product->description) ?></small><em>#<?php echo htmlspecialchars($product->productid) ?></em></button><?php } ?><?php if (!$productCount) { ?><div class="erp-empty"><?php etr('No products found') ?></div><?php } ?></div>
+																	$productCount++; ?><button class="erp-product" type="submit" name="productid" value="<?php echo htmlspecialchars($product->productid) ?>" data-search="<?php echo htmlspecialchars(strtolower($product->productid . ' ' . $product->model . ' ' . $product->barcode . ' ' . $product->description)) ?>" title="<?php echo htmlspecialchars($product->model . ' — ' . $product->description) ?>" onclick="setAction('add')"><strong><?php echo htmlspecialchars($product->model) ?></strong><small><?php echo htmlspecialchars($product->description) ?></small><em>#<?php echo htmlspecialchars($product->productid) ?></em></button><?php } ?><?php if (!$productCount) { ?><div class="erp-empty"><?php etr('No products found') ?></div><?php } ?></div>
 			</section>
 			<aside class="erp-cart">
 				<header class="erp-cart-head">
@@ -541,7 +594,7 @@ if (!isEmpty($orderid)) {
 							<div><strong><?php echo htmlspecialchars($row->model) ?></strong><small><?php echo formatMoney($row->unitprice) ?> × <?php echo htmlspecialchars($row->quantity) ?></small></div><input type="number" step="any" min="0" name="quantity_<?php echo $i ?>" value="<?php echo htmlspecialchars($row->quantity) ?>" <?php if (!$editable) echo 'disabled'; ?>><b><?php echo formatMoney($amount) ?></b><?php if ($editable) { echo deleteLink("posclient.php?orderid=" . urlencode($orderid) . "&action=delete&line=" . urlencode($row->no), deleteIconImage()); } ?><input type="hidden" name="no_<?php echo $i ?>" value="<?php echo htmlspecialchars($row->no) ?>"><input type="hidden" name="unitprice_<?php echo $i ?>" value="<?php echo htmlspecialchars($row->unitprice) ?>">
 						</div><?php $i++;
 											} ?><?php if (!$i) { ?><div class="erp-cart-empty">
-							<div><strong><?php etr('Cart is empty') ?></strong><br><small><?php etr('Choose a product to begin') ?></small></div>
+			<div><span class="empty-icon" aria-hidden="true">🛒</span><strong><?php etr('Cart is empty') ?></strong><br><small><?php etr('Choose a product to begin') ?></small></div>
 						</div><?php } ?></div>
 				<footer class="erp-cart-summary">
 					<div class="erp-total"><span><?php etr('Total') ?></span><strong><?php echo formatMoney($total) ?></strong></div>
