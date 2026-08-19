@@ -246,6 +246,20 @@
 	}
 
 	$locations = rs2array(query("select locationid, name from location"));
+	$productSuggestions = array();
+	if ($addable) {
+		$suggestionListId = isset($listid) ? (int)$listid : 0;
+		$productSuggestionRows = query("select p.productid, p.model, p.description, p.barcode, sp.price from product p left join sales_price sp on sp.productid=p.productid and sp.listid=$suggestionListId where p.active=1 order by p.model");
+		while ($suggestion = fetch($productSuggestionRows)) {
+			$productSuggestions[] = array(
+				'id' => (string)$suggestion->productid,
+				'model' => (string)$suggestion->model,
+				'description' => (string)$suggestion->description,
+				'barcode' => (string)$suggestion->barcode,
+				'price' => $suggestion->price === null ? '' : (string)$suggestion->price
+			);
+		}
+	}
 	$methods = array();
 	$methods[] = array(METHOD_CASH, tr("Cash"));
 	$methods[] = array(METHOD_CARD, tr("Card"));
@@ -264,7 +278,7 @@ function onLoad()
 	if (getParam("method_changed") && $method == METHOD_CARD) 
 		echo "document.postform.creditcardno";
 	else
-		echo "document.postform.productid_new";
+		echo "document.getElementById('product-search-new')";
 	?>;
 	if (focusTarget)
 		focusTarget.focus();
@@ -280,10 +294,116 @@ function methodChanged()
 	document.postform.method_changed.value = 1;
 	submitForm();
 }
+
+var salesOrderProducts = <?php echo json_encode($productSuggestions, JSON_HEX_TAG | JSON_HEX_AMP | JSON_HEX_APOS | JSON_HEX_QUOT) ?>;
+
+function initProductPicker()
+{
+	var input = document.getElementById('product-search-new');
+	var value = document.getElementById('productid-new');
+	var results = document.getElementById('product-search-results');
+	if (!input || !value || !results)
+		return;
+	document.body.appendChild(results);
+
+	var activeIndex = -1;
+	var matches = [];
+
+	function closeResults() {
+		results.hidden = true;
+		results.innerHTML = '';
+		activeIndex = -1;
+		input.setAttribute('aria-expanded', 'false');
+	}
+
+	function positionResults() {
+		var rect = input.getBoundingClientRect();
+		results.style.left = Math.max(8, Math.min(rect.left, window.innerWidth - Math.min(480, window.innerWidth - 16) - 8)) + 'px';
+		results.style.top = (rect.bottom + 6) + 'px';
+		results.style.width = Math.min(480, window.innerWidth - 16) + 'px';
+	}
+
+	function choose(product) {
+		value.value = product.id;
+		input.value = product.model;
+		input.dataset.selectedLabel = product.model;
+		if (document.postform.unitprice_new && product.price !== '')
+			document.postform.unitprice_new.value = product.price;
+		closeResults();
+		document.postform.quantity_new.focus();
+		document.postform.quantity_new.select();
+	}
+
+	function setActive(index) {
+		var options = results.querySelectorAll('[role=option]');
+		if (!options.length)
+			return;
+		activeIndex = (index + options.length) % options.length;
+		options.forEach(function(option, optionIndex) {
+			option.classList.toggle('is-active', optionIndex === activeIndex);
+			option.setAttribute('aria-selected', optionIndex === activeIndex ? 'true' : 'false');
+		});
+		options[activeIndex].scrollIntoView({block: 'nearest'});
+	}
+
+	function render() {
+		var term = input.value.trim().toLocaleLowerCase();
+		value.value = '';
+		delete input.dataset.selectedLabel;
+		if (!term) {
+			closeResults();
+			return;
+		}
+		matches = salesOrderProducts.filter(function(product) {
+			return [product.model, product.id, product.barcode, product.description].join(' ').toLocaleLowerCase().indexOf(term) !== -1;
+		}).slice(0, 8);
+		results.innerHTML = '';
+		activeIndex = -1;
+		if (!matches.length) {
+			var empty = document.createElement('div');
+			empty.className = 'sales-order-product-empty';
+			empty.textContent = <?php echo json_encode(tr('No products found')) ?>;
+			results.appendChild(empty);
+		} else {
+			matches.forEach(function(product, index) {
+				var option = document.createElement('button');
+				option.type = 'button';
+				option.setAttribute('role', 'option');
+				option.innerHTML = '<span><strong></strong><small></small></span><em></em>';
+				option.querySelector('strong').textContent = product.model;
+				option.querySelector('small').textContent = product.description || (product.barcode ? 'Barcode: ' + product.barcode : '');
+				option.querySelector('em').textContent = '#' + product.id;
+				option.addEventListener('mousedown', function(event) { event.preventDefault(); choose(matches[index]); });
+				results.appendChild(option);
+			});
+		}
+		results.hidden = false;
+		positionResults();
+		input.setAttribute('aria-expanded', 'true');
+	}
+
+	input.addEventListener('input', render);
+	input.addEventListener('focus', function() { if (input.value && !input.dataset.selectedLabel) render(); });
+	input.addEventListener('blur', function() { setTimeout(closeResults, 120); });
+	window.addEventListener('resize', closeResults);
+	window.addEventListener('scroll', closeResults, true);
+	input.addEventListener('keydown', function(event) {
+		if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+			event.preventDefault();
+			if (results.hidden) render();
+			setActive(activeIndex + (event.key === 'ArrowDown' ? 1 : -1));
+		} else if (event.key === 'Enter' && !results.hidden && matches.length) {
+			event.preventDefault();
+			choose(matches[activeIndex < 0 ? 0 : activeIndex]);
+		} else if (event.key === 'Escape') {
+			closeResults();
+		}
+	});
+}
 </script>
 </head>
 
-<body onLoad="onLoad()">
+<body onLoad="onLoad(); initProductPicker()">
 <?php
 menubar('index.php', 'salesorder_help.php');
 title(tr("Sales order")) ;
@@ -467,6 +587,8 @@ if ($recur) {
 <?php
 if ($addable)
     echo "<th>" . tr("Delete") . "</th>";
+if ($addable)
+    echo "<th class='text-center'>" . tr("Save") . "</th>";
 ?>
 <th><?php etr("Product") ?></th>
 <th><?php etr("Comment") ?></th>
@@ -477,8 +599,6 @@ if ($addable)
 <?php
 if (!$incVAT)
     echo "<th class='text-end'>" . tr("VAT") . "</th>";
-if ($addable)
-    echo "<th class='text-center'>" . tr("Save") . "</th>";
 ?>
 </tr>
 </thead>
@@ -493,6 +613,11 @@ while ($row = fetch($items)) {
     $href = "salesorder.php?orderid=$orderid&del_no=$row->no";
     if ($addable)
         deleteColumn($href);
+    if ($addable) {
+        echo "<td class='text-center'>";
+        echo "<input type='submit' class='sales-line-save' name='save' value='" . tr("Save") . "'>";
+        echo "</td>";
+    }
     echo "<td>";
     if ($addable)
         echo "<input type='hidden' name='no_$i' value='" . htmlspecialchars($row->no) . "'/>";
@@ -525,11 +650,6 @@ while ($row = fetch($items)) {
         $vat = $row->vat/100 * $row->unitprice * $row->quantity;
         echo "<td class='text-end'>" . formatMoney($vat) . "</td>";
     }
-	if ($addable) {
-		echo "<td class='text-center'>";
-		echo "<input type='submit' class='sales-line-save' name='save' value='" . tr("Save") . "'>";
-        echo "</td>";
-    }
     echo "</tr>
 ";
     $sum += $amount;
@@ -541,11 +661,18 @@ while ($row = fetch($items)) {
 if ($addable) {
     echo "<tr class='sales-order-add-row'>";
     echo "<td/>";
+    echo "<td class='sales-order-add-action'><input type=submit name=add value='" . tr("Add") . "'/></td>";
     echo "<td>";
+    $selectedProductLabel = isEmpty($productid) ? '' : findValue("select model from product where productid=" . sql_string($productid), $productid);
     echo "<div class='sales-order-product-picker'>";
-    textbox('productid_new', $productid, 10);
-    button("Search", "search", "../erp/products.php?mode=selectproduct&orderid=$orderid");
-    echo "</div><small>" . tr("Select a product, then confirm quantity and price.") . "</small>";
+    echo "<div class='sales-order-product-combobox'>";
+    echo "<span class='sales-order-product-search-icon' aria-hidden='true'>&#9906;</span>";
+    echo "<input id='product-search-new' type='search' value='" . htmlspecialchars($selectedProductLabel, ENT_QUOTES, 'UTF-8') . "'" . (!isEmpty($productid) ? " data-selected-label='" . htmlspecialchars($selectedProductLabel, ENT_QUOTES, 'UTF-8') . "'" : "") . " placeholder='" . htmlspecialchars(tr("Search products or scan barcode"), ENT_QUOTES, 'UTF-8') . "' autocomplete='off' role='combobox' aria-autocomplete='list' aria-expanded='false' aria-controls='product-search-results'>";
+    echo "<input id='productid-new' type='hidden' name='productid_new' value='" . htmlspecialchars($productid, ENT_QUOTES, 'UTF-8') . "'>";
+    echo "<div id='product-search-results' class='sales-order-product-results' role='listbox' hidden></div>";
+    echo "</div>";
+    button("Browse all", "search", "../erp/products.php?mode=selectproduct&orderid=$orderid");
+    echo "</div><small>" . tr("Search by product name, ID, barcode, or description. Use the arrow keys and Enter to select.") . "</small>";
     echo "</td>";
     echo "<td>";
     textbox('comment_new', '', 20);
@@ -562,7 +689,6 @@ if ($addable) {
     echo "</td>";
 	if (!$incVAT)
 		echo "<td></td>";
-    echo "<td class='sales-order-add-action'><input type=submit name=add value='" . tr("Add") . "'/></td>";
     echo "</tr>";
 }
 ?>
