@@ -72,7 +72,7 @@ $locations = rs2array(query("select locationid, name from location"));
 	<?php
 	$title = '';
 	if (!isEmpty($salesorderid))
-		$title = tr("Sales orders") . " > <a href='salesorder.php?orderid=$salesorderid'>$salesorderid</a> > ";
+		$title = tr("Sales orders") . " > <a href='../sales/salesorder.php?orderid=$salesorderid'>$salesorderid</a> > ";
 	else if (!isEmpty($productid)) {
 		$model = findValue("select model from product where productid=$productidSql");
 		$title = tr("Products") . " > <a href='product.php?productid=$productid'>$model</a> > ";
@@ -91,7 +91,7 @@ $locations = rs2array(query("select locationid, name from location"));
 	echo "<div class='container-fluid px-0 erp-form-layout'>";
 
 	if (!isEmpty($salesorderid)) {
-		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'>" . tr("Sales order") . ":</div><div class='col-12 col-md-auto'><a href='salesorder.php?orderid=$salesorderid'>$salesorderid</a></div></div>";
+		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'>" . tr("Sales order") . ":</div><div class='col-12 col-md-auto'><a href='../sales/salesorder.php?orderid=$salesorderid'>$salesorderid</a></div></div>";
 	} else if (!isEmpty($purchaseorderid)) {
 		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'>" . tr("Purchase order") . ":</div><div class='col-12 col-md-auto'><a href='purchaseorder.php?orderid=$purchaseorderid'>$purchaseorderid</a></div></div>";
 	} else if (!isEmpty($movesorderid)) {
@@ -154,7 +154,7 @@ $locations = rs2array(query("select locationid, name from location"));
 					$href = '';
 					$label = '';
 					if ($row->salesorderid != null) {
-						$href = "salesorder.php?orderid=$row->salesorderid";
+						$href = "../sales/salesorder.php?orderid=$row->salesorderid";
 						$label = tr("Sales order ") . $row->salesorderid;
 					} else if ($row->purchaseorderid != null) {
 						$href = "purchaseorder.php?orderid=$row->purchaseorderid";

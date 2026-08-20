@@ -228,7 +228,7 @@ if ($mess != null) {
     while ($row = fetch($items)) {
         echo "<input type=hidden name=no_$i value='$row->no'/>";
         echo "<tr class='$class'>";
-        echo "<td><a href='product.php?productid=$row->productid'>";
+        echo "<td><a href='../erp/product.php?productid=$row->productid'>";
         echo "$row->productid - $row->model</a></td>";
         echo "<td class='text-end'>";
         echo $row->org_quantity . ' ' . $row->unittype;

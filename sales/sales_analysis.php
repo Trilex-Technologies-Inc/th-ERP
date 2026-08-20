@@ -96,7 +96,7 @@ $locations = rs2array(query("select locationid, name from location"));
 				$rs = query($selectSQL);
 				$class = "odd";
 				while ($row = fetch_object($rs)) {
-					$href = "product.php?productid=$row->productid";
+					$href = "../erp/product.php?productid=$row->productid";
 					echo "<tr class='$class'>";
 					echo "<td>$row->productid</td>";
 					echo "<td><a href='$href'>$row->model</a></td>";
