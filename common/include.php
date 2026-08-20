@@ -1,5 +1,6 @@
 <?php
 include('../include/therp_include.php');
+require_once('../include/module_system.php');
 
 define('PERMISSION_ADMINISTRATE_USER', 1);
 
@@ -15,6 +16,11 @@ function menubar($currentHref = null)
 			menu('companyinfo.php', 'Company info', $percent, true, $currentHref);
 			if (hasPermission(PERMISSION_ADMINISTRATE_USERS))
 				menu('module_manager.php', 'Modules', $percent, true, $currentHref);
+			$moduleManager = new ThERPModuleManager();
+			foreach ($moduleManager->all() as $moduleName => $module) {
+				if ($module['enabled'])
+					menu(moduleUrl($moduleName, $module['default_action']), htmlspecialchars($module['title']), $percent, true, $currentHref);
+			}
 			menu('help.php', 'Help', $percent, false, $currentHref);
 	echo "</div>";
 	echo "</nav>";
