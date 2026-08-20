@@ -497,6 +497,19 @@ if (!isEmpty($orderid)) {
 			font-size: 1.15rem
 		}
 
+		.erp-pay-dialog .change-due {
+			display: none;
+			justify-content: space-between;
+			margin: -7px 0 16px;
+			padding: 10px 12px;
+			color: #176b46;
+			background: #eaf8f0;
+			border-radius: 8px;
+			font-size: .9rem
+		}
+
+		.erp-pay-dialog .change-due.is-visible { display: flex }
+
 		.erp-dialog-actions {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
@@ -625,7 +638,8 @@ if (!isEmpty($orderid)) {
 			<p><?php etr('Enter the amount received from the customer.') ?></p>
 			<div class="due"><span><?php etr('Amount due') ?></span><strong><?php echo formatMoney($total) ?></strong></div>
 			<label><?php etr('Payment method') ?><select id="payment-method"><option value="cash"><?php etr('Cash') ?></option><option value="card"><?php etr('Card') ?></option><option value="bank"><?php etr('Bank transfer') ?></option><option value="gift"><?php etr('Gift card') ?></option><option value="store_credit"><?php etr('Store credit') ?></option></select></label>
-			<label><?php etr('Amount received') ?><input id="received" type="number" min="<?php echo htmlspecialchars($total) ?>" step="any" value="<?php echo htmlspecialchars($total) ?>"></label>
+			<label><?php etr('Amount received') ?><input id="received" type="number" min="<?php echo htmlspecialchars($total) ?>" step="any" value="<?php echo htmlspecialchars($total) ?>" data-amount-due="<?php echo htmlspecialchars($total) ?>" aria-describedby="change-due"></label>
+			<div id="change-due" class="change-due" aria-live="polite"><span><?php etr('Change due') ?></span><strong id="change-amount"></strong></div>
 			<div class="erp-dialog-actions"><button value="cancel"><?php etr('Cancel') ?></button><button type="button" class="confirm" onclick="completePayment()"><?php etr('Complete sale') ?></button></div>
 		</form>
 	</dialog>
@@ -642,11 +656,18 @@ if (!isEmpty($orderid)) {
 		}
 
 		function completePayment() {
-			document.getElementById('pos-received').value = document.getElementById('received').value;
+			var received = document.getElementById('received');
+			document.getElementById('pos-received').value = received.value;
 			document.getElementById('pos-payment-method').value = document.getElementById('payment-method').value;
 			setAction('pay');
 			document.getElementById('pos-form').submit()
 		}
+		document.getElementById('received').addEventListener('input', function() {
+			var change = Number(this.value) - Number(this.dataset.amountDue);
+			var changeDue = document.getElementById('change-due');
+			changeDue.classList.toggle('is-visible', Number.isFinite(change) && change > 0);
+			if (change > 0) document.getElementById('change-amount').textContent = change.toFixed(2);
+		});
 		document.getElementById('product-search').addEventListener('input', function() {
 			var term = this.value.toLowerCase();
 			document.querySelectorAll('.erp-product').forEach(function(product) {
