@@ -104,6 +104,12 @@ $shiftRows = $error ? null : query("select s.*, l.name location_name,
 			<div class="col-6 col-lg-3"><div class="border rounded p-3"><small class="text-secondary"><?php etr('Expected cash') ?></small><div class="fs-4 fw-bold"><?php echo formatMoney($expectedCash) ?></div><small><?php etr('Cash expected in drawer') ?></small></div></div>
 			<div class="col-6 col-lg-3"><div class="border rounded p-3"><small class="text-secondary"><?php echo $variance === null ? tr('Card / bank') : tr('Cash difference') ?></small><div class="fs-4 fw-bold"><?php echo formatMoney($variance === null ? (float)$totals->card_sales + (float)$totals->bank_sales : $variance) ?></div><small><?php etr('Other') ?>: <?php echo formatMoney($totals->other_sales) ?></small></div></div>
 		</div>
+		<?php if (!$selectedShift->closed_at && $openShift && (int)$selectedShift->shiftid === (int)$openShift->shiftid) { ?>
+		<div class="mb-4"><a class="btn btn-outline-primary" href="pos_x_report.php" onclick="return thERPPrintDocument(this.href)"><?php etr('Print X report') ?></a></div>
+		<?php } ?>
+		<?php if ($selectedShift->closed_at) { ?>
+		<div class="mb-4"><a class="btn btn-outline-dark" href="pos_z_report.php?shiftid=<?php echo (int)$selectedShift->shiftid ?>" onclick="return thERPPrintDocument(this.href)"><?php etr('Print Z report') ?></a></div>
+		<?php } ?>
 		<?php if (!$selectedShift->closed_at && (int)$selectedShift->shiftid === (int)$openShift->shiftid && hasPermission(PERMISSIONID_POS_CLOSE_SHIFT)) { ?>
 		<form method="post" class="row g-3 align-items-end" onsubmit="return confirm('<?php echo htmlspecialchars(tr('Close this shift? Sales will be locked until a new shift is opened.'), ENT_QUOTES) ?>')">
 			<input type="hidden" name="action" value="close"><input type="hidden" name="shiftid" value="<?php echo (int)$selectedShift->shiftid ?>">
