@@ -36,6 +36,14 @@
 
 	<section class="row g-4">
 		<div class="col-12 col-md-6 col-xl-4">
+			<a href="pos_shift.php" class="card h-100 border-0 shadow-sm text-decoration-none">
+				<div class="card-body p-4 d-flex align-items-start gap-3">
+					<span class="dashboard-icon d-inline-flex align-items-center justify-content-center rounded-3 bg-success-subtle text-success fs-4 flex-shrink-0" aria-hidden="true">◷</span>
+					<div><h3 class="h6 fw-bold mb-2"><?php etr("Open / close register") ?></h3><p class="text-secondary small mb-0"><?php etr("Shift counting") ?> / <?php etr("Daily report") ?></p></div>
+				</div>
+			</a>
+		</div>
+		<div class="col-12 col-md-6 col-xl-4">
 			<a href="posclient.php" class="card h-100 border-0 shadow-sm text-decoration-none">
 				<div class="card-body p-4 d-flex align-items-start gap-3">
 					<span class="dashboard-icon d-inline-flex align-items-center justify-content-center rounded-3 bg-primary-subtle text-primary fs-4 flex-shrink-0" aria-hidden="true">▣</span>

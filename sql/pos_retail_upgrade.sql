@@ -33,6 +33,29 @@ CREATE TABLE IF NOT EXISTS pos_shift (
   PRIMARY KEY (shiftid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+-- Link each tender to the register shift. These guarded statements make this
+-- upgrade safe to run again on an already upgraded shop database.
+SET @pos_sql = IF(
+  (SELECT COUNT(*) FROM information_schema.COLUMNS
+   WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='pos_payment' AND COLUMN_NAME='shiftid') = 0,
+  'ALTER TABLE pos_payment ADD COLUMN shiftid int unsigned DEFAULT NULL AFTER orderid',
+  'SELECT 1');
+PREPARE pos_stmt FROM @pos_sql; EXECUTE pos_stmt; DEALLOCATE PREPARE pos_stmt;
+
+SET @pos_sql = IF(
+  (SELECT COUNT(*) FROM information_schema.STATISTICS
+   WHERE TABLE_SCHEMA=DATABASE() AND TABLE_NAME='pos_payment' AND INDEX_NAME='pos_payment_shift') = 0,
+  'ALTER TABLE pos_payment ADD KEY pos_payment_shift (shiftid)',
+  'SELECT 1');
+PREPARE pos_stmt FROM @pos_sql; EXECUTE pos_stmt; DEALLOCATE PREPARE pos_stmt;
+
+SET @pos_sql = IF(
+  (SELECT COUNT(*) FROM information_schema.TABLE_CONSTRAINTS
+   WHERE CONSTRAINT_SCHEMA=DATABASE() AND TABLE_NAME='pos_payment' AND CONSTRAINT_NAME='fk_pos_payment_shift') = 0,
+  'ALTER TABLE pos_payment ADD CONSTRAINT fk_pos_payment_shift FOREIGN KEY (shiftid) REFERENCES pos_shift(shiftid)',
+  'SELECT 1');
+PREPARE pos_stmt FROM @pos_sql; EXECUTE pos_stmt; DEALLOCATE PREPARE pos_stmt;
+
 CREATE TABLE IF NOT EXISTS pos_store_credit (
   creditid int unsigned NOT NULL AUTO_INCREMENT,
   customerid int unsigned NOT NULL,

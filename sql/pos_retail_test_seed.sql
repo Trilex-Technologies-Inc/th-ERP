@@ -7,8 +7,9 @@ INSERT INTO pos_store_credit (customerid, amount, balance, reference, createdby)
 SELECT 1, 25.00, 25.00, 'TEST-CREDIT-001', username FROM user ORDER BY admin DESC, username LIMIT 1;
 
 -- Attach example tender records to the two latest completed cash sales.
-INSERT INTO pos_payment (orderid, methodid, amount, reference, createdby, createdtime)
+INSERT INTO pos_payment (orderid, shiftid, methodid, amount, reference, createdby, createdtime)
 SELECT so.orderid,
+       (SELECT MAX(ps.shiftid) FROM pos_shift ps),
        IF(MOD(so.orderid,2)=0, 'card', 'cash'),
        ROUND(SUM(si.quantity*si.unitprice*(1+si.vat/100)),2),
        CONCAT('TEST-', so.orderid), so.createdby, so.orderdate

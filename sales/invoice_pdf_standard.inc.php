@@ -255,9 +255,10 @@ function buildInvoicePDF($orderid, $filename = '', $type = 'invoice')
 		$y += ROWHEIGHT;		
 		$text1 = ccs(tr("VAT number")) . ': ';
 		$text2 = $customer->vatnumber;
-		$pdf->Text($text1);
+		$pdf = setLabelFont($pdf);
+		$pdf->Text($x, $y, $text1);
 		$pdf = setNumericFont($pdf);
-		$x = $rightX;
+		$x += 25;
 		$pdf->Text($x, $y, $text2);
 	}	
 	$pdf->SetX(0);

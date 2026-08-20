@@ -1132,11 +1132,11 @@ CREATE TABLE IF NOT EXISTS pos_payment_method (
   active smallint NOT NULL DEFAULT 1, PRIMARY KEY (methodid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 CREATE TABLE IF NOT EXISTS pos_payment (
-  paymentid int unsigned NOT NULL AUTO_INCREMENT, orderid int unsigned NOT NULL,
+	  paymentid int unsigned NOT NULL AUTO_INCREMENT, orderid int unsigned NOT NULL, shiftid int unsigned DEFAULT NULL,
   methodid varchar(20) NOT NULL, amount decimal(12,2) NOT NULL,
   reference varchar(80) DEFAULT NULL, createdby varchar(16) DEFAULT NULL,
   createdtime datetime NOT NULL DEFAULT CURRENT_TIMESTAMP, PRIMARY KEY (paymentid),
-  KEY pos_payment_order (orderid),
+	  KEY pos_payment_order (orderid), KEY pos_payment_shift (shiftid),
   CONSTRAINT fk_pos_payment_order FOREIGN KEY (orderid) REFERENCES salesorder(orderid),
   CONSTRAINT fk_pos_payment_method FOREIGN KEY (methodid) REFERENCES pos_payment_method(methodid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1146,6 +1146,7 @@ CREATE TABLE IF NOT EXISTS pos_shift (
   closed_at datetime DEFAULT NULL, opening_cash decimal(12,2) NOT NULL DEFAULT 0,
   closing_cash decimal(12,2) DEFAULT NULL, PRIMARY KEY (shiftid)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ALTER TABLE pos_payment ADD CONSTRAINT fk_pos_payment_shift FOREIGN KEY (shiftid) REFERENCES pos_shift(shiftid);
 CREATE TABLE IF NOT EXISTS pos_store_credit (
   creditid int unsigned NOT NULL AUTO_INCREMENT, customerid int unsigned NOT NULL,
   amount decimal(12,2) NOT NULL, balance decimal(12,2) NOT NULL,

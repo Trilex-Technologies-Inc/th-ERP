@@ -1,12 +1,19 @@
 <?php
 include('include.php');
 include('salesorder.inc.php');
+include('pos_shift.inc.php');
 
 checkPermission(PERMISSIONID_SELL);
 
 $orderid = getParam('orderid');
 $action = getParam('action');
 $mess = null;
+$openShift = pos_get_open_shift();
+
+if (in_array($action, array('new', 'add', 'save', 'pay', 'delete')) && $openShift == null) {
+	header('Location: pos_shift.php');
+	die;
+}
 
 function pos_create_order($locationid)
 {
@@ -68,8 +75,9 @@ if (!isEmpty($orderid)) {
 				tx('finish_cashorder', array($orderid, $received));
 				if (findValue("show tables like 'pos_payment'", null) != null) {
 					$paymentMethod = addslashes($paymentMethod);
-					sql("insert into pos_payment (orderid, methodid, amount, createdby)
-					     values ($orderid, '$paymentMethod', $total, '" . getUser() . "')");
+					$shiftid = (int)$openShift->shiftid;
+					sql("insert into pos_payment (orderid, shiftid, methodid, amount, createdby)
+					     values ($orderid, $shiftid, '$paymentMethod', $total, '" . getUser() . "')");
 				}
 				header('Location: posclient.php?orderid=' . urlencode($orderid) . '&completed=1');
 				die;
@@ -553,7 +561,9 @@ if (!isEmpty($orderid)) {
 	</style>
 	<main class="erp-pos">
 		<?php if ($mess) { ?><div class="alert alert-danger"><?php echo htmlspecialchars($mess) ?></div><?php } ?>
+		<?php if (getParam('shift_opened')) { ?><div class="alert alert-success"><?php etr('The register is open. You can begin selling.') ?></div><?php } ?>
 		<?php if (getParam('completed')) { ?><div class="alert alert-success d-flex justify-content-between align-items-center"><span><?php etr('The sale is complete. The receipt is ready to print.') ?></span><a class="btn btn-primary btn-sm" href="invoice_pdf.php?orderid=<?php echo urlencode($orderid) ?>&type=receipt" onclick="return thERPPrintDocument(this.href)"><?php etr('Print receipt') ?></a></div><?php } ?>
+		<?php if ($openShift) { ?><div class="alert alert-light border d-flex justify-content-between align-items-center"><span><strong><?php etr('Register open') ?></strong> · #<?php echo (int)$openShift->shiftid ?> · <?php echo htmlspecialchars($openShift->location_name) ?> · <?php echo date('H:i', strtotime($openShift->opened_at)) ?></span><a class="btn btn-outline-danger btn-sm" href="pos_shift.php?shiftid=<?php echo (int)$openShift->shiftid ?>"><?php etr('Count and close shift') ?></a></div><?php } else { ?><div class="alert alert-warning d-flex justify-content-between align-items-center"><span><?php etr('The register is closed. Open a shift before taking sales.') ?></span><a class="btn btn-success btn-sm" href="pos_shift.php"><?php etr('Open shift') ?></a></div><?php } ?>
 
 		<div class="erp-pos-today">
 			<div><span><?php etr("Today's sales") ?></span><strong><?php echo formatMoney($todaySales->sale_total) ?></strong></div><small><?php echo (int)$todaySales->sale_count ?> <?php etr('completed sales') ?> · <?php echo (int)$lowStockCount ?> <?php etr('low-stock items') ?></small>
@@ -565,7 +575,7 @@ if (!isEmpty($orderid)) {
 																																																																																																																																																			if (!$todayDetailCount) { ?><div class="erp-pos-sales-empty"><?php etr('No completed sales today') ?></div><?php } ?>
 		</div>
 		<nav class="erp-pos-toolbar" aria-label="<?php etr('POS quick actions') ?>">
-			<a href="posclient.php?action=new"><span aria-hidden="true">＋</span><strong><?php etr('New sale') ?></strong><small><?php etr('Start an empty cart') ?></small></a>
+			<a href="<?php echo $openShift ? 'posclient.php?action=new' : 'pos_shift.php' ?>"><span aria-hidden="true">＋</span><strong><?php echo $openShift ? tr('New sale') : tr('Open shift') ?></strong><small><?php echo $openShift ? tr('Start an empty cart') : tr('Open the register first') ?></small></a>
 			<a href="sales.php?starttime=<?php echo urlencode(strtotime('today')) ?>"><span aria-hidden="true">▤</span><strong><?php etr('Sales history') ?></strong><small><?php etr('Review completed orders') ?></small></a>
 			<a href="receipts.php"><span aria-hidden="true">✓</span><strong><?php etr('Receipts') ?></strong><small><?php etr('Payments and receipts') ?></small></a>
 			<a href="../erp/products.php"><span aria-hidden="true">□</span><strong><?php etr('Inventory') ?></strong><small><?php echo (int)$lowStockCount ?> <?php etr('low-stock items') ?></small></a>
