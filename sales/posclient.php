@@ -91,24 +91,29 @@ if (!isEmpty($orderid)) {
 $locations = rs2array(query('select locationid, name from location'));
 $products = query("select productid, model, description, barcode, quantity from product where active=1 order by model");
 $lowStockCount = findValue("select count(*) from product where active=1 and quantity <= 5", 0);
-$todaySales = find("select count(distinct so.orderid) as sale_count,
-                   coalesce(sum(si.quantity * si.unitprice * (1 + si.vat / 100)), 0) as sale_total
-                   from salesorder so
-                   left join salesorder_item si on si.orderid=so.orderid
-                   where so.customerid=" . CUSTOMERID_CASH . "
-                   and so.invoice_transid is not null and so.cancelled=0
-                   and so.orderdate >= curdate()
-                   and so.orderdate < date_add(curdate(), interval 1 day)");
-$todaySaleRows = query("select so.orderid, so.invoice_transid, so.orderdate,
-                        coalesce(sum(si.quantity * si.unitprice * (1 + si.vat / 100)), 0) as sale_total
-                        from salesorder so
-                        left join salesorder_item si on si.orderid=so.orderid
-                        where so.customerid=" . CUSTOMERID_CASH . "
-                        and so.invoice_transid is not null and so.cancelled=0
-                        and so.orderdate >= curdate()
-                        and so.orderdate < date_add(curdate(), interval 1 day)
-                        group by so.orderid, so.orderdate
-                        order by so.orderid desc");
+$shiftSales = (object) array('sale_count' => 0, 'sale_total' => 0);
+$shiftSaleRows = query("select null as orderid, null as invoice_transid, null as orderdate, 0 as sale_total where 1=0");
+if ($openShift) {
+	$shiftid = (int)$openShift->shiftid;
+	$shiftSales = find("select count(distinct p.orderid) as sale_count,
+							coalesce(sum(p.amount), 0) as sale_total
+							from pos_payment p
+							join salesorder so on so.orderid=p.orderid
+							where p.shiftid=$shiftid
+							and so.customerid=" . CUSTOMERID_CASH . "
+							and so.invoice_transid is not null and so.cancelled=0");
+	$shiftSaleRows = query("select so.orderid, so.invoice_transid, so.orderdate,
+								coalesce(sum(p.amount), 0) as sale_total
+								from pos_payment p
+								join salesorder so on so.orderid=p.orderid
+								where p.shiftid=$shiftid
+								and so.customerid=" . CUSTOMERID_CASH . "
+								and so.invoice_transid is not null and so.cancelled=0
+								group by so.orderid, so.invoice_transid, so.orderdate
+								order by so.orderid desc");
+}
+$todaySales = $shiftSales;
+$todaySaleRows = $shiftSaleRows;
 $locationid = findValue("select locationid from user where username='" . getUser() . "'", 1);
 $items = null;
 $total = 0;
@@ -566,10 +571,10 @@ if (!isEmpty($orderid)) {
 		<?php if ($openShift) { ?><div class="alert alert-light border d-flex justify-content-between align-items-center"><span><strong><?php etr('Register open') ?></strong> · #<?php echo (int)$openShift->shiftid ?> · <?php echo htmlspecialchars($openShift->location_name) ?> · <?php echo date('H:i', strtotime($openShift->opened_at)) ?></span><a class="btn btn-outline-danger btn-sm" href="pos_shift.php?shiftid=<?php echo (int)$openShift->shiftid ?>"><?php etr('Count and close shift') ?></a></div><?php } else { ?><div class="alert alert-warning d-flex justify-content-between align-items-center"><span><?php etr('The register is closed. Open a shift before taking sales.') ?></span><a class="btn btn-success btn-sm" href="pos_shift.php"><?php etr('Open shift') ?></a></div><?php } ?>
 
 		<div class="erp-pos-today">
-			<div><span><?php etr("Today's sales") ?></span><strong><?php echo formatMoney($todaySales->sale_total) ?></strong></div><small><?php echo (int)$todaySales->sale_count ?> <?php etr('completed sales') ?> · <?php echo (int)$lowStockCount ?> <?php etr('low-stock items') ?></small>
+			<div><span><?php etr('Shift sales') ?></span><strong><?php echo formatMoney($todaySales->sale_total) ?></strong></div><small><?php echo (int)$todaySales->sale_count ?> <?php etr('completed sales') ?> · <?php echo (int)$lowStockCount ?> <?php etr('low-stock items') ?></small>
 		</div>
 		<div class="erp-pos-sales-detail">
-			<div class="erp-pos-sales-detail-head"><strong><?php etr("Today's sale details") ?></strong><span><?php echo date(DATE_PATTERN) ?></span></div><?php $todayDetailCount = 0;
+			<div class="erp-pos-sales-detail-head"><strong><?php etr('Shift sale details') ?></strong><span><?php echo $openShift ? date(DATE_PATTERN . ' H:i', strtotime($openShift->opened_at)) : '—' ?></span></div><?php if (!$shiftSales->sale_count) { ?><div class="erp-pos-sales-empty"><?php etr('No completed sales in this shift') ?></div><?php } ?><?php $todayDetailCount = $shiftSales->sale_count ? 0 : 1;
 																																							while ($todaySale = fetch($todaySaleRows)) {
 																																								$todayDetailCount++; ?><a href="../accounting/transaction.php?transactionid=<?php echo urlencode($todaySale->invoice_transid) ?>" class="erp-pos-sale-row"><span>#<?php echo htmlspecialchars($todaySale->orderid) ?></span><time><?php echo date('H:i', strtotime($todaySale->orderdate)) ?></time><strong><?php echo formatMoney($todaySale->sale_total) ?></strong></a><?php }
 																																																																																																																																																			if (!$todayDetailCount) { ?><div class="erp-pos-sales-empty"><?php etr('No completed sales today') ?></div><?php } ?>

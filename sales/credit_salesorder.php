@@ -295,7 +295,7 @@ if (!$cancelled) {
 	button("Cancel order", 'cancel');
 	echo "&nbsp;";
 }
-button("Show stock moves", "moves", "stockmoves.php?salesorderid=$orderid");
+button("Show stock moves", "moves", "../erp/stockmoves.php?salesorderid=$orderid");
 ?>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
