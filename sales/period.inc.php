@@ -1,6 +1,37 @@
 <?php
+function getReceivablesPeriod($cycleid)
+{
+	$cycleid = (int) $cycleid;
+	return find("
+		select unix_timestamp(starttime) as starttime,
+		       unix_timestamp(endtime) as endtime,
+		       state_receivables,
+		       periodid
+		from period
+		where cycleid=$cycleid
+		and (state_receivables != " . STATE_RECEIVABLES_SENT . " or state_receivables is null)
+		order by periodid
+		limit 1");
+}
+
+function validateReceivablesPeriod($cycleid, $periodid)
+{
+	if (!ctype_digit((string) $periodid))
+		throw new InvalidArgumentException('A valid receivables period is required.');
+
+	$cycleid = (int) $cycleid;
+	$periodid = (int) $periodid;
+	$exists = findValue("select count(*) from period where cycleid=$cycleid and periodid=$periodid", 0);
+	if ($exists == 0)
+		throw new InvalidArgumentException('The selected receivables period does not exist.');
+
+	return $periodid;
+}
+
 function createReceivables($cycleid, $periodid)
 {
+	$cycleid = (int) $cycleid;
+	$periodid = validateReceivablesPeriod($cycleid, $periodid);
 	$rs = query("select orderid from recur_salesorder where active=1");
 	$user = getUser();
 	while ($row = fetch($rs)) {
@@ -20,6 +51,8 @@ function createReceivables($cycleid, $periodid)
 
 function sendReceivables($cycleid, $periodid)
 {
+	$cycleid = (int) $cycleid;
+	$periodid = validateReceivablesPeriod($cycleid, $periodid);
 	sql("update period set state_receivables=" . STATE_RECEIVABLES_SENT . "
 	     where cycleid=$cycleid and periodid=$periodid");
 }
