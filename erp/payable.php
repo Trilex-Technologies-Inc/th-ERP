@@ -187,7 +187,7 @@ title(tr("Payable"));
 	if ($payed == $amount && $payed > 0)
 		etr("Fully paid");
 	else
-		echo formatMoney($payed) . " / " . formatMoney($amount + $vat);
+		echo formatMoney($payed) . " / " . formatMoney((float) $amount + (float) $vat);
 	echo "&nbsp;&nbsp;";
 	if ($payed > 0) {
 		if ($paymentCount > 1)
@@ -218,13 +218,13 @@ if ($new) {
 	echo "&nbsp;";
 }
 
-if (!$new && $amount + $vat > $payed && $cancel_transid == null) {
+if (!$new && (float) $amount + (float) $vat > $payed && $cancel_transid == null) {
 	button("Pay", "pay");
 }
 ?>
 &nbsp;
 <?php
-if ($cancel_transid == null && $amount > $payed)
+if ($cancel_transid == null && (float) $amount > $payed)
 	button("Cancel", "cancel")
 ?>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>

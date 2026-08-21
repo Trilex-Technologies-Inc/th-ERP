@@ -72,6 +72,7 @@ if (isDelete()) {
 
 $row = new Dummy();
 $value = null;
+$debit = null;
 if (!isEmpty($payeventid)) {
 	$row = find("select
 	               value,
@@ -243,9 +244,11 @@ echo "</div></div>";
 <?php
 $first = true;
 $glRows = array();
-while ($row = fetch($debit)) {
-	$glRows[] = htmlspecialchars($row->glaccountid . ' - ' . $row->name);
-	$first = false;
+if ($debit instanceof mysqli_result) {
+	while ($row = fetch($debit)) {
+		$glRows[] = htmlspecialchars($row->glaccountid . ' - ' . $row->name);
+		$first = false;
+	}
 }
 if (!$first) {
 	echo "<div class='col-12'><label class='form-label fw-semibold'>" . tr("General ledger") . "</label><div class='form-control-plaintext'>" . implode(", ", $glRows) . "</div></div>";

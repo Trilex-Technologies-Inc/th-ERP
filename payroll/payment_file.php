@@ -14,7 +14,6 @@ from employee";
 $employees = query($sql);
 
 $periodid = getCurrentPeriod();
-$q = query($sql);
 while ($row = fetch($employees)) {
 	$paystub = createPayStub($row->employeeid, $periodid);
 	echo $row->employeeid . ';';
