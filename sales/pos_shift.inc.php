@@ -1,6 +1,7 @@
 <?php
 
 define('PERMISSIONID_POS_CLOSE_SHIFT', 23);
+define('PERMISSIONID_POS_REFUND_SALE', 22);
 
 function pos_shift_table_exists()
 {
@@ -12,6 +13,12 @@ function pos_shift_schema_ready()
 	return pos_shift_table_exists()
 		&& findValue("show tables like 'pos_payment'", null) != null
 		&& findValue("show columns from pos_payment like 'shiftid'", null) != null;
+}
+
+function pos_return_schema_ready()
+{
+	return findValue("show tables like 'pos_return'", null) != null
+		&& findValue("show tables like 'pos_return_item'", null) != null;
 }
 
 function pos_get_open_shift($username = null)

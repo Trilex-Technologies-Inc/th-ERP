@@ -595,6 +595,7 @@ if (!isEmpty($orderid)) {
 		<nav class="erp-pos-toolbar" aria-label="<?php etr('POS quick actions') ?>">
 			<a href="<?php echo $openShift ? 'posclient.php?action=new' : 'pos_shift.php' ?>"><span aria-hidden="true">＋</span><strong><?php echo $openShift ? tr('New sale') : tr('Open shift') ?></strong><small><?php echo $openShift ? tr('Start an empty cart') : tr('Open the register first') ?></small></a>
 			<a href="sales.php?starttime=<?php echo urlencode(strtotime('today')) ?>"><span aria-hidden="true">▤</span><strong><?php etr('Sales history') ?></strong><small><?php etr('Review completed orders') ?></small></a>
+			<?php if (hasPermission(PERMISSIONID_POS_REFUND_SALE)) { ?><a href="pos_returns.php"><span aria-hidden="true">↩</span><strong><?php etr('Returns') ?></strong><small><?php etr('Refund a completed sale') ?></small></a><?php } ?>
 			<a href="receipts.php"><span aria-hidden="true">✓</span><strong><?php etr('Receipts') ?></strong><small><?php etr('Payments and receipts') ?></small></a>
 			<a href="../erp/products.php"><span aria-hidden="true">□</span><strong><?php etr('Inventory') ?></strong><small><?php echo (int)$lowStockCount ?> <?php etr('low-stock items') ?></small></a>
 		</nav>
