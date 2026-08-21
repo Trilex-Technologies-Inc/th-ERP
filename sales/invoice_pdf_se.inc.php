@@ -185,7 +185,7 @@ function buildInvoicePDF($orderid, $filename = '', $type = 'invoice')
 		$pdf->Cell(18, ROWHEIGHT, ccs($text), 'LR', 0, 'R');
 		$unitprice = $row->unitprice;
 		if ($incVAT)
-			$unitprice += $row->vat;
+			$unitprice *= (1 + $row->vat/100);
 		$pdf->Cell(22, ROWHEIGHT, formatMoney($unitprice), 'LR', 0, 'R');
 		$pdf->Cell(30, ROWHEIGHT, formatMoney($unitprice*$row->quantity), 'LR', 1, 'R');
 	}
