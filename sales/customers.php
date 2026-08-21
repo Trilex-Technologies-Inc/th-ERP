@@ -14,9 +14,11 @@ if (!isEmpty($del_customerid)) {
 $selectSQL = "
 	select
 	    customerid,
-	    name
-	from customer
-	where name like '$name%'";
+	    c.name,
+	    co.name as country
+	from customer c
+	left join country co on co.countrycode=c.countrycode
+	where c.name like '$name%'";
 
 $mode = getParam('mode');
 
@@ -62,6 +64,7 @@ $mode = getParam('mode');
 						<th><?php etr("Delete") ?></th>
 						<th><?php etr("Customer no") ?></th>
 						<th><?php etr("Name") ?></th>
+						<th><?php etr("Country") ?></th>
 						<th class="text-end"><?php etr("Balance") ?></th>
 						<th class="text-end"><?php etr("Over due") ?></th>
 					</tr>
@@ -80,6 +83,7 @@ $mode = getParam('mode');
 						deleteColumn("customers.php?del_customerid=$row->customerid");
 						echo "<td>$row->customerid</td>";
 						echo "<td><a href='$href'>" . htmlspecialchars($row->name) . "</a></td>";
+						echo "<td>" . htmlspecialchars($row->country) . "</td>";
 						$balanceHref = "sales.php?customerid=$row->customerid&unpaid=1";
 						echo "<td class='text-end'><a href='$balanceHref'>" . formatMoney(getCustomerBalance($row->customerid)) . "</a></td>";
 						echo "<td class='text-end'><a href='$balanceHref&overdue=1'>" . formatMoney(getCustomerBalance($row->customerid, true)) . "</a></td>";

@@ -10,15 +10,16 @@ if (isSave()) {
 	$streetaddress = getParam('streetaddress');
 	$city = getParam('city');
 	$zipcode = getParam('zipcode');
+	$countrycode = prepStringParam('countrycode');
 	$email = getParam('email');
 	$vatnumber = getParam('vatnumber');
 	$use_vat = getParam('use_vat', 0);
 	$pricelistid = getParam('pricelistid', 1);
 	$credit_length = prepNull(getParam('credit_length'));
 	if (isNew()) {
-		$sql = "insert into customer (name, streetaddress, city, zipcode, email, pricelistid,
+		$sql = "insert into customer (name, streetaddress, city, zipcode, countrycode, email, pricelistid,
 			                              vatnumber, use_vat, credit_length)
-			        values ('$name', '$streetaddress', '$city', '$zipcode', '$email', $pricelistid,
+		        values ('$name', '$streetaddress', '$city', '$zipcode', $countrycode, '$email', $pricelistid,
 			                '$vatnumber', $use_vat, $credit_length)";
 		sql($sql);
 		$customerid = insert_id();
@@ -29,6 +30,7 @@ if (isSave()) {
 					streetaddress='$streetaddress',
 					city='$city',
 					zipcode='$zipcode',
+					countrycode=$countrycode,
 					email='$email',
 					vatnumber='$vatnumber',
 					use_vat=$use_vat,
@@ -64,6 +66,7 @@ if (!isEmpty($customerid)) {
 			   streetaddress,
 			   city,
 			   zipcode,
+			   countrycode,
 			   email,
 			   vatnumber,
 			   use_vat,
@@ -90,6 +93,7 @@ $phonecats = array_merge(
 	$phonecats
 );
 $pricelists = rs2array(query("select listid, description from pricelist"));
+$countries = rs2array(query("select countrycode, name from country order by name"));
 
 ?>
 
@@ -124,8 +128,9 @@ $pricelists = rs2array(query("select listid, description from pricelist"));
 					<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="name"><?php etr("Name") ?></label><?php textbox("name", $rec->name) ?></div>
 					<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="email"><?php etr("E-mail") ?></label><?php textbox("email", $rec->email, 30) ?></div>
 					<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="streetaddress"><?php etr("Street address") ?></label><?php textbox("streetaddress", $rec->streetaddress, 30) ?></div>
-					<div class="col-12 col-md-3"><label class="form-label fw-semibold" for="city"><?php etr("City") ?></label><?php textbox("city", $rec->city) ?></div>
-					<div class="col-12 col-md-3"><label class="form-label fw-semibold" for="zipcode"><?php etr("Zip code") ?></label><?php textbox("zipcode", $rec->zipcode) ?></div>
+					<div class="col-12 col-md-4"><label class="form-label fw-semibold" for="city"><?php etr("City") ?></label><?php textbox("city", $rec->city) ?></div>
+					<div class="col-12 col-md-2"><label class="form-label fw-semibold" for="zipcode"><?php etr("Zip code") ?></label><?php textbox("zipcode", $rec->zipcode) ?></div>
+					<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="countrycode"><?php etr("Country") ?></label><?php comboBox("countrycode", $countries, $rec->countrycode, true) ?></div>
 				</div></div>
 			</section>
 

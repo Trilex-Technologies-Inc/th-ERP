@@ -427,6 +427,7 @@ CREATE TABLE `companyinfo` (
   `streetaddress` varchar(128) default NULL,
   `city` varchar(32) default NULL,
   `zipcode` varchar(20) default NULL,
+  `countrycode` varchar(2) default NULL,
   `email` varchar(80) default NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -451,6 +452,7 @@ CREATE TABLE `customer` (
   `streetaddress` varchar(120) default NULL,
   `city` varchar(80) default NULL,
   `zipcode` varchar(16) default NULL,
+  `countrycode` varchar(2) default NULL,
   `email` varchar(80) default NULL,
   `vatnumber` varchar(32) default NULL,
   `credit_account` int(10) unsigned default NULL,

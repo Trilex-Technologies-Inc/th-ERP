@@ -7,13 +7,14 @@
 		$streetaddress = getParam('streetaddress');
 		$city = getParam('city');
 		$zipcode = getParam('zipcode');
+		$countrycode = prepStringParam('countrycode');
 		$vatnumber = getParam('varnumber');
 		$email = getParam('email');
 		$registrationno = getParam("registrationno");
 		$telephoneno = getParam("telephoneno");
 		if (isNew()) {
-			$sql = "insert into companyinfo (companyname, streetaddress, city, zipcode, email, vatnumber, registrationno, telephoneno)  
-			        values ('$companyname', '$streetaddress', '$city', '$zipcode', '$email', '$vatnumber', '$registrationno', '$telephoneno')";
+			$sql = "insert into companyinfo (companyname, streetaddress, city, zipcode, countrycode, email, vatnumber, registrationno, telephoneno)
+			        values ('$companyname', '$streetaddress', '$city', '$zipcode', $countrycode, '$email', '$vatnumber', '$registrationno', '$telephoneno')";
 			sql($sql);
 		} else {
 			$updateSQL =
@@ -22,6 +23,7 @@
 					streetaddress='$streetaddress',
 					city='$city',
 					zipcode='$zipcode',
+					countrycode=$countrycode,
 					email='$email',
 					vatnumber='$vatnumber',
 					registrationno='$registrationno',
@@ -55,6 +57,7 @@
 		   streetaddress,
 		   city,
 		   zipcode,
+		   countrycode,
 		   email,
 		   vatnumber,
 		   registrationno,
@@ -68,6 +71,7 @@
 		$rec = new Dummy();
 	
 	$rs = query("select name, value from company_attribute");
+	$countries = rs2array(query("select countrycode, name from country order by name"));
 
 ?>
 <head>
@@ -96,8 +100,9 @@ title($title);
 				<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="registrationno"><?php etr("Registration no") ?></label><input id="registrationno" type="text" name="registrationno" value="<?php echo htmlspecialchars($rec->registrationno) ?>" /></div>
 				<div class="col-12 col-md-6"><label class="form-label fw-semibold" for="varnumber"><?php etr("VAT number") ?></label><input id="varnumber" type="text" name="varnumber" value="<?php echo htmlspecialchars($rec->vatnumber) ?>" /></div>
 				<div class="col-12"><label class="form-label fw-semibold" for="streetaddress"><?php etr("Street address") ?></label><input id="streetaddress" type="text" name="streetaddress" value="<?php echo htmlspecialchars($rec->streetaddress) ?>" /></div>
-				<div class="col-12 col-md-7"><label class="form-label fw-semibold" for="city"><?php etr("City") ?></label><input id="city" type="text" name="city" value="<?php echo htmlspecialchars($rec->city) ?>" /></div>
-				<div class="col-12 col-md-5"><label class="form-label fw-semibold" for="zipcode"><?php etr("Zip code") ?></label><input id="zipcode" type="text" name="zipcode" value="<?php echo htmlspecialchars($rec->zipcode) ?>" /></div>
+				<div class="col-12 col-md-5"><label class="form-label fw-semibold" for="city"><?php etr("City") ?></label><input id="city" type="text" name="city" value="<?php echo htmlspecialchars($rec->city) ?>" /></div>
+				<div class="col-12 col-md-3"><label class="form-label fw-semibold" for="zipcode"><?php etr("Zip code") ?></label><input id="zipcode" type="text" name="zipcode" value="<?php echo htmlspecialchars($rec->zipcode) ?>" /></div>
+				<div class="col-12 col-md-4"><label class="form-label fw-semibold" for="countrycode"><?php etr("Country") ?></label><?php comboBox('countrycode', $countries, $rec->countrycode, true) ?></div>
 			</div></div>
 		</section></div>
 

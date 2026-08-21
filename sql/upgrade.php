@@ -1,5 +1,5 @@
 <?php
-define('DBVERSION', 66);
+define('DBVERSION', 68);
 
 function upgrade()
 {
@@ -25,6 +25,46 @@ function upgradeVersion($dbversion)
 	call_user_func("upgrade$dbversion");
 	sql("update version set dbversion=$dbversion");
 	return "Upgraded to database version $dbversion<br>";
+}
+function upgrade68()
+{
+	$column = findValue("
+	select count(*) from information_schema.columns
+	where table_schema=database()
+	and table_name='companyinfo'
+	and column_name='countrycode'", 0);
+	if ($column == 0)
+		sql("alter table companyinfo add countrycode varchar(2)");
+
+	$constraint = findValue("
+	select count(*) from information_schema.table_constraints
+	where constraint_schema=database()
+	and table_name='companyinfo'
+	and constraint_name='fk_companyinfo_country'", 0);
+	if ($constraint == 0)
+		sql("
+		alter table companyinfo add constraint fk_companyinfo_country
+		foreign key (countrycode) references country (countrycode)");
+}
+function upgrade67()
+{
+	$column = findValue("
+	select count(*) from information_schema.columns
+	where table_schema=database()
+	and table_name='customer'
+	and column_name='countrycode'", 0);
+	if ($column == 0)
+		sql("alter table customer add countrycode varchar(2)");
+
+	$constraint = findValue("
+	select count(*) from information_schema.table_constraints
+	where constraint_schema=database()
+	and table_name='customer'
+	and constraint_name='fk_customer_country'", 0);
+	if ($constraint == 0)
+		sql("
+		alter table customer add constraint fk_customer_country
+		foreign key (countrycode) references country (countrycode)");
 }
 function upgrade65()
 {
