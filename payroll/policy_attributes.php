@@ -4,13 +4,24 @@ include('policy.inc');
 
 $policyid = requirePolicyId(getParam('policyid'));
 $periodid = getCurrentPeriod();
+$hasOpenPeriod = !isEmpty($periodid);
+$mess = null;
+if ($hasOpenPeriod)
+	$periodid = (int)$periodid;
+else
+	$mess = tr("There is no open payroll period. Policy attributes are shown read-only.");
 
 $del_attributeid = getParam('del_attributeid');
-if (!isEmpty($del_attributeid)) {
-	sql("delete from policy_attribute where attributeid=$del_attributeid");
+if (!isEmpty($del_attributeid) && !$hasOpenPeriod)
+	$mess = tr("Open a payroll period before changing policy attributes.");
+elseif (!isEmpty($del_attributeid)) {
+	$del_attributeid = (int)$del_attributeid;
+	sql("delete from policy_attribute where policyid=$policyid and attributeid=$del_attributeid");
 }
 
-if (isSave()) {
+if (isSave() && !$hasOpenPeriod)
+	$mess = tr("Open a payroll period before changing policy attributes.");
+elseif (isSave()) {
 	$periodstart = findValue("
 	select unix_timestamp(starttime) 
 	from payperiod where periodid=$periodid");
@@ -102,8 +113,10 @@ title("<a href='policies.php'>" . tr("Policies") . "</a> > " . htmlspecialchars(
 	</nav>
 	<div id="main">
 		<div id="contents">
+			<?php if ($mess) { ?><div class="alert alert-warning"><?php echo htmlspecialchars($mess) ?></div><?php } ?>
 			<form action="policy_attributes.php" method="POST">
 				<input type="hidden" name="policyid" value="<?php echo htmlspecialchars($policyid) ?>"/>
+				<fieldset class="m-0 p-0 border-0" <?php if (!$hasOpenPeriod) echo 'disabled'; ?>>
 				<div class="card border-0 shadow-sm overflow-hidden">
 					<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
 						<div>
@@ -164,10 +177,11 @@ title("<a href='policies.php'>" . tr("Policies") . "</a> > " . htmlspecialchars(
 						</table>
 					</div>
 					<div class="card-footer bg-white d-flex flex-wrap gap-2 py-3">
-						<?php saveButton() ?>
+						<?php if ($hasOpenPeriod) saveButton() ?>
 						<a class="btn btn-outline-secondary" href="policy.php?policyid=<?php echo htmlspecialchars($policyid) ?>"><?php etr("Back") ?></a>
 					</div>
 				</div>
+				</fieldset>
 			</form>
 		</div>
 	</div>
