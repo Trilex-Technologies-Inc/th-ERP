@@ -116,6 +116,8 @@ $todaySales = $shiftSales;
 $todaySaleRows = $shiftSaleRows;
 $locationid = findValue("select locationid from user where username='" . getUser() . "'", 1);
 $items = null;
+$subtotal = 0;
+$vatTotal = 0;
 $total = 0;
 $paid = false;
 $editable = true;
@@ -129,6 +131,8 @@ if (!isEmpty($orderid)) {
 		$orderdate = $order->orderdate;
 		$locationid = $order->locationid;
 		$editable = isEmpty($order->invoice_transid) && !$order->cancelled;
+		$subtotal = getSalesOrderTotalEx($orderid);
+		$vatTotal = getSalesOrderTotalVat($orderid);
 		$total = getSalesOrderTotalIncVat($orderid);
 		$paid = findValue("select sum(amount) from receipt_allocation where orderid=$orderid", 0) >= $total && $total > 0;
 		$items = query("select si.no, si.productid, p.model, si.quantity, si.unitprice, si.vat
@@ -392,10 +396,34 @@ if (!isEmpty($orderid)) {
 			border-top: 1px solid #e1e5ea
 		}
 
+		.erp-price-breakdown {
+			padding-bottom: 12px;
+			border-bottom: 1px solid #e1e5ea
+		}
+
+		.erp-price-row {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-bottom: 7px;
+			color: var(--pos-muted);
+			font-size: .82rem
+		}
+
+		.erp-price-row:last-child {
+			margin-bottom: 0
+		}
+
+		.erp-price-row strong {
+			color: #4b5563;
+			font-size: .88rem
+		}
+
 		.erp-total {
 			display: flex;
 			align-items: center;
 			justify-content: space-between;
+			padding-top: 13px;
 			margin-bottom: 14px
 		}
 
@@ -482,12 +510,26 @@ if (!isEmpty($orderid)) {
 		}
 
 		.erp-pay-dialog .due {
-			display: flex;
-			justify-content: space-between;
 			margin: 18px 0;
 			padding: 15px;
 			background: #f3f5f8;
 			border-radius: 9px
+		}
+
+		.erp-pay-dialog .due-row {
+			display: flex;
+			justify-content: space-between;
+			margin-bottom: 8px;
+			color: #667085;
+			font-size: .85rem
+		}
+
+		.erp-pay-dialog .due-total {
+			margin: 12px -2px 0;
+			padding: 12px 2px 0;
+			color: var(--pos-ink);
+			border-top: 1px solid #d9dee7;
+			font-size: .95rem
 		}
 
 		.erp-pay-dialog input {
@@ -626,6 +668,10 @@ if (!isEmpty($orderid)) {
 			<div><span class="empty-icon" aria-hidden="true">🛒</span><strong><?php etr('Cart is empty') ?></strong><br><small><?php etr('Choose a product to begin') ?></small></div>
 						</div><?php } ?></div>
 				<footer class="erp-cart-summary">
+					<div class="erp-price-breakdown">
+						<div class="erp-price-row"><span><?php etr('Subtotal') ?></span><strong><?php echo formatMoney($subtotal) ?></strong></div>
+						<div class="erp-price-row"><span><?php etr('VAT') ?></span><strong><?php echo formatMoney($vatTotal) ?></strong></div>
+					</div>
 					<div class="erp-total"><span><?php etr('Total') ?></span><strong><?php echo formatMoney($total) ?></strong></div>
 					<div class="erp-pos-actions"><a class="erp-new" href="posclient.php?action=new"><?php etr('New sale') ?></a><button class="erp-secondary" type="submit" onclick="setAction('save')" <?php if (!$orderid || !$editable) echo 'disabled'; ?>><?php etr('Save') ?></button><?php if ($paid) { ?><a class="erp-pay" href="invoice_pdf.php?orderid=<?php echo urlencode($orderid) ?>&type=receipt"><?php etr('Print receipt') ?></a><?php } else { ?><button class="erp-pay" type="button" onclick="openPayment()" <?php if (!$orderid || !$total) echo 'disabled'; ?>><?php etr('Pay now') ?> · <?php echo formatMoney($total) ?></button><?php } ?></div>
 				</footer>
@@ -637,7 +683,11 @@ if (!isEmpty($orderid)) {
 		<form method="dialog">
 			<h2><?php etr('Take payment') ?></h2>
 			<p><?php etr('Enter the amount received from the customer.') ?></p>
-			<div class="due"><span><?php etr('Amount due') ?></span><strong><?php echo formatMoney($total) ?></strong></div>
+			<div class="due">
+				<div class="due-row"><span><?php etr('Subtotal') ?></span><strong><?php echo formatMoney($subtotal) ?></strong></div>
+				<div class="due-row"><span><?php etr('VAT') ?></span><strong><?php echo formatMoney($vatTotal) ?></strong></div>
+				<div class="due-row due-total"><span><?php etr('Amount due') ?></span><strong><?php echo formatMoney($total) ?></strong></div>
+			</div>
 			<label><?php etr('Payment method') ?><select id="payment-method"><option value="cash"><?php etr('Cash') ?></option><option value="card"><?php etr('Card') ?></option><option value="bank"><?php etr('Bank transfer') ?></option><option value="gift"><?php etr('Gift card') ?></option><option value="store_credit"><?php etr('Store credit') ?></option></select></label>
 			<label><?php etr('Amount received') ?><input id="received" type="number" min="<?php echo htmlspecialchars($total) ?>" step="any" value="<?php echo htmlspecialchars($total) ?>" data-amount-due="<?php echo htmlspecialchars($total) ?>" aria-describedby="change-due"></label>
 			<div id="change-due" class="change-due" aria-live="polite"><span><?php etr('Change due') ?></span><strong id="change-amount"></strong></div>
