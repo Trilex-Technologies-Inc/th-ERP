@@ -1,12 +1,4 @@
-<html>
-<head>
-<?php metatag() ?>
-<title>Payroll - Schedule calendar</title>
-<?php styleSheet() ?>
-<LINK REL=StyleSheet HREF="calendar.css" TYPE="text/css">
-</head>
-
-<?
+<?php
 include("include.php");
 include("schedule_functions.php");
 
@@ -16,6 +8,7 @@ $description = "";
 $recur_type = null;
 $recur_interval = null;
 if (!isEmpty($scheduleid)) {
+	$scheduleid = (int)$scheduleid;
     $sql = "select ";
     $sql .= "  recur_type, ";
     $sql .= "  recur_interval, ";
@@ -23,9 +16,11 @@ if (!isEmpty($scheduleid)) {
     $sql .= "from schedule ";
     $sql .= "where scheduleid=$scheduleid";
     $row = find($sql);
-    $description = $row->description;
-    $recur_type = $row->recur_type;
-    $recur_interval = $row->recur_interval;
+	if ($row) {
+		$description = $row->description;
+		$recur_type = $row->recur_type;
+		$recur_interval = $row->recur_interval;
+	}
 }
 
 $year = getParam("year");
@@ -39,28 +34,36 @@ if (!isEmpty(getParam("prev")))
 	$date = strtotime("last month", $date);
 if (!isEmpty(getParam("next")))
 	$date = strtotime("next month", $date);
-$year = date("y", $date);
+$year = date("Y", $date);
 $month = date("m", $date);
 $yymm = date("ym", $date);
 ?>
 
+<html>
+<head>
+<?php metatag() ?>
+<title>Payroll - Schedule calendar</title>
+<?php styleSheet() ?>
+<LINK REL=StyleSheet HREF="calendar.css" TYPE="text/css">
+</head>
+
 <body>
 
-<? include("menubar.php") ?>
-<? title("Configuration > <a href='schedules.php'>Schedules</a> > <a href='schedule.php?scheduleid=$scheduleid'>$description</a> > Calendar"); ?>
+<?php include("menubar.php") ?>
+<?php title("Configuration > <a href='schedules.php'>Schedules</a> > <a href='schedule.php?scheduleid=" . urlencode($scheduleid) . "'>" . htmlspecialchars($description) . "</a> > Calendar"); ?>
 <center>
 
 <form action="schedule_calendar.php" method="GET">
 	<div class="container-fluid px-0 erp-form-layout">
 		<div class="row g-3 align-items-center mb-2">
 		<div class="col-12 col-md-auto"><input type="submit" name="prev" value=" < "/></div>
-		<div class="col-12 col-md-auto"><?= date("Y M", $date) ?></div>
+		<div class="col-12 col-md-auto"><?php echo date("Y M", $date) ?></div>
 		<div class="col-12 col-md-auto"><input type="submit" name="next" value=" > "/></div>
 		</div>
 	</div>
-	<input type="hidden" name="scheduleid" value="<?= $scheduleid ?>"/>
-	<input type="hidden" name="year" value="<?= $year ?>"/>
-	<input type="hidden" name="month" value="<?= $month ?>"/>
+	<input type="hidden" name="scheduleid" value="<?php echo htmlspecialchars($scheduleid) ?>"/>
+	<input type="hidden" name="year" value="<?php echo htmlspecialchars($year) ?>"/>
+	<input type="hidden" name="month" value="<?php echo htmlspecialchars($month) ?>"/>
 </form>
 
 <table class="calendar" width="100%">
@@ -71,7 +74,7 @@ $yymm = date("ym", $date);
 <th>Thursday</th>
 <th>Friday</th>
 <th>Saturday</th>
-<?
+<?php
 $lastdate = strtotime("next month", $date);
 
 $list = getWorkshifts($scheduleid, $date, $lastdate);

@@ -4,6 +4,13 @@
 	$scheduleid = getParam("scheduleid");
 	$recur = "off";
 	$recur_interval = "";
+	$del_shiftid = getParam("del_shiftid");
+	if (!isEmpty($scheduleid) && !isEmpty($del_shiftid)) {
+		$scheduleid = (int)$scheduleid;
+		$del_shiftid = (int)$del_shiftid;
+		sql("delete from schedule_shift where scheduleid=$scheduleid and shiftid=$del_shiftid");
+		sql("delete from workshift where shiftid=$del_shiftid and not exists (select 1 from schedule_shift where shiftid=$del_shiftid)");
+	}
 	if (isSave()) {
 	    $description = getParam("description");
 	    $recur_type = "null";
@@ -26,22 +33,6 @@
 	        $sql .= "where scheduleid=$scheduleid";
             sql($sql);
 	    }
-	    $row = 0;
-	    $rowcount = getParam("rowcount");
-	    while ($row < $rowcount) {
-    	    $del = getParam("del_$row");
-	        if ($del == "on") {
-	            $shiftid = getParam("shiftid_$row");
-	            $sql = "delete from schedule_shift ";
-	            $sql .= "where scheduleid=$scheduleid and ";
-	            $sql .= "  shiftid=$shiftid ";
-	            sql($sql);
-	            $sql = "delete from workshift ";
-	            $sql .= "where shiftid=$shiftid ";
-	            sql($sql);
-	        }
-	        $row++;
-        }
         $date = getParam("date_new");
         if ($date != null) {
             $date = parseDate($date);
@@ -174,8 +165,7 @@ SQL;
 			            $endtime = htmlspecialchars(date(TIME_PATTERN, $row->endtime));
 			            echo "<tr>";
 			            echo "<td class='text-center'>";
-			            echo "<input type='checkbox' name='del_$i'/>";
-			            echo "<input type='hidden' name='shiftid_$i' value='$shiftid'/>";
+			            deleteIcon("schedule.php?scheduleid=" . urlencode($scheduleid) . "&del_shiftid=" . urlencode($row->shiftid));
 			            echo "</td>";
 			            echo "<td class='text-end font-monospace'>$shiftid</td>";
 			            echo "<td>$date</td>";
@@ -185,14 +175,13 @@ SQL;
 			            $i++;
 			        }
 			    }
-			    echo "<input type='hidden' name='rowcount' value='$i'/>";
 			?>
 				<tr class="table-light">
 					<td class="text-center text-secondary fw-semibold">+</td>
 					<td></td>
 					<td><?php datebox("date_new") ?></td>
-					<td><?php timebox("starttime_new") ?></td>
-					<td><?php timebox("endtime_new") ?></td>
+					<td><input class="form-control" type="time" name="starttime_new" step="60" /></td>
+					<td><input class="form-control" type="time" name="endtime_new" step="60" /></td>
 				</tr>
 			</tbody>
 		</table>
