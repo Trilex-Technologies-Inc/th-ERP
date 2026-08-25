@@ -329,7 +329,9 @@ function email_invoice($orderid,
 	$body = null)
 {
 	include('../include/sendmail.class.php');
-	$filename = "../tmp/invoice$orderid.pdf";
+	$filename = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR)
+		. DIRECTORY_SEPARATOR
+		. 'invoice' . (int) $orderid . '-' . bin2hex(random_bytes(8)) . '.pdf';
 	createInvoicePDF($orderid, $filename);
 	if ($to == null) {
 		$to = findValue("
@@ -350,15 +352,20 @@ function email_invoice($orderid,
 	if ($body == null) {
 		$body = "See the attached PDF-file";
 	}
-    $mail = new sendmail();
-    $mail->SetCharSet(CHARSET);
-    $mail->from($company, $from);
-    $mail->to($to);
-    $mail->cc($cc);
-    $mail->subject($subject);
-    $mail->text($body);
-    $mail->attachment($filename);
-    $mail->send();
+	try {
+		$mail = new sendmail();
+		$mail->SetCharSet(CHARSET);
+		$mail->from($company, $from);
+		$mail->to($to);
+		$mail->cc($cc);
+		$mail->subject($subject);
+		$mail->text($body);
+		$mail->attachment($filename);
+		$mail->send();
+	} finally {
+		if (is_file($filename))
+			unlink($filename);
+	}
 	return tr("E-mail invoice sent to $to.");
 }
 
