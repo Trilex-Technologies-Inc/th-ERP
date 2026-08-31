@@ -149,7 +149,8 @@ if (!isEmpty($orderid)) {
 </head>
 
 <body>
-	<?php menubar('index.php');
+	<?php // The POS runs in its own window, so keep the application header but omit the sales sidebar.
+	top0('Sales');
 	title(tr('Point of sale')); ?>
 
 	<style>

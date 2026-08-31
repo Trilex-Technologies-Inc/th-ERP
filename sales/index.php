@@ -44,7 +44,7 @@
 			</a>
 		</div>
 		<div class="col-12 col-md-6 col-xl-4">
-			<a href="posclient.php" class="card h-100 border-0 shadow-sm text-decoration-none">
+			<a href="posclient.php" class="card h-100 border-0 shadow-sm text-decoration-none" target="therp_pos" onclick="window.open(this.href, this.target, 'popup=yes,width=1440,height=900,resizable=yes,scrollbars=yes'); return false;">
 				<div class="card-body p-4 d-flex align-items-start gap-3">
 					<span class="dashboard-icon d-inline-flex align-items-center justify-content-center rounded-3 bg-primary-subtle text-primary fs-4 flex-shrink-0" aria-hidden="true">▣</span>
 					<div><h3 class="h6 fw-bold mb-2"><?php etr("Point of sale") ?></h3><p class="text-secondary small mb-0"><?php etr("Browser POS") ?> / <?php etr("Cash sales") ?></p></div>
