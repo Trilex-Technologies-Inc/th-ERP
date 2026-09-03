@@ -6,6 +6,7 @@
 	$periodid = getCurrentPeriod();
 	$policyid = getPolicy($employeeid, $periodid);
 	$tabid = getParam("tabid");
+	$tabname = findValue("select name from emp_tab where tabid=$tabid");
 
 	if (isSave()) {
 		$count = getParam('count');
@@ -69,36 +70,29 @@
 <?php include("menubar.php") ?>
 <?php title("$givenname $surname") ?>
 
-	<div id="header">
-	<?php buildTabs($employeeid, "tab_$tabid") ?>
+	<main class="employee-detail-page">
+	<div class="employee-detail-tabs">
+		<?php buildTabs($employeeid, "tab_$tabid") ?>
 	</div>
-	<div id="main">
-		<div id="contents">
 
 <form action="employee_attributes.php" method="POST">
 <?php
 hidden('employeeid', $employeeid);
 hidden('tabid', $tabid);
 ?>
-<table>
+<section class="employee-detail-card card border-0 shadow-sm">
+	<div class="card-header bg-white employee-detail-card-header">
+		<div><span><?php etr("Employee details") ?></span><h2><?php echo htmlspecialchars($tabname) ?></h2></div>
+	</div>
+<div class="card-body">
+<div class="row g-3">
 <?php
 $i = 0;
-$line = 1;
-$col = 1;
-echo "<tr>";
 while ($row = fetch($attributes)) {
-	while ($row->row > $line) {
-		echo "</tr><tr>";
-		$line++;
-		$col = 1;
-	}
-	while ($row->col > $col) {
-		echo "<td/>";
-		$col++;
-	}
-	echo "<input type=hidden name='attributeid_$i' value='$row->attributeid'/>";
-	echo "<td class=label>". formatCase($row->description) . ":</td>";
-	echo "<td>";
+	echo "<div class='col-12 col-md-6'><div class='employee-attribute-field'>";
+	echo "<input type='hidden' name='attributeid_$i' value='" . htmlspecialchars($row->attributeid) . "'/>";
+	echo "<label for='value_$i'>" . htmlspecialchars(formatCase($row->description)) . "</label>";
+	echo "<div>";
 	if ($row->type == ATTRIBUTE_TYPE_BOOLEAN)
 		checkbox("value_$i", $row->value);
 	else if ($row->type == ATTRIBUTE_TYPE_CHOICE) {
@@ -110,24 +104,25 @@ while ($row = fetch($attributes)) {
 		comboBox("value_$i", $choices, $row->value);
 	} else
 		numberBox("value_$i", $row->value);
-	echo "<input type=hidden name='old_value_$i' value='$row->value'/>";
+	echo "<input type='hidden' name='old_value_$i' value='" . htmlspecialchars($row->value) . "'/>";
 	$href = "employee_history.php?";
 	$href .= "employeeid=$employeeid&attributeid=$row->attributeid";
-	echo "&nbsp;<a href='$href'>";
-	echo "<img src='../images/history.gif' border=0/>&nbsp;&nbsp;</td>";
-	echo "</td>";
+	echo "<a href='" . htmlspecialchars($href) . "' title='" . htmlspecialchars(tr("History")) . "'>";
+	image('history.gif');
+	echo "</a></div></div></div>";
 	$i++;
-	$col++;
 }
-echo "</tr>";
-echo "<input type=hidden name=count value='$i'/>";
+if ($i == 0)
+	echo "<div class='col-12'><div class='alert alert-light border mb-0 text-secondary'>" . tr("No fields are configured for this tab") . ".</div></div>";
+echo "<input type='hidden' name='count' value='$i'/>";
 ?>
-</table>
-<br/>
-<?php saveButton() ?>
+</div>
+</div>
+<div class="card-footer bg-white d-flex justify-content-end py-3"><?php saveButton() ?></div>
+</section>
 
 </form>
-		</div>
-	</div>
+	</main>
 
+<?php bottom() ?>
 </body>

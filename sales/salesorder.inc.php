@@ -1,21 +1,23 @@
 <?php
 function add_orderitem($orderid, $productid, $quantity, $unitprice, $description)
 {
+	$productidSql = sql_string($productid);
 	$count = findValue("
 	select count(*)
 	from product
-	where productid='$productid'", 0);
+	where productid=$productidSql", 0);
 	if ($count == 0) {
 		$count = findValue("
 		select count(*)
 		from product
-		where model='$productid'", 0);
+		where model=$productidSql", 0);
 		if ($count == 0)
 			return "ERROR:" . tr("Product $productid doesn't exists!");
 		else {
-			$productid = findValue("select productid from product where model='$productid'");
+			$productid = findValue("select productid from product where model=$productidSql");
 		}
 	}
+	$productidSql = sql_string($productid);
 	$no = findValue("select max(no) from salesorder_item where orderid=$orderid", 0);
 	$no++;
 	$listid = findValue("
@@ -27,7 +29,7 @@ function add_orderitem($orderid, $productid, $quantity, $unitprice, $description
 	if (isEmpty($unitprice))
 		$unitprice = findValue("
 		select price from sales_price
-		where productid='$productid' and listid=$listid");
+		where productid=$productidSql and listid=$listid");
 	if (isEmpty($unitprice))
 		return "ERROR:" . tr("No unit price supplied!");
 	$useVAT = findValue("
@@ -41,7 +43,7 @@ function add_orderitem($orderid, $productid, $quantity, $unitprice, $description
 		from vat_category v
 		join category c on c.vatcatid=v.vatcatid
 		join product p on p.categoryid=c.categoryid
-		where productid=$productid", 0);
+		where productid=$productidSql", 0);
 	} else
 		$vatPercent = 0;
 	if ($vatIncluded) {
@@ -63,7 +65,7 @@ function add_orderitem($orderid, $productid, $quantity, $unitprice, $description
 	values (
 		$orderid, 
 		$no, 
-		$productid, 
+		$productidSql,
 		$quantity, 
 		$unitprice, 
 		$vatPercent, 
@@ -73,13 +75,14 @@ function add_orderitem($orderid, $productid, $quantity, $unitprice, $description
 	$toPayRounded = roundAmount($toPay);
 	$diff = $toPayRounded - $toPay;
 	$productid = PRODUCTID_ROUNDING;
+	$productidSql = sql_string($productid);
 	sql("update salesorder_item set unitprice=unitprice+$diff
-	     where orderid=$orderid and productid=$productid");
+	     where orderid=$orderid and productid=$productidSql");
 	if (affected_rows() == 0) {
 		$no = findValue("select max(no) from salesorder_item where orderid=$orderid", 0);
 		$no++;
 		sql("insert into salesorder_item (orderid, no, productid, quantity, unitprice, vat)
-		     values ($orderid, $no, $productid, 1, $diff, 0)");
+		     values ($orderid, $no, $productidSql, 1, $diff, 0)");
 	}
 	return $no;
 }
@@ -122,7 +125,7 @@ function invoice_salesorder0($orderid, $debitaccount)
 	while ($row = fetch($rs)) {
 		sql("
 		update product set quantity=quantity-$row->quantity
-		where productid=$row->productid");
+		where productid=" . sql_string($row->productid));
 		$amount = $row->quantity * $row->unitprice;
 		if (array_key_exists($row->accountid, $accountMap)) {
 			$accountMap[$row->accountid] += $amount;
@@ -136,7 +139,7 @@ function invoice_salesorder0($orderid, $debitaccount)
 			$standardCost += $row->quantity * $row->purchase_price;
 			sql("insert into stockmove (productid, diff, narrative,
 			     transactionid, salesorderid, no, createdby, locationid)
-				 values ($row->productid, $diff, '$narrative',
+				 values (" . sql_string($row->productid) . ", $diff, '$narrative',
 				 $transid, $orderid, $row->no, '" . getUser() . "', $locationid)");
 		}
 	}
@@ -326,7 +329,9 @@ function email_invoice($orderid,
 	$body = null)
 {
 	include('../include/sendmail.class.php');
-	$filename = "../tmp/invoice$orderid.pdf";
+	$filename = rtrim(sys_get_temp_dir(), DIRECTORY_SEPARATOR)
+		. DIRECTORY_SEPARATOR
+		. 'invoice' . (int) $orderid . '-' . bin2hex(random_bytes(8)) . '.pdf';
 	createInvoicePDF($orderid, $filename);
 	if ($to == null) {
 		$to = findValue("
@@ -347,15 +352,20 @@ function email_invoice($orderid,
 	if ($body == null) {
 		$body = "See the attached PDF-file";
 	}
-    $mail = new sendmail();
-    $mail->SetCharSet(CHARSET);
-    $mail->from($company, $from);
-    $mail->to($to);
-    $mail->cc($cc);
-    $mail->subject($subject);
-    $mail->text($body);
-    $mail->attachment($filename);
-    $mail->send();
+	try {
+		$mail = new sendmail();
+		$mail->SetCharSet(CHARSET);
+		$mail->from($company, $from);
+		$mail->to($to);
+		$mail->cc($cc);
+		$mail->subject($subject);
+		$mail->text($body);
+		$mail->attachment($filename);
+		$mail->send();
+	} finally {
+		if (is_file($filename))
+			unlink($filename);
+	}
 	return tr("E-mail invoice sent to $to.");
 }
 

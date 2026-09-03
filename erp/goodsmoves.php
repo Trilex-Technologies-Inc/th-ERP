@@ -33,12 +33,12 @@
 
 <head>
 <title>thERP - <?php etr("Stock move order") ?></title>
-<LINK REL=StyleSheet HREF="therp.css" TYPE="text/css">
+<?php styleSheet() ?>
 </head>
 
 <body>
 
-<?php menubar('purchase.php') ?>
+<?php menubar('goodsmoves.php') ?>
 <?php 
 $title = "Stock move order";
 if ($mode == 'select')
@@ -46,50 +46,95 @@ if ($mode == 'select')
 title(tr($title)) 
 ?>
 
-<form action="goodsmoves.php" method="GET">
-<div class="border">
-<table>
-<tr><td><?php etr("From Location") ?>:</td><td><?php comboBox('locationid', $locations, $locationid, true) ?></td>
-<tr><td><?php etr("To Location") ?>:</td><td><?php comboBox('toid', $locations, $toid, true) ?></td>
-<tr><td><input type="submit" name="search" value="<?php etr("Search") ?>" /></td></tr>
-</tr>
-</table>
-</div>
-</form>
-&nbsp;
+<main class="stock-moves-page">
+	<header class="stock-moves-intro">
+		<div class="stock-moves-intro-icon" aria-hidden="true">
+			<svg viewBox="0 0 24 24"><path d="M7 7h11l-3-3M17 17H6l3 3M18 7l-3 3M6 17l3-3"/></svg>
+		</div>
+		<div>
+			<span class="stock-moves-eyebrow"><?php etr("Inventory movement") ?></span>
+			<h1><?php etr("Stock move orders") ?></h1>
+			<p><?php etr("Transfer products between locations and follow each order through completion.") ?></p>
+		</div>
+		<div class="stock-moves-create"><?php newButton("goodsmove.php?toid=&action=create") ?></div>
+	</header>
 
-<form action="goodsmove.php" method=POST>
-<table>
-<th><?php etr("Delete") ?></th>
-<th><?php etr("Id") ?></th>
-<th><?php etr("From Location") ?></th>
-<th><?php etr("To Location") ?></th>
-<th><?php etr("Order date") ?></th>
-<th><?php etr("Sent") ?></th>
-<th><?php etr("Received") ?></th>
-<th><?php etr("Cancelled") ?></th>
-<?php
-    $class = "odd";
-    $i = 0;
-    while ($row = fetch_object($rs)) {
-        echo "<tr class='$class'>";
-		deleteColumn("goodsmoves.php?del_orderid=$row->orderid");
-        echo "<td><a href='goodsmove.php?orderid=$row->orderid'>$row->orderid</a></td>";
-        echo "<td>$row->locationname</td>";
-        echo "<td>$row->descname</td>";
-        echo "<td>" . date(DATE_PATTERN, $row->orderdate) . "</td>";
-		echo "<td align=center>" .($row->sent == '1' ? 'X' : ''). "</td>";
-		echo "<td align=center>" .($row->received == '1' ? 'X' : ''). "</td>";
-		echo "<td align=center>" .($row->cancelled == '1' ? 'X' : ''). "</td>";
-        echo "</tr>";
-        $class = ($class == "odd" ? "even" : "odd");
-        $i++;
-    }
-?>
-</table>
-<br/>
-<?php newButton("goodsmove.php?toid=&action=create") ?>
-&nbsp;
-</form>
+	<form action="goodsmoves.php" method="GET" class="stock-moves-filter card border-0 shadow-sm">
+		<div class="card-body">
+			<div class="stock-moves-section-heading">
+				<div><span><?php etr("Filters") ?></span><h2><?php etr("Find stock moves") ?></h2></div>
+			</div>
+			<div class="row g-3 align-items-end">
+				<div class="col-12 col-md-5">
+					<label class="form-label fw-semibold" for="locationid"><?php etr("From Location") ?></label>
+					<div class="stock-moves-field"><?php comboBox('locationid', $locations, $locationid, true) ?></div>
+				</div>
+				<div class="col-12 col-md-5">
+					<label class="form-label fw-semibold" for="toid"><?php etr("To Location") ?></label>
+					<div class="stock-moves-field"><?php comboBox('toid', $locations, $toid, true) ?></div>
+				</div>
+				<div class="col-12 col-md-2 d-grid">
+					<input type="submit" name="search" value="<?php etr("Search") ?>" />
+				</div>
+			</div>
+			<?php if (!isEmpty($mode)) { ?><input type="hidden" name="mode" value="<?php echo htmlspecialchars($mode) ?>" /><?php } ?>
+		</div>
+	</form>
+
+	<section class="stock-moves-list card border-0 shadow-sm overflow-hidden">
+		<div class="card-header bg-white stock-moves-list-header">
+			<div><span><?php etr("Transfers") ?></span><h2><?php etr("Stock move orders") ?></h2></div>
+		</div>
+		<div class="erp-table-responsive">
+			<table class="erp-data-table stock-moves-table">
+				<thead><tr>
+					<th class="stock-move-delete"><?php etr("Delete") ?></th>
+					<th><?php etr("Id") ?></th>
+					<th><?php etr("From Location") ?></th>
+					<th><?php etr("To Location") ?></th>
+					<th><?php etr("Order date") ?></th>
+					<th class="text-center"><?php etr("Status") ?></th>
+				</tr></thead>
+				<tbody>
+				<?php
+				$i = 0;
+				while ($row = fetch_object($rs)) {
+					$status = tr("Draft");
+					$statusClass = "is-draft";
+					if ($row->cancelled == '1') {
+						$status = tr("Cancelled");
+						$statusClass = "is-cancelled";
+					} else if ($row->received == '1') {
+						$status = tr("Received");
+						$statusClass = "is-received";
+					} else if ($row->sent == '1') {
+						$status = tr("Sent");
+						$statusClass = "is-sent";
+					}
+					echo "<tr>";
+					echo "<td class='stock-move-delete'>";
+					deleteIcon("goodsmoves.php?del_orderid=$row->orderid");
+					echo "</td>";
+					echo "<td><a class='stock-move-id' href='goodsmove.php?orderid=$row->orderid'>#" . htmlspecialchars($row->orderid) . "</a></td>";
+					echo "<td><span class='stock-location'><span class='stock-location-dot is-origin'></span>" . htmlspecialchars($row->locationname) . "</span></td>";
+					echo "<td><span class='stock-location'><span class='stock-location-dot is-destination'></span>" . htmlspecialchars($row->descname) . "</span></td>";
+					echo "<td class='text-nowrap'>" . date(DATE_PATTERN, $row->orderdate) . "</td>";
+					echo "<td class='text-center'><span class='stock-move-status $statusClass'>$status</span></td>";
+					echo "</tr>";
+					$i++;
+				}
+				if ($i == 0) {
+					echo "<tr><td colspan='6'><div class='stock-moves-empty'><span aria-hidden='true'>&#8644;</span><strong>" . tr("No stock move orders found") . "</strong><small>" . tr("Try changing the location filters or create a new order.") . "</small></div></td></tr>";
+				}
+				?>
+				</tbody>
+			</table>
+		</div>
+		<div class="stock-moves-list-footer">
+			<span><?php echo $i ?> <?php etr("orders") ?></span>
+			<?php newButton("goodsmove.php?toid=&action=create") ?>
+		</div>
+	</section>
+</main>
 <?php bottom() ?>	
 </body>

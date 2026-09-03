@@ -15,11 +15,11 @@ $q = query($sql);
 
 $periodid = getCurrentPeriod();
 
-$groups = rs2array(query("select g.groupid, description
-                          from payaccountgroup g
-                          join payaccountgroup_description d
-                          on d.groupid=g.groupid and language='" . getLanguage() . "'
-                          where report=1"));
+$groups = rs2array(query("select g.groupid, d.description
+	                          from payaccountgroup g
+	                          join payaccountgroup_description d
+	                          on d.groupid=g.groupid and d.language='" . getLanguage() . "'
+	                          where g.report=1"));
 $groupSum = array();
 ?>
 

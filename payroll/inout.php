@@ -5,6 +5,7 @@
 
 	$employeeid = getCurrentEmployee();
 	$periodid = getCurrentPeriod();
+	$employeeMissing = isEmpty($employeeid);
 	
 	function pushButton($label, $cmd)
 	{
@@ -26,7 +27,7 @@
 			break;
 		}
 	}
-	if ($type != null) {
+	if ($type != null && !$employeeMissing) {
 		$date = parseDate(getParam('date'));
 		$timeStr = getParam('time');
 		$seconds = 0;
@@ -39,30 +40,32 @@
 	}
 	
 	$del_id = getParam('del_id');
-	if (!isEmpty($del_id)) {
+	if (!isEmpty($del_id) && !$employeeMissing) {
 		sql("delete from timeregistration where id=$del_id");
 	}
 
-	$givenname = findValue("select givenname from employee where employeeid=$employeeid");
-	$surname = findValue("select surname from employee where employeeid=$employeeid");
-	
-	$lastType = findValue("select type 
-	                       from timeregistration r 
-						   where time=(select max(time) 
-						               from timeregistration r2 
-									   where r2.employeeid=r.employeeid)
-				           and employeeid=$employeeid");
-	$history = query("select id, unix_timestamp(time) as time, type 
-	                  from timeregistration
-					  where employeeid=$employeeid
-					  order by time desc
-					  limit 5");
+	if (!$employeeMissing) {
+		$givenname = findValue("select givenname from employee where employeeid=$employeeid");
+		$surname = findValue("select surname from employee where employeeid=$employeeid");
+
+		$lastType = findValue("select type
+		                       from timeregistration r
+							   where time=(select max(time)
+							               from timeregistration r2
+										   where r2.employeeid=r.employeeid)
+					           and employeeid=$employeeid");
+		$history = query("select id, unix_timestamp(time) as time, type
+		                  from timeregistration
+						  where employeeid=$employeeid
+						  order by time desc
+						  limit 5");
+	}
 	
 	
 	$now = time();
 	$start = roundTime($now, TYPE_DAYS);
 	$end = addTime($start, TYPE_DAYS, 1);
-	$shifts = getEmployeeWorkshifts($employeeid, $start, $end);
+	$shifts = $employeeMissing ? array() : getEmployeeWorkshifts($employeeid, $start, $end);
 	$shift_start = null;
 	if (count($shifts) > 0) {
 		$shift = $shifts[0];
@@ -78,40 +81,41 @@
 <body>
 <?php top("reporting.php", "In / Out") ?>
 
-<center>
-<form name=form1 action="inout.php" method="POST">
-<br>
+<?php if ($employeeMissing) { ?>
+<div class="alert alert-warning" role="alert">
+	<?php etr("Your user account is not connected to an employee record.") ?>
+	<?php etr("Please ask an administrator to open your user profile and select an employee.") ?>
+</div>
+<?php } else { ?>
+<form name="form1" action="inout.php" method="POST">
+<div class="card border-0 shadow-sm overflow-hidden">
+<div class="card-header bg-white py-3">
+<h2 class="h5 fw-bold mb-1"><?php echo htmlspecialchars($givenname . ' ' . $surname) ?></h2>
+<p class="text-secondary small mb-0"><?php etr("In / Out") ?></p>
+</div>
+<div class="card-body p-4">
 <?php 
-echo $givenname . ' ' . $surname . '<br><br>';
-echo "<table>";
-echo "<tr>";
-echo "<td class=label>" . tr("Date") . ":</td>";
-echo "<td>";
+echo "<div class='row g-4 align-items-end'>";
+echo "<div class='col-12 col-lg-4'><label class='form-label fw-semibold'>" . tr("Date") . "</label>";
 datebox('date', formatDate($now));
-echo "</td>";
-echo "</tr>";
-echo "<tr>";
-echo "<td class=label>" . tr("Time") . ":</td>";
-echo "<td>";
+echo "</div>";
+echo "<div class='col-12 col-lg-4'><label class='form-label fw-semibold'>" . tr("Time") . "</label>";
 timebox('time', date('H:i', $now));
 hidden('org_time', date('H:i', $now));
 hidden('seconds', date('s', $now));
-echo "</td>";
-echo "</tr>";
+echo "</div>";
 if ($shift_start != null) {
-	echo "<td class=label>" . tr("Schedule") . ":</td>";
-	echo "<td>";
+	echo "<div class='col-12 col-lg-4'><label class='form-label fw-semibold'>" . tr("Schedule") . "</label><div class='form-control-plaintext'>";
 	echo date('H:i', $shift_start);
 	echo ' - ';
 	echo date('H:i', $shift_end);
-	echo "</td>";
-	echo "</tr>";
+	echo "</div>";
+	echo "</div>";
 }
-echo "</table>";
-echo "<br>";
+echo "</div>";
+echo "<div class='d-flex flex-wrap gap-2 mt-4'>";
 if ($lastType == TIME_REGISTRATION_OUT || isEmpty($lastType)) {
 	pushButton('In', 'cmd_' . TIME_REGISTRATION_IN);
-	echo '&nbsp;';
 }
 if ($lastType == TIME_REGISTRATION_IN || 
 	$lastType == TIME_REGISTRATION_END_BREAK) {
@@ -125,30 +129,36 @@ if ($lastType == TIME_REGISTRATION_IN ||
 	$lastType == TIME_REGISTRATION_END_BREAK) {
 	pushButton('Out', 'cmd_' . TIME_REGISTRATION_OUT);
 }
+echo "</div>";
 ?>
-<br><br>
-
-<table>
-<th><?php etr("Delete") ?></th>
-<th><?php etr("Time") ?></th>
-<th><?php etr("Type") ?></th>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+<thead><tr><th class="text-center" style="width: 90px;"><?php etr("Delete") ?></th><th><?php etr("Time") ?></th><th><?php etr("Type") ?></th></tr></thead>
+<tbody>
 <?php
-$class = 'odd';
+$count = 0;
 while ($row = fetch($history)) {
-	echo "<tr class=$class>";
-	deleteColumn("inout.php?del_id=$row->id");
+	$count++;
+	echo "<tr>";
+	echo "<td class='text-center'>";
+	deleteIcon("inout.php?del_id=$row->id");
+	echo "</td>";
 	echo "<td>" . formatDate($row->time) . ' ' . date('H:i', $row->time) . "</td>";
 	echo "<td>";
 	echo tr($types[$row->type]);
 	echo "</td>";
 	echo "</tr>";
-    $class = ($class == "odd" ? "even" : "odd");
 }
+if ($count == 0)
+	echo "<tr><td colspan='3' class='text-center text-secondary py-5'>" . tr("No records found") . "</td></tr>";
 ?>
+</tbody>
 </table>
-
+</div>
+</div>
 </form>
-</center>
+<?php } ?>
 <?php bottom() ?>
 
 </body>

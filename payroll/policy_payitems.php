@@ -2,11 +2,21 @@
 include('include.php');
 include('policy.inc');
 
-$policyid = getParam('policyid');
+$policyid = requirePolicyId(getParam('policyid'));
 $periodid = getCurrentPeriod();
+$hasOpenPeriod = !isEmpty($periodid);
+$mess = null;
+if ($hasOpenPeriod)
+	$periodid = (int)$periodid;
+else {
+	$periodid = (int)findValue("select max(periodid) from payperiod", 0);
+	$mess = tr("There is no open payroll period. The latest policy pay items are shown read-only.");
+}
 
 $del_no = getParam('del_no');
-if (!isEmpty($del_no)) {
+if (!isEmpty($del_no) && !$hasOpenPeriod)
+	$mess = tr("Open a payroll period before changing policy pay items.");
+elseif (!isEmpty($del_no)) {
 	$fromperiodid = getParam('fromperiodid');
 	$sql = "
 	update policy_payitem
@@ -16,7 +26,9 @@ if (!isEmpty($del_no)) {
 	sql("delete from policy_payitem where fromperiodid=toperiodid");
 }
 
-if (isSave()) {
+if (isSave() && !$hasOpenPeriod)
+	$mess = tr("Open a payroll period before changing policy pay items.");
+elseif (isSave()) {
 	$count = getParam('count');
 	$i = 0;
 	while ($i < $count) {
@@ -74,50 +86,72 @@ include_common();
 
 <?php
 menubar("configuration.php", "policy");
-title("<a href='policies.php'>Policies</a> > $policyname")
+title("<a href='policies.php'>" . tr("Policies") . "</a> > " . htmlspecialchars($policyname))
 ?>
 
-	<div id="header">
+	<nav class="policy-tabs" aria-label="<?php echo tr("Policy") ?>">
 	<?php buildTabs($policyid, 'payitems') ?>
-	</div>
+	</nav>
 	<div id="main">
 		<div id="contents">
-<form action="policy_payitems.php" method="POST">
-<input type=hidden name=policyid value='<?php echo $policyid ?>'/>
-<input type=hidden name=accounttype value='<?php echo $accounttype ?>'/>
-<table>
-<th><?php echo tr("Delete") ?></th>
-<th><?php echo tr("Account") ?></th>
-<th><?php echo tr("Amount") ?></th>
-<?php
-$class = "odd";
-$i = 0;
-while ($row = fetch($rs)) {
-	echo "<input type=hidden name=no_$i value='$row->no'/>";
-    echo "<tr class='$class'>";
-	deleteColumn("policy_payitems.php?del_no=$row->no&policyid=$policyid");
-	echo "<td>";
-    comboBox("accountid_$i", $accounts, $row->accountid, false);
-    echo "</td>";
-    echo "<td>";
-	moneybox("amount_$i", $row->amount);
-	echo "</td>";
-    echo "</tr>";
-    $class = ($class == "odd" ? "even" : "odd");
-    $i++;
-}
-hidden('count', $i);
-?>
-<tr>
-<td/>
-<td><?php comboBox('accountid_new', $accounts, null, true) ?></td>
-<td><?php moneybox('amount_new', null) ?></td>
-</tr>
-</table>
-<br/>
-<?php saveButton() ?>
-</form>
+			<?php if ($mess) { ?><div class="alert alert-warning"><?php echo htmlspecialchars($mess) ?></div><?php } ?>
+			<form action="policy_payitems.php" method="POST">
+				<input type="hidden" name="policyid" value="<?php echo htmlspecialchars($policyid) ?>"/>
+				<fieldset class="m-0 p-0 border-0" <?php if (!$hasOpenPeriod) echo 'disabled'; ?>>
+				<div class="card border-0 shadow-sm overflow-hidden">
+					<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+						<div>
+							<h2 class="h5 fw-bold mb-1"><?php echo htmlspecialchars($policyname) ?></h2>
+							<p class="text-secondary small mb-0"><?php etr("Pay items") ?></p>
+						</div>
+						<span class="badge text-bg-light border">#<?php echo htmlspecialchars($policyid) ?></span>
+					</div>
+					<div class="table-responsive">
+						<table class="table table-hover align-middle mb-0">
+							<thead>
+								<tr>
+									<th class="text-center" style="width: 90px;"><?php echo tr("Delete") ?></th>
+									<th><?php echo tr("Account") ?></th>
+									<th style="width: 220px;"><?php echo tr("Amount") ?></th>
+								</tr>
+							</thead>
+							<tbody>
+							<?php
+							$i = 0;
+							while ($row = fetch($rs)) {
+								echo "<tr>";
+								echo "<td class='text-center'>";
+								deleteIcon("policy_payitems.php?del_no=" . htmlspecialchars($row->no) . "&policyid=" . htmlspecialchars($policyid));
+								echo "</td>";
+								echo "<td>";
+								echo "<input type='hidden' name='no_$i' value='" . htmlspecialchars($row->no) . "'/>";
+								comboBox("accountid_$i", $accounts, $row->accountid, false);
+								echo "</td>";
+								echo "<td>";
+								moneybox("amount_$i", $row->amount);
+								echo "</td>";
+								echo "</tr>";
+								$i++;
+							}
+							hidden('count', $i);
+							?>
+								<tr class="table-light">
+									<td class="text-center text-secondary fw-semibold">+</td>
+									<td><?php comboBox('accountid_new', $accounts, null, true) ?></td>
+									<td><?php moneybox('amount_new', null) ?></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+					<div class="card-footer bg-white d-flex flex-wrap gap-2 py-3">
+						<?php if ($hasOpenPeriod) saveButton() ?>
+						<a class="btn btn-outline-secondary" href="policy.php?policyid=<?php echo htmlspecialchars($policyid) ?>"><?php etr("Back") ?></a>
+					</div>
+				</div>
+				</fieldset>
+			</form>
 		</div>
 	</div>
+<?php bottom() ?>
 </body>
 </html>

@@ -92,24 +92,34 @@ title(tr("Attributes"));
 ?>
 
 <form action="attributes.php" method="POST">
-<table width='100%'>
-<th><?php echo tr("Delete") ?></th>
+<div class="card border-0 shadow-sm overflow-hidden">
+<div class="card-header bg-white py-3">
+<h2 class="h5 fw-bold mb-1"><?php echo tr("Attributes") ?></h2>
+<p class="text-secondary small mb-0"><?php echo tr("Employee payroll fields") ?></p>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+<thead><tr>
+<th class="text-center" style="width: 90px;"><?php echo tr("Delete") ?></th>
 <th><?php echo tr("Name") ?></th>
 <th><?php echo tr("Description") ?></th>
-<th><?php echo tr("Default value") ?></th>
-<th><?php echo tr("Type") ?></th>
-<th><?php echo tr("Choice") ?></th>
+<th style="width: 170px;"><?php echo tr("Default value") ?></th>
+<th style="width: 190px;"><?php echo tr("Type") ?></th>
+<th style="width: 120px;"><?php echo tr("Choice") ?></th>
+</tr></thead>
+<tbody>
 <?php
-$class = "odd";
 $i = 0;
 while ($row = fetch($rs)) {
-	echo "<input type=hidden name=attributeid_$i value='$row->attributeid'/>";
-    echo "<tr class='$class'>";
-    echo "<td align=center>";
-	deleteIcon("attributes.php?del_attributeid=$row->attributeid");
+	$attributeid = htmlspecialchars($row->attributeid);
+	$name = htmlspecialchars($row->name);
+    echo "<tr>";
+    echo "<td class='text-center'>";
+	deleteIcon("attributes.php?del_attributeid=$attributeid");
     echo "</td>";
     echo "<td>";
-    echo "<input type=text name='name_$i' value='$row->name'/>";
+    echo "<input type='hidden' name='attributeid_$i' value='$attributeid'/>";
+    echo "<input class='form-control' type='text' name='name_$i' value='$name'/>";
     echo "</td>";
     echo "<td>";
     textBox("description_$i", $row->description, 40);
@@ -124,26 +134,30 @@ while ($row = fetch($rs)) {
 	echo "</td>";
 	echo "<td>";
 	if ($row->type == ATTRIBUTE_TYPE_CHOICE) {
-		echo "<a href='attribute.php?attributeid=$row->attributeid'>";
+		echo "<a class='btn btn-outline-primary btn-sm' href='attribute.php?attributeid=$attributeid'>";
 		echo tr("Choices") . "</a>";
 	}
 	echo "</td>";
     echo "</tr>";
-    $class = ($class == "odd" ? "even" : "odd");
     $i++;
 }
 hidden('count', $i);
 ?>
-<tr>
-<td/>
-<td><input type=text name=name_new /></td>
+<tr class="table-light">
+<td class="text-center text-secondary fw-semibold">+</td>
+<td><input class="form-control" type="text" name="name_new" /></td>
 <td><?php textBox('description_new', '', 40) ?></td>
 <td><?php numberbox('value_new', '') ?></td>
 <td><?php combobox('type_new', $types, null, true) ?></td>
 </tr>
+</tbody>
 </table>
-<br/>
+</div>
+<div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
 <?php saveButton() ?>
+<span class="text-secondary small"><?php echo $i ?> <?php echo tr("records") ?></span>
+</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>

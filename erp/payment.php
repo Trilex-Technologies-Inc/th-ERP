@@ -24,13 +24,13 @@
 					sql("update payment_allocation set amount=$allocation
 					     where payableid=$payableid and paymentid=$paymentid");
 					if (affected_rows() == 0) {
-						sql("insert into payment_allocation (payableid, paymentid, amount) 
+						sql("insert into payment_allocation (payableid, paymentid, amount)
 						     values ($payableid, $paymentid, $allocation)");
 					}
 				}
 				if (getParam("allocate_all_$i") == 1) {
 					sql("delete from payment_allocation where paymentid=$paymentid and payableid=$payableid");
-					sql("insert into payment_allocation (paymentid, payableid, amount) 
+					sql("insert into payment_allocation (paymentid, payableid, amount)
 					     select $paymentid, $payableid, amount
 						 from payment where paymentid=$paymentid");
 				}
@@ -49,7 +49,7 @@
 			   b.number as bankaccount
 		from payment p
 		join transaction t on t.transactionid=p.transactionid
-		join transaction_part tp on tp.transactionid=t.transactionid 
+		join transaction_part tp on tp.transactionid=t.transactionid
 		join bankaccount b on b.glaccountid=tp.accountid
 		where paymentid=$paymentid
 		";
@@ -71,7 +71,7 @@
 		$supplier = find("select name from supplier where supplierid=$supplierid");
 		$balance = getSupplierBalance($supplierid);
 	 }
-	
+
 	$orders = null;
 	$leftToAllocate = null;
 	if (!$new) {
@@ -93,67 +93,67 @@
 	}
 
 	$bankaccounts = rs2array(query("select number, name from bankaccount"));
-	
+
 ?>
 
 <head>
 <title>thERP - <?php etr("Payment") ?></title>
-<LINK REL=StyleSheet HREF="therp.css" TYPE="text/css">
+<?php styleSheet() ?>
 </head>
 
 <body>
 <?php include("menubar.php") ?>
-<?php 
+<?php
 $title = $paymentid;
 if ($new) $title = tr("New");
-title("<a href='payments.php'>" . tr("Payments") . "</a> > $title") 
+title("<a href='payments.php'>" . tr("Payments") . "</a> > $title")
 ?>
 
 <form action="payment.php" method="POST">
 <input type=hidden name=supplierid value='<?php echo $supplierid ?>'/>
-<table>
+<div class="container-fluid px-0 erp-form-layout">
 <?php
 	if (!$new) {
-		echo "<tr><td><b>" . tr("Payment id") . ":</b></td>";
-		echo "<td>";
+		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'><b>" . tr("Payment id") . ":</b></div>";
+		echo "<div class='col-12 col-md-auto'>";
 		echo $paymentid;
 		echo "<input type='hidden' name='paymentid' value='$paymentid'/>";
-		echo "</td>";
+		echo "</div>";
 	}
 ?>
-<tr><td><b><?php etr("Supplier") ?>:</b></td><td><?php echo $supplier->name ?></td>
-<tr><td><b><?php etr("Date") ?>:</b></td><td><?php echo date(DATE_PATTERN, $paymentdate) ?></td></tr>
-<tr><td><b><?php etr("Balance") ?>:</b></td><td><?php echo formatMoney($balance) ?></td></tr>
-<tr>
-	<td class=label><?php etr("Bank account") ?>:</td>
-	<td><?php comboBox('bankaccount', $bankaccounts, $bankaccount, false, !$new) ?></td>
-	</td>
-</tr>
-<tr>
-	<td><b><?php etr("Amount") ?>:</b></td>
-	<td>
-	<?php 
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><b><?php etr("Supplier") ?>:</b></div><div class="col-12 col-md-auto"><?php echo $supplier->name ?></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><b><?php etr("Date") ?>:</b></div><div class="col-12 col-md-auto"><?php echo date(DATE_PATTERN, $paymentdate) ?></div></div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><b><?php etr("Balance") ?>:</b></div><div class="col-12 col-md-auto"><?php echo formatMoney($balance) ?></div></div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Bank account") ?>:</div>
+	<div class="col-12 col-md-auto"><?php comboBox('bankaccount', $bankaccounts, $bankaccount, false, !$new) ?></div>
+
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><b><?php etr("Amount") ?>:</b></div>
+	<div class="col-12 col-md-auto">
+	<?php
 	if ($new)
 		echo "<input type=text name=amount value='$amount'/>";
-	else	
+	else
 		echo $amount;
 	?>
-	</td>
-</tr>
+	</div>
+</div>
 <?php
 if (!$new) {
-	echo "<tr>";
-	echo "<td colspan=2><a href='transaction.php?transactionid=$transid'>General ledger transaction</a></td>";
-	echo "</tr>";
+	echo "<div class='row g-3 align-items-center mb-2'>";
+	echo "<div class='col-12 col-md-auto'><a href='transaction.php?transactionid=$transid'>General ledger transaction</a></div>";
+	echo "</div>";
 }
 
 ?>
-</table>
+</div>
 <br/>
-<?php 
-if ($orders != null) { 
+<?php
+if ($orders != null) {
 	echo "<p>Left to allocate: $leftToAllocate</p>";
-	echo "<table>";
+	echo "<div class='card border-0 shadow-sm overflow-hidden'><div class='table-responsive'><table class='table table-hover align-middle mb-0'>";
 	echo "<th>" . tr("Payable") . "</th>";
 	echo "<th>" . tr("Amount") . "</th>";
 	echo "<th>" . tr("Previous allocations") . "</th>";
@@ -174,7 +174,7 @@ if ($orders != null) {
         $class = ($class == "odd" ? "even" : "odd");
 		$i++;
 	}
-	echo "</table>";
+	echo "</table></div></div>";
 	echo "<input type=hidden name=count value='$i' />";
 }
 ?>

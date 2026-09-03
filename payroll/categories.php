@@ -1,4 +1,4 @@
-<?
+<?php
 	include('include.php');
 
 	if (isSave()) {
@@ -39,12 +39,20 @@
 </head>
 
 <body>
-<? include("menubar.php") ?>
-<? title("Configuration > Categories") ?>
+<?php include("menubar.php") ?>
+<?php title("Configuration > Categories") ?>
 
 <form action="categories.php" method="POST">
-<table>
-<?
+<div class="card border-0 shadow-sm overflow-hidden">
+<div class="card-header bg-white py-3">
+<h2 class="h5 fw-bold mb-1">Categories</h2>
+<p class="text-secondary small mb-0">Payroll categories</p>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+<thead><tr><th class="text-center" style="width: 90px;">Delete</th><th>Description</th></tr></thead>
+<tbody>
+<?php
 
 $sql = "select ";
 $sql .= "categoryid, ";
@@ -52,28 +60,31 @@ $sql .= "description ";
 $sql .= "from category ";
 $sql .= "order by categoryid ";
 $q = sql($sql);
-echo "<th>Delete</th>";
-echo "<th>Description</th>\n";
-$class = "odd";
-$runningno = 0;
+$categoryid = 0;
+$count = 0;
 while ($rec = fetch($q)) {
 	$categoryid = $rec->categoryid;
-	echo "<tr class='$class'>";
-	echo "<td align='center'><input type='checkbox' name='del_$categoryid'/></td>";
-	echo "<td><input type='text' name='description_$categoryid' value='$rec->description'/></td>";
+	$count++;
+	$description = htmlspecialchars($rec->description);
+	echo "<tr>";
+	echo "<td class='text-center'><input type='checkbox' name='del_$categoryid'/></td>";
+	echo "<td><input class='form-control' type='text' name='description_$categoryid' value='$description'/></td>";
 	echo "</tr>\n";
-	$class = ($class == "odd" ? "even" : "odd");
 }
 ?>
-<tr>
-<td></td>
-<td><input type="text" name="description_new"/></td>
+<tr class="table-light">
+<td class="text-center text-secondary fw-semibold">+</td>
+<td><input class="form-control" type="text" name="description_new"/></td>
 </tr>
-<tr>
-<td><input type="submit" name="save" value="Save"/>
-</tr>
-
+</tbody>
 </table>
-<input type="hidden" name="count" value="<?= $categoryid ?>"/>
+</div>
+<div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+<input type="submit" name="save" value="Save"/>
+<span class="text-secondary small"><?php echo $count ?> <?php echo tr("records") ?></span>
+</div>
+</div>
+<input type="hidden" name="count" value="<?php echo htmlspecialchars($categoryid) ?>"/>
 </form>
+<?php bottom() ?>
 </body>

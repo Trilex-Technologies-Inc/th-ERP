@@ -72,44 +72,31 @@ title("<a href='accounts.php'>" . tr("Accounts") . "</a> > $title")
 ?>
 
 <form action="account.php" method="POST">
-<table>
-<tr>
-	<td><?php etr("Dimension") ?>:</td>
-	<td><?php combobox('dimid', $dims, $dimid, false) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Accountno") ?>:</td>
-	<td><?php numberbox('accountid', $accountid) ?></td>
-</tr>
-<tr>
-	<td><?php etr("Name") ?>:</td>
-	<td><?php textbox('name', $name) ?></td>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Dimension") ?>:</div>
+	<div class="col-12 col-md-auto"><?php combobox('dimid', $dims, $dimid, false) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Accountno") ?>:</div>
+	<div class="col-12 col-md-auto"><?php numberbox('accountid', $accountid) ?></div>
+</div>
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Name") ?>:</div>
+	<div class="col-12 col-md-auto"><?php textbox('name', $name) ?></div>
+</div></div>
 <?php
 if ($groups != null) {
 	echo "<br/>";
-	echo "<div class=border>";
-	echo "<table>";
-	echo "<th>" . tr("Delete") . "</th>";
-	echo "<th>" . tr("Group") . "</th>";
-	$class = 'odd';
+	echo "<div class='card border-0 shadow-sm'><div class='card-header bg-body-tertiary'><div class='row fw-semibold'><div class='col-3'>" . tr("Delete") . "</div><div class='col-9'>" . tr("Group") . "</div></div></div><div class='list-group list-group-flush'>";
 	while ($row = fetch($groups)) {
-		echo "<tr class=$class>";
-		echo "<td align=center>";
+		echo "<div class='list-group-item'><div class='row align-items-center'><div class='col-3'>";
 		deleteIcon("account.php?dimid=$dimid&accountid=$accountid&del_groupid=$row->groupid");
-		echo "</td>";
-		echo "<td>$row->description</td>";
-		echo "</tr>";
-        $class = ($class == "odd" ? "even" : "odd");
+		echo "</div><div class='col-9'>$row->description</div></div></div>";
 	}
-	echo "<tr class=$class/>";
-	echo "<td/>";
-	echo "<td>";
+	echo "<div class='list-group-item'><div class='row align-items-center'><div class='col-3'></div><div class='col-9'>";
 	comboBox("groupid_new", $allGroups, null, true);
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
+	echo "</div></div></div></div></div>";
 }
 ?>
 <br/>

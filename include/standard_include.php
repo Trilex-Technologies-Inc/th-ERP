@@ -12,8 +12,17 @@ else {
 	defineIfNotDefined('DBUSER', 'therp');
 	defineIfNotDefined('DBPWD', 'abc123');
 	defineIfNotDefined('VENDOR', 'mysql');
-	connect(DBHOST, DBUSER, DBPWD);
-	select_db(getDBName()) or die('Could not select database');
+	try {
+		connect(DBHOST, DBUSER, DBPWD);
+		if (!select_db(getDBName())) {
+			throw new RuntimeException('Could not select database "' . getDBName() . '". Please create it and import sql/therp.sql.');
+		}
+	} catch (Throwable $e) {
+		echo '<h1>Database setup required</h1>';
+		echo '<p>' . htmlspecialchars($e->getMessage()) . '</p>';
+		echo '<p>Please make sure MySQL/MariaDB is running, create the database, import <code>sql/therp.sql</code>, and verify the settings in <code>conf/config.php</code>.</p>';
+		die;
+	}
 }
 defineIfNotDefined('CHARSET', 'UTF-8');
 header("Content-type: text/html; charset=" . CHARSET);
@@ -49,20 +58,32 @@ function hours2minutes($hours)
 {
 	$hours = strtok($hours, ":.");
 	$minutes = strtok(":.");
-	return $hours*60 + $minutes;
+	return $hours * 60 + $minutes;
 }
 
 function minutes2hours($minutes)
 {
-	$hours = floor($minutes/60);
-	$minutes = $minutes - $hours*60;
+	$hours = floor($minutes / 60);
+	$minutes = $minutes - $hours * 60;
 	return sprintf("%02d:%02d", $hours, $minutes);
 }
 
 
 function isEmpty($str)
 {
+	if ($str === null)
+		return true;
+	$str = (string)$str;
 	return (strlen(trim($str)) == 0) || ($str == "null");
+}
+
+function utf8ToLatin1($str)
+{
+	if ($str === null)
+		return '';
+	$str = (string)$str;
+	$converted = iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $str);
+	return $converted === false ? $str : $converted;
 }
 
 function getParam($name, $default = null)
@@ -80,120 +101,128 @@ function getParam($name, $default = null)
 
 function formatCase($str)
 {
-    $first = substr($str, 0, 1);
-    $first = strtoupper($first);
-    $tail = substr($str, 1);
-    return $first . $tail;
+	$first = substr($str, 0, 1);
+	$first = strtoupper($first);
+	$tail = substr($str, 1);
+	return $first . $tail;
 }
 
 function field_name($rs, $i)
 {
-    return mysql_field_name($rs, $i);
+	return mysqli_fetch_field_direct($rs, $i)->name;
 }
 
 function num_fields($rs)
 {
-    return mysql_num_fields($rs);
+	return mysqli_num_fields($rs);
 }
 
 
 function buttonRow($buttons)
 {
-    echo "<table class='buttonrow'>";
-    echo "<tr>";
-    for ($i = 0; $i < count($buttons); $i++) {
-        echo "<td>";
-        echo $buttons[$i];
-        echo "</td>";
-    }
-    echo "</tr>\n";
-    echo "</table>";
+	echo "<div class='buttonrow d-flex flex-wrap gap-2 align-items-center'>";
+	for ($i = 0; $i < count($buttons); $i++) {
+		echo $buttons[$i];
+	}
+	echo "</div>";
 }
 
 function button($caption, $name, $url = null, $accesskey = null)
 {
 	$caption = tr($caption);
-    $type = "submit";
-    if ($url != null)
-        $type = "button";
-    echo "<input type=$type value='$caption' name='$name' ";
-    if ($url != null)
-        echo "onClick=\"window.location.href='$url'\"";
+	$type = "submit";
+	if ($url != null)
+		$type = "button";
+	echo "<input type=$type value='$caption' name='$name' ";
+	if ($url != null)
+		echo "onClick=\"window.location.href='$url'\"";
 	if ($accesskey != null)
 		echo "accesskey='$accesskey'";
-    echo "/>";
+	echo "/>";
 }
 
 function newButton($url = null)
 {
-    return button("New", "new", $url);
+	return button("New", "new", $url);
 }
 
 function saveButton()
 {
-    return button("Save", "save", null);
+	return button("Save", "save", null);
 }
 
 function searchButton()
 {
-    return button("Search", "search", null);
+	return button("Search", "search", null);
 }
 
 function deleteButton()
 {
-    return button("Delete", "delete", null);
+	deleteSubmitIcon('delete');
+}
+
+function deleteSubmitIcon($name = 'delete', $confirmText = null)
+{
+	if ($confirmText === null)
+		$confirmText = tr("Are you sure you want to delete this record?");
+	$confirmMessage = htmlspecialchars(json_encode($confirmText), ENT_QUOTES, 'UTF-8');
+	$successMessage = htmlspecialchars(json_encode(tr("Record deleted")), ENT_QUOTES, 'UTF-8');
+	$nameAttribute = htmlspecialchars($name, ENT_QUOTES, 'UTF-8');
+	echo "<button type='submit' class='erp-delete-action border-0 bg-transparent p-0' name='$nameAttribute' value='1' aria-label='" . htmlspecialchars(tr("Delete"), ENT_QUOTES, 'UTF-8') . "' onclick='return thERPConfirmDeleteSubmit($confirmMessage, $successMessage)'>" . deleteIconImage() . "</button>";
 }
 
 
 function paramInput($name)
 {
-    echo "<input type='text' ";
-    echo "name=$name ";
-    echo "value='" . getParam("$name") . "' ";
-    echo "/>";
+	echo "<input type='text' ";
+	echo "name=$name ";
+	echo "value='" . getParam("$name") . "' ";
+	echo "/>";
 }
 
 function textbox($name, $value = null, $size = null, $mandatory = false)
 {
-    echo "<input type='text' ";
-    echo "name=$name ";
-    echo "value='$value' ";
-    if ($size != null)
-        echo "size='$size' ";
-    if ($size == null)
-    	$size = 20;
-    if (array_key_exists('readonly', $_REQUEST))
-    	echo "onKeyPress='return false;' ";
-    else
-    	echo "onKeyPress='return checkLength(event, this.value, $size)' ";
-    echo ">";
-    hidden("old_$name", $value);
-	if ($mandatory) 
-		addValidator("validateMandatory('" . tr($name) . "', document.postform.$name)");    
+	echo "<input type='text' ";
+	echo "name=$name ";
+	echo "value='$value' ";
+	if ($size != null)
+		echo "size='$size' ";
+	if ($size == null)
+		$size = 20;
+	if (array_key_exists('readonly', $_REQUEST))
+		echo "onKeyPress='return false;' ";
+	else
+		echo "onKeyPress='return checkLength(event, this.value, $size)' ";
+	echo ">";
+	hidden("old_$name", $value);
+	if ($mandatory)
+		addValidator("validateMandatory('" . tr($name) . "', document.postform.$name)");
 }
 
 function comboBox($name, $data, $selectedValue, $allowNull, $onChange = null)
 {
 	$onChange = $onChange == null ? '' : "onChange='$onChange'";
-    echo "<select name='$name' $onChange ";
-    if (array_key_exists('readonly', $_REQUEST))
-    	echo "disabled=true ";
-    echo ">\n";
-    if ($allowNull)
-        echo "<option></option>\n";
-    for ($j=0; $j < count($data); $j++) {
-        $option = $data[$j];
+	echo "<select name='$name' $onChange ";
+	if (array_key_exists('readonly', $_REQUEST))
+		echo "disabled=true ";
+	echo ">\n";
+	if ($allowNull)
+		echo "<option></option>\n";
+	for ($j = 0; $j < count($data); $j++) {
+		$option = $data[$j];
 		if (count($option) > 2)
-			$label = $option[1].' - '.$option[2];
+			$label = $option[1] . ' - ' . $option[2];
 		else if (count($option) > 1)
 			$label = $option[1];
 		else
-			$label = $option[0];        echo "<option value='$option[0]' ";
-        if ($option[0] == $selectedValue)
-            echo "selected";
-        echo ">$label</option>\n";    }
-    echo "</select>\n";
-    hidden("old_$name", $selectedValue);
+			$label = $option[0];
+		echo "<option value='$option[0]' ";
+		if ($option[0] == $selectedValue)
+			echo "selected";
+		echo ">$label</option>\n";
+	}
+	echo "</select>\n";
+	hidden("old_$name", $selectedValue);
 }
 
 function parseDate($datestr)
@@ -217,8 +246,8 @@ function parseDate($datestr)
 
 function formatDate($date)
 {
-    if ($date == null)
-        return "";
+	if ($date == null)
+		return "";
 	$date = 0 + $date;
 	return date(DATE_PATTERN, $date);
 }
@@ -228,10 +257,10 @@ function formatInterval($start, $end)
 	$str = formatDate($start) . ' - ';
 	$end = addTime($end, TYPE_DAYS, -1);
 	if (getYear($start) != getYear($end)) {
-		$str .= formatDate($end);	
+		$str .= formatDate($end);
 	} else {
 		$str .= date('m-d', $end);
-	}	
+	}
 	return $str;
 }
 
@@ -248,13 +277,13 @@ function parseTime($hhmm)
 			$mm = 30;
 		}
 	}
-	return $hh*60 + $mm;
+	return $hh * 60 + $mm;
 }
 
 function formatTime($minutes)
 {
 	$hh = floor($minutes / 60);
-	$mm = $minutes - $hh*60;
+	$mm = $minutes - $hh * 60;
 	if (strlen($hh) == 1)
 		$hh = "0" . $hh;
 	if (strlen($mm) == 1)
@@ -269,88 +298,88 @@ function formatDatetime($date)
 
 function mkdatetime($date, $minutes, $seconds = 0)
 {
-    $year = date("Y", $date);
-    $month = date("m", $date);
-    $day = date("d", $date);
-    $hour = floor($minutes / 60);
-    $minute = $minutes - $hour*60;
-    return mktime($hour, $minute, $seconds, $month, $day, $year);
+	$year = date("Y", $date);
+	$month = date("m", $date);
+	$day = date("d", $date);
+	$hour = floor($minutes / 60);
+	$minute = $minutes - $hour * 60;
+	return mktime($hour, $minute, $seconds, $month, $day, $year);
 }
 
 function addDay($date, $diff = 1)
 {
-    $year = date("Y", $date);
-    $month = date("m", $date);
-    $day = date("d", $date);
-    $hour = date("H", $date);
-    $minute = date("i", $date);
-    return mktime($hour, $minute, 0, $month, $day+$diff, $year);
+	$year = date("Y", $date);
+	$month = date("m", $date);
+	$day = date("d", $date);
+	$hour = date("H", $date);
+	$minute = date("i", $date);
+	return mktime($hour, $minute, 0, $month, $day + $diff, $year);
 }
 
-function addTime($date, $type, $diff=1)
+function addTime($date, $type, $diff = 1)
 {
 	if (isEmpty($date))
 		return null;
-    $year = date("Y", $date);
-    $month = date("m", $date);
-    $day = date("d", $date);
-    $hour = date("H", $date);
-    $minute = date("i", $date);
-    if ($type == TYPE_HOURS)
-        $hour += $diff;
-    else if ($type == TYPE_DAYS)
-        $day += $diff;
-    else if ($type == TYPE_WEEKS)
-        $day += $diff*7;
-    else if ($type == TYPE_MONTHS)
-        $month += $diff;
-    else if ($type == TYPE_YEARS)
-        $year += $diff;
-    return mktime($hour, $minute, 0, $month, $day, $year);
+	$year = date("Y", $date);
+	$month = date("m", $date);
+	$day = date("d", $date);
+	$hour = date("H", $date);
+	$minute = date("i", $date);
+	if ($type == TYPE_HOURS)
+		$hour += $diff;
+	else if ($type == TYPE_DAYS)
+		$day += $diff;
+	else if ($type == TYPE_WEEKS)
+		$day += $diff * 7;
+	else if ($type == TYPE_MONTHS)
+		$month += $diff;
+	else if ($type == TYPE_YEARS)
+		$year += $diff;
+	return mktime($hour, $minute, 0, $month, $day, $year);
 }
 
 function roundTime($date, $type)
 {
-    $year = date("Y", $date);
-    $month = date("m", $date);
-    $day = date("d", $date);
-    $hour = date("H", $date);
-    $minute = date("i", $date);
-    if ($type == TYPE_HOURS)
-        $minute = 0;
-    else if ($type == TYPE_DAYS) {
-        $minute = 0;
-        $hour = 0;
-    } else if ($type == TYPE_WEEKS) {
-        return strtotime("last Sunday", $date);
-    } else if ($type == TYPE_MONTHS) {
-        $minute = 0;
-        $hour = 0;
-        $day = 1;
-    }
-    return mktime($hour, $minute, 0, $month, $day, $year);
+	$year = date("Y", $date);
+	$month = date("m", $date);
+	$day = date("d", $date);
+	$hour = date("H", $date);
+	$minute = date("i", $date);
+	if ($type == TYPE_HOURS)
+		$minute = 0;
+	else if ($type == TYPE_DAYS) {
+		$minute = 0;
+		$hour = 0;
+	} else if ($type == TYPE_WEEKS) {
+		return strtotime("last Sunday", $date);
+	} else if ($type == TYPE_MONTHS) {
+		$minute = 0;
+		$hour = 0;
+		$day = 1;
+	}
+	return mktime($hour, $minute, 0, $month, $day, $year);
 }
 
 function getYear($date)
 {
-	return date("Y", $date);	
+	return date("Y", $date);
 }
 
 function getAge($birthday)
 {
-	list($year,$month,$day) = explode("-",$birthday);	
+	list($year, $month, $day) = explode("-", $birthday);
 	$year_diff = date("Y") - $year;
 	$month_diff = date("m") - $month;
 	$day_diff = date("d") - $day;
 	if ($month_diff < 0) $year_diff--;
-	elseif (($month_diff==0) && ($day_diff < 0)) $year_diff--;
+	elseif (($month_diff == 0) && ($day_diff < 0)) $year_diff--;
 	return $year_diff;
 }
 
 
 function dayDiff($date1, $date2)
 {
-    return round(($date1-$date2) / 24 / 3600);
+	return round(($date1 - $date2) / 24 / 3600);
 }
 
 function isSearch()
@@ -382,49 +411,42 @@ function isNew()
 
 function newbox()
 {
-    if (getParam("action") == "new") {
-        echo "<input type=hidden name=new value='1'/>";
-    }
+	if (getParam("action") == "new") {
+		echo "<input type=hidden name=new value='1'/>";
+	}
 }
 
-function datebox($id, $value=null)
+function datebox($id, $value = null)
 {
-	if (strstr($value, '-') === false)
-		$value = formatDate($value);
- 	echo "<input type='text' id='$id' name='$id' value='$value' size='12' ";
- 	if (array_key_exists('readonly', $_REQUEST))
- 		echo "onKeyPress='return false;' ";
- 	else 
- 		echo "onKeyPress='return onDateKeyPress(event, this);' ";
- 	echo ">";
-	echo "<img id='$id" . "_button' src='../include/jscalendar/img.gif'/>";
- 	if (!array_key_exists('readonly', $_REQUEST)) {
-		echo "<script>\n";
-	    echo "Calendar.setup(\n";
-	    echo "{\n";
-	    echo "  inputField: '$id',\n";
-	    echo "  ifFormat: '". DATE_PATTERN_MYSQL . "',\n";
-	    echo "  button: '$id" . "_button'\n";
-	    echo "}\n";
-	    echo ");\n";
-	    echo "</script>\n";
-	    $label = $id;
-		addValidator("validateDate('" . tr($label)  ."', document.postform.$id)");
-    	hidden("old_$id", $value);		
- 	} 	
-}
+	$dateValue = '';
+	if (!isEmpty($value)) {
+		if (is_numeric($value)) {
+			$dateValue = date('Y-m-d', (int)$value);
+		} else if (preg_match('/^\d{4}-\d{2}-\d{2}/', $value)) {
+			$dateValue = substr($value, 0, 10);
+		} else {
+			$date = DateTime::createFromFormat(DATE_PATTERN, $value);
+			if ($date !== false)
+				$dateValue = $date->format('Y-m-d');
+			else {
+				$timestamp = strtotime($value);
+				if ($timestamp !== false)
+					$dateValue = date('Y-m-d', $timestamp);
+			}
+		}
+	}
 
-function include_datebox()
-{
-    echo "<style type='text/css'>@import url(../include/jscalendar/calendar-win2k-1.css);</style>\n";
-    echo "<script src='../include/jscalendar/calendar.js'></script>\n";
-    echo "<script src='../include/jscalendar/lang/calendar-en.js'></script>\n";
-    echo "<script src='../include/jscalendar/calendar-setup.js'></script>\n";
+	echo "<input type='date' class='form-control' id='" . htmlspecialchars($id) . "' name='" . htmlspecialchars($id) . "' value='" . htmlspecialchars($dateValue) . "'";
+	if (array_key_exists('readonly', $_REQUEST))
+		echo " readonly";
+	echo ">";
+	if (!array_key_exists('readonly', $_REQUEST))
+		hidden("old_$id", $dateValue);
 }
 
 function include_common()
 {
-    echo "<script src='../include/common.js'></script>\n";
+	echo "<script src='../include/common.js'></script>\n";
 }
 
 function timebox($name, $value = null)
@@ -432,41 +454,41 @@ function timebox($name, $value = null)
 	echo "<input type=text name='$name' value='$value' size=6 onKeyPress='return isTime(event);' />";
 }
 
-function moneyBox($name, $value = null, $size=10, $signed=false)
+function moneyBox($name, $value = null, $size = 10, $signed = false)
 {
 	$signed = $signed ? "true" : "false";
 	$length = $size + 3;
 	echo "<input type=text name='$name' value='$value' size=$length class=moneybox ";
-    if (array_key_exists('readonly', $_REQUEST))
-    	echo "onKeyPress='return false;' ";
-    else	
+	if (array_key_exists('readonly', $_REQUEST))
+		echo "onKeyPress='return false;' ";
+	else
 		echo "onKeyPress='return onMoneyKeyPress(event, this, $signed, $size);' ";
-    echo "> ";
-    hidden("old_$name", $value);    
+	echo "> ";
+	hidden("old_$name", $value);
 	$label = $name;
-	addValidator("validateMoney('" . tr($label)  ."', document.postform.$name, $signed, $size)");
+	addValidator("validateMoney('" . tr($label)  . "', document.postform.$name, $signed, $size)");
 }
 
 function datetimebox($name)
 {
-    datebox($name . "date");
-    echo "&nbsp;";
-    timebox($name . "time");
+	datebox($name . "date");
+	echo "&nbsp;";
+	timebox($name . "time");
 }
 
 function getDateTimeParam($name, $defaultDate = null)
 {
-    $date = getParam($name . "date");
-    if (isEmpty($date))
-        $date = $defaultDate;
-    return $date . " " . getParam($name . "time");
+	$date = getParam($name . "date");
+	if (isEmpty($date))
+		$date = $defaultDate;
+	return $date . " " . getParam($name . "time");
 }
 
 function prepNull($str)
 {
-    if ($str == null)
-        return "null";
-    return $str;
+	if ($str == null)
+		return "null";
+	return $str;
 }
 
 function formatMoney($amount)
@@ -477,9 +499,20 @@ function formatMoney($amount)
 
 function deleteIcon($href)
 {
-	echo "<a href='$href'>";
-	image("delete.png");
-	echo "</a>";
+	echo deleteLink($href, deleteIconImage());
+}
+
+function deleteIconImage()
+{
+	return "<svg class='erp-delete-icon' viewBox='0 0 24 24' aria-hidden='true'><path d='M4 7h16M9 7V4h6v3m3 0-1 13H7L6 7m4 4v5m4-5v5'/></svg>";
+}
+
+function deleteLink($href, $label)
+{
+	$hrefAttribute = htmlspecialchars($href, ENT_QUOTES, 'UTF-8');
+	$confirmMessage = htmlspecialchars(json_encode(tr("Are you sure you want to delete this record?")), ENT_QUOTES, 'UTF-8');
+	$successMessage = htmlspecialchars(json_encode(tr("Record deleted")), ENT_QUOTES, 'UTF-8');
+	return "<a href='$hrefAttribute' class='erp-delete-action' aria-label='" . htmlspecialchars(tr("Delete"), ENT_QUOTES, 'UTF-8') . "' onclick='return thERPConfirmDelete(this.href, $confirmMessage, $successMessage)'>$label</a>";
 }
 
 function deleteColumn($href)
@@ -508,13 +541,13 @@ function checkBox($name, $value, $text = '', $onChange = null, $tooltip = null)
 		$text = tr($text);
 	$checked = $value == 1 || $value ? 'checked' : '';
 	echo "<input type=checkbox name='$name' value='1' $checked ";
-    if (array_key_exists('readonly', $_REQUEST))
-    	echo "disabled=true ";
-    else if ($onChange != null) {
-    	echo " onClick='$onChange' ";
-    }
-    if ($tooltip != null)
-    	echo " title='$tooltip' ";
+	if (array_key_exists('readonly', $_REQUEST))
+		echo "disabled=true ";
+	else if ($onChange != null) {
+		echo " onClick='$onChange' ";
+	}
+	if ($tooltip != null)
+		echo " title='$tooltip' ";
 	echo ">$text</input>";
 	$value0 = $value ? 1 : '';
 	hidden("old_$name", $value0);
@@ -529,20 +562,20 @@ function numberBox($name, $value, $signed = false, $precision = 10, $scale = 0, 
 	echo "<input type=text name='$name' value='$value' size=$length class=numberbox ";
 	echo "onKeyPress='return onNumberKeyPress(event, this, $signed, $precision, $scale);' ";
 	echo ">";
-	hidden("old_$name", $value);	
+	hidden("old_$name", $value);
 	if ($scale > 0)
-		addValidator("validateNumber('" . tr($name)  ."', document.postform.$name, $signed, $precision, $scale)");	
-	if ($mandatory) 
+		addValidator("validateNumber('" . tr($name)  . "', document.postform.$name, $signed, $precision, $scale)");
+	if ($mandatory)
 		addValidator("validateMandatory('" . tr($name) . "', document.postform.$name)");
 }
 
 function tx($functionname, $params)
 {
 	//try {
-		begin();
-		$ret = call_user_func_array($functionname, $params);
-		commit();
-		return $ret;
+	begin();
+	$ret = call_user_func_array($functionname, $params);
+	commit();
+	return $ret;
 	//} catch (Exception $e) {
 	//	rollback();
 	//	throw $e;
@@ -565,8 +598,7 @@ function image($name)
 
 function getUser()
 {
-	return $_SESSION['username'];
-
+	return array_key_exists('username', $_SESSION) ? $_SESSION['username'] : '';
 }
 
 function metatag()
@@ -576,20 +608,42 @@ function metatag()
 
 function getLanguage()
 {
-	return $_SESSION['language'];
+	return array_key_exists('language', $_SESSION) ? $_SESSION['language'] : '';
 }
 
 function title($title)
 {
-	echo "<center>";
-	echo "<table cellspacing='0' cellspacing='5'>";
-	echo "<tr height='3'/>";
-	echo "<tr class='title'>";
-	echo "<td class=title>&nbsp;$title</td>";
-	echo "</tr>";
-	echo "<tr height='5'/>";
-	echo "</table>";
-	echo "</center>\n";
+	global $therp_current_module;
+
+	$parts = preg_split('/\s+>\s+/', $title);
+	$current = trim(strip_tags($parts[count($parts) - 1]));
+	if (isEmpty($current))
+		$current = trim(strip_tags($title));
+	$module = isEmpty($therp_current_module) ? '' : tr($therp_current_module);
+	$firstPart = count($parts) > 0 ? trim(strip_tags($parts[0])) : '';
+	$moduleHref = $module == tr("Common") ? '../common/modules.php' : 'index.php';
+
+	echo "<div class='container-fluid pt-4 pb-2'>";
+	echo "<div class='page-title-bar border-bottom pb-2'>";
+	echo "<nav class='erp-breadcrumb' aria-label='" . tr("Breadcrumb") . "'>";
+	echo "<ol>";
+	echo "<li><a href='../common/modules.php'>" . tr("Home") . "</a></li>";
+	if (!isEmpty($module) && $firstPart != $module) {
+		echo "<li><a href='$moduleHref'>" . $module . "</a></li>";
+	}
+	for ($i = 0; $i < count($parts); $i++) {
+		$part = trim($parts[$i]);
+		if (isEmpty(strip_tags($part)))
+			continue;
+		$isCurrent = $i == count($parts) - 1;
+		echo $isCurrent ? "<li aria-current='page'>" : "<li>";
+		echo $part;
+		echo "</li>";
+	}
+	echo "</ol>";
+	echo "</nav>";
+	echo "<h1 class='h4 mb-0 fw-semibold'>$current</h1>";
+	echo "</div></div>\n";
 }
 
 function tr($text)
@@ -670,20 +724,20 @@ function getMonthStepperDate()
 		$month--;
 	if (!isEmpty(getParam("next")))
 		$month++;
-	$date = mktime(0,0,0, $month, 1, $year);
+	$date = mktime(0, 0, 0, $month, 1, $year);
 	return $date;
 }
 
 function monthStepper($date)
 {
 	echo "<center>";
-	echo "<table>";
-	echo "<tr>";
-	echo "<td><input type='submit' name='prev' value=' < '/></td>";
-	echo "<td>" . date("Y M", $date) . "</td>";
-	echo "<td><input type='submit' name='next' value=' > '/></td>";
-	echo "</tr>";
-	echo "</table>";
+	echo "<div class='container-fluid px-0 erp-form-layout'>";
+	echo "<div class='row g-3 align-items-center mb-2'>";
+	echo "<div class='col-12 col-md-auto'><input type='submit' name='prev' value=' < '/></div>";
+	echo "<div class='col-12 col-md-auto'>" . date("Y M", $date) . "</div>";
+	echo "<div class='col-12 col-md-auto'><input type='submit' name='next' value=' > '/></div>";
+	echo "</div>";
+	echo "</div>";
 	echo "</center>";
 	$year = date("Y", $date);
 	$month = date("m", $date);
@@ -700,20 +754,20 @@ function getYearStepperDate()
 		$year--;
 	if (!isEmpty(getParam("next")))
 		$year++;
-	$date = mktime(0,0,0, 1, 1, $year);
+	$date = mktime(0, 0, 0, 1, 1, $year);
 	return $date;
 }
 
 function yearStepper($date)
 {
 	echo "<center>";
-	echo "<table>";
-	echo "<tr>";
-	echo "<td><input type='submit' name='prev' value=' < '/></td>";
-	echo "<td>" . date("Y", $date) . "</td>";
-	echo "<td><input type='submit' name='next' value=' > '/></td>";
-	echo "</tr>";
-	echo "</table>";
+	echo "<div class='container-fluid px-0 erp-form-layout'>";
+	echo "<div class='row g-3 align-items-center mb-2'>";
+	echo "<div class='col-12 col-md-auto'><input type='submit' name='prev' value=' < '/></div>";
+	echo "<div class='col-12 col-md-auto'>" . date("Y", $date) . "</div>";
+	echo "<div class='col-12 col-md-auto'><input type='submit' name='next' value=' > '/></div>";
+	echo "</div>";
+	echo "</div>";
 	echo "</center>";
 	$year = date("Y", $date);
 	hidden('year', $year);
@@ -758,7 +812,6 @@ function showLoginDialog($mess = null)
 	include("../common/login.php");
 	//header("Location: ../common/login.php");
 	die;
-
 }
 
 function authenticate()
@@ -772,13 +825,13 @@ function authenticate()
 		showLoginDialog();
 		return;
 	}
-	
+
 	$dbname = getDBName();
 	if (!isEmpty($dbname) && getSessionAttribute('dbname') == $dbname)
 		return;
 	$userSupplied = isset($_SERVER['PHP_AUTH_USER']) ||
-	                !isEmpty(getParam('user')) ||
-	                !isEmpty(getParam('username'));
+		!isEmpty(getParam('user')) ||
+		!isEmpty(getParam('username'));
 	if (!$userSupplied) {
 		showLoginDialog();
 		return;
@@ -850,7 +903,7 @@ function prepStringParam($param)
 	$value = getParam($param);
 	if (isEmpty($value))
 		return "null";
-	return "'$value'";	
+	return sql_string($value);
 }
 
 function th($header, $href = null, $width = null)
@@ -903,7 +956,3 @@ function addValidator($validator)
 	$validators[] = $validator;
 	$_REQUEST['validators'] = $validators;
 }
-
-
-
-?>

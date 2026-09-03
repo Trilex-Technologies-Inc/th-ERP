@@ -3,21 +3,17 @@ include('../include/therp_include.php');
 
 function menubar($currentHref = null, $helpUrl = 'http://therp.sf.net')
 {
-	top0("Stock/Inventory");
-	echo "<table width='100%' cellspacing=0 cellpadding=0 >";
-	echo "<tr>";
-	echo "<td>";
-	echo "<table width='100%' class=menubar>";
-		echo "<tr>";
-			$percent = 50;
+	top0("Manufacturing");
+	echo "<nav class='app-sidebar' aria-label='" . tr("Module navigation") . "'>";
+	sidebarHomeLink();
+	echo "<div class='app-nav-list'>";
+			$percent = 33;
+			menu('index.php', 'Manufacturing', $percent, true, $currentHref);
 			menu('productionorders.php', 'Production orders', $percent, true, $currentHref);
 			//menu('configuration.php', 'Configuration', $percent, true, $currentHref);
 			menu($helpUrl, 'Help', $percent, false, $currentHref);
-		echo "</tr>";
-	echo "</table>";
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
+	echo "</div>";
+	echo "</nav>";
 	showUpgrade();
 }
 

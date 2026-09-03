@@ -27,7 +27,7 @@
 
 <head>
 <title>thERP - <?php etr("Purchase orders") ?></title>
-<LINK REL=StyleSheet HREF="therp.css" TYPE="text/css">
+<?php styleSheet() ?>
 </head>
 
 <body>
@@ -42,17 +42,17 @@ title(tr($title))
 
 <form action="purchaseorders.php" method="GET">
 <div class="border">
-<table>
-<tr><td><?php etr("Supplier") ?>:</td><td><?php comboBox('supplierid', $suppliers, $supplierid, true) ?></td>
-<tr><td><input type="submit" name="search" value="<?php etr("Search") ?>" /></td></tr>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Supplier") ?>:</div><div class="col-12 col-md-auto"><?php comboBox('supplierid', $suppliers, $supplierid, true) ?></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><input type="submit" name="search" value="<?php etr("Search") ?>" /></div></div>
+
+</div>
 </div>
 </form>
 &nbsp;
 
 <form action="purchase.php" method=POST>
-<table>
+<div class="card border-0 shadow-sm overflow-hidden"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
 <th><?php etr("Delete") ?></th>
 <th><?php etr("Id") ?></th>
 <th><?php etr("Supplier") ?></th>
@@ -71,7 +71,7 @@ title(tr($title))
         $i++;
     }
 ?>
-</table>
+</table></div></div>
 <br/>
 <?php newButton("suppliers.php?mode=createorder") ?>
 &nbsp;

@@ -50,6 +50,7 @@
 		where orderid=$orderid
 		";
 		$rec = find($sql);
+		$cancelled = $rec->cancelled;
 		if ($rec->transactionid != null)
 			$addable = false;
 		if ($rec->cancelled)
@@ -69,6 +70,15 @@
 	}
 
 	$productid = getParam('productid');
+	$statusText = tr("Registered");
+	$statusClass = "is-draft";
+	if ($cancelled) {
+		$statusText = tr("Cancelled");
+		$statusClass = "is-cancelled";
+	} else if (!isEmpty($rec->transactionid)) {
+		$statusText = tr("Finished");
+		$statusClass = "is-received";
+	}
 
 ?>
 
@@ -81,7 +91,8 @@ include_common();
 <script>
 function onLoad()
 {
-	document.postform.productid_new.focus();
+	if (document.postform.productid_new)
+		document.postform.productid_new.focus();
 }
 </script>
 </head>
@@ -90,98 +101,114 @@ function onLoad()
 <?php
 menubar("productionorders.php");
 $title = $new ? tr("Register") : $orderid;
-title("<a href='productionorders.php'>" . tr("Production orders") . "</a> > $title") ;
+title(tr("Production order")) ;
 ?>
+
+<main class="production-order-page">
+	<header class="production-order-intro">
+		<a class="production-order-back" href="productionorders.php" aria-label="<?php etr("Production orders") ?>">&#8592;</a>
+		<div class="production-order-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 20V9l5 3V9l5 3V5h4l2 15H4Zm3 0v-3m4 3v-3m4 3v-3"/></svg></div>
+		<div class="production-order-heading">
+			<span><?php etr("Manufacturing") ?></span>
+			<h1><?php etr("Production order") ?> <em>#<?php echo htmlspecialchars($orderid) ?></em></h1>
+			<p><?php etr("Add finished products and complete the order to update inventory.") ?></p>
+		</div>
+		<span class="stock-move-status <?php echo $statusClass ?>"><?php echo $statusText ?></span>
+	</header>
 
 <?php
 if ($mess != null) {
-	echo "<center class=error>$mess</center>";
+	echo "<div class='alert alert-danger' role='alert'>" . htmlspecialchars($mess) . "</div>";
 }
 ?>
 
-<form name=postform action="productionorder.php" method="POST">
-<input type=hidden name=customerid value='<?php echo $customerid ?>'/>
-<table>
+<form name="postform" action="productionorder.php" method="POST">
+<section class="production-order-overview card border-0 shadow-sm">
+	<div class="card-header bg-white production-order-card-header"><div><span><?php etr("Order details") ?></span><h2><?php etr("Production information") ?></h2></div></div>
+	<div class="card-body">
+<div class="container-fluid px-0 erp-form-layout">
 <?php
 	if (!$new) {
-		echo "<tr><td><b>" . tr("Order id") . ":</b></td>";
-		echo "<td>";
+		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'><b>" . tr("Order id") . ":</b></div>";
+		echo "<div class='col-12 col-md-auto'>";
 		echo $orderid;
 		echo "<input type='hidden' name='orderid' value='$orderid'/>";
-		echo "</td>";
+		echo "</div>";
 	}
 ?>
-<tr><td><b><?php etr("Created date") ?>:</b></td><td><?php echo date(DATE_PATTERN, $rec->createdtime) ?></td></tr>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-3"><b><?php etr("Created date") ?>:</b></div><div class="col-12 col-md-9"><?php echo date(DATE_PATTERN, $rec->createdtime) ?></div></div>
 <?php
-echo "<tr>";
-echo "<td class=label>" . tr("Status") . ":</td>";
-echo "<td>";
+echo "<div class='row g-3 align-items-center mb-2'>";
+echo "<div class='col-12 col-md-auto'>" . tr("Status") . ":</div>";
+echo "<div class='col-12 col-md-auto'>";
 if (!isEmpty($rec->transactionid)) {
 	echo tr("Finished") . "&nbsp;&nbsp;<a href='../accounting/transaction.php?transactionid=$rec->transactionid'>Show transaction</a>";
 } else
 	echo tr("Registered");
-echo "</td>";
-echo "</tr>";
+echo "</div>";
+echo "</div>";
 if ($cancelled) {
-	echo "<tr>";
-	echo "<td colspan=2>";
+	echo "<div class='row g-3 align-items-center mb-2'>";
+	echo "<div class='col-12 col-md-auto'>";
 	echo tr("This order is cancelled");
-	echo "</td>";
-	echo "</tr>";
+	echo "</div>";
+	echo "</div>";
 }
 ?>
-<tr>
-<td class=label><?php etr("Created by") ?>:</td>
-<td><?php echo $rec->createdby ?></td>
-</tr>
-</table>
-<br/>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php etr("Created by") ?>:</div>
+<div class="col-12 col-md-auto"><?php echo $rec->createdby ?></div>
+</div>
+</div></div></section>
 <?php if ($items != null) { ?>
-<div class='border'>
-<table>
+<section class="production-order-items card border-0 shadow-sm overflow-hidden">
+	<div class="card-header bg-white production-order-card-header"><div><span><?php etr("Order lines") ?></span><h2><?php etr("Products to manufacture") ?></h2></div></div>
+	<div class="erp-table-responsive"><table class="erp-data-table production-order-table"><thead><tr>
 <?php
 if ($addable)
 	echo "<th>" . tr("Delete") . "</th>";
 ?>
 <th><?php etr("Product") ?></th>
 <th><?php etr("Quantity") ?></th>
-<th><?php etr("Amount") ?></th>
+<?php if ($addable) { ?><th><?php etr("Action") ?></th><?php } ?>
+</tr></thead><tbody>
 <?php
 	$class = 'odd';
 	$i = 0;
 	while ($row = fetch($items)) {
-		echo "<input type=hidden name=productid_$i value='$row->productid'/>";
 		echo "<tr class='$class'>";
 		$href = "productionorder.php?orderid=$orderid&del_no=$row->no";
 		if ($addable)
 			deleteColumn($href);
-		echo "<td><a href='../erp/product.php?productid=$row->productid'>$row->productid - $row->model</a></td>";
+		$text = htmlspecialchars($row->productid . ' - ' . $row->model);
+		echo "<td><input type='hidden' name='productid_$i' value='$row->productid'/><a href='../erp/product.php?productid=$row->productid'>$text</a></td>";
 		echo "<td align=right>$row->quantity</td>";
+		if ($addable)
+			echo "<td></td>";
 		echo "</tr>";
         $class = ($class == "odd" ? "even" : "odd");
         $i++;
 	}
 ?>
-<input type=hidden name=count value='<?php echo $i ?>'/>
 <?php
 if ($addable) {
-	echo "<tr class='<?php echo $class ?>'>";
-	echo "<td/>";
-	echo "<td>";
-	//echo "<input id='product_new' type=text name='productid_new' value='$productid' >";
+	echo "<tr class='$class production-order-add-row'>";
+	echo "<td class='production-order-add-marker'><span aria-hidden='true'>+</span></td>";
+	echo "<td><div class='production-product-picker'>";
 	numberbox('productid_new', $productid);
 	button("Search", "search", "../erp/products.php?mode=selectproduction&orderid=$orderid");
-	echo "</td>";
-	echo "<td align=right><input type=text name='quantity_new' value='1' size=5/></td>";
-	echo "<td><input type=submit name=add value='Add'/></td>";
+	echo "</div><small>" . tr("Enter a product ID or search the catalog") . "</small></td>";
+	echo "<td><div class='production-quantity-field'><input type='text' name='quantity_new' value='1' size='5' aria-label='" . tr("Quantity") . "'/><small>" . tr("Units to produce") . "</small></div></td>";
+	echo "<td class='production-add-action'><input type='submit' name='add' value='" . tr("Add product") . "'/></td>";
 	echo "</tr>";
 }
 ?>
-</table>
-</div>
-<br/>
+</tbody></table></div>
+<input type="hidden" name="count" value="<?php echo $i ?>" />
+</section>
 <?php } ?>
 
+<div class="production-order-actions">
 <?php
 if (!$new) {
 	button("Finish", "finish", null, 'F');
@@ -191,7 +218,9 @@ if (!$new) {
 	button("Show stock moves", "moves", "../erp/stockmoves.php?productionorderid=$orderid");
 }
 ?>
+</div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
+</main>
 <?php bottom() ?>
 </body>

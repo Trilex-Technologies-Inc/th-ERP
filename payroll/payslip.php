@@ -69,24 +69,24 @@ $pdf->Cell(100, ROWHEIGHT, '', 0, 1);
 $pdf->Cell(110, ROWHEIGHT, '', 0, 0);
 $pdf->Cell(100, ROWHEIGHT, '', 0, 1);
 $pdf->Cell(110, ROWHEIGHT, '', 0, 0);
-$pdf->Cell(100, ROWHEIGHT, utf8_decode($emp->givenname . ' ' . $emp->surname), 0, 1);
+$pdf->Cell(100, ROWHEIGHT, utf8ToLatin1($emp->givenname . ' ' . $emp->surname), 0, 1);
 $pdf->Cell(110, ROWHEIGHT, '', 0, 0);
-$pdf->Cell(100, ROWHEIGHT, utf8_decode($emp->street_address), 0, 1);
+$pdf->Cell(100, ROWHEIGHT, utf8ToLatin1($emp->street_address), 0, 1);
 $pdf->Cell(110, ROWHEIGHT, '', 0, 0);
-$address = utf8_decode("$emp->city $emp->zipcode");
+$address = utf8ToLatin1("$emp->city $emp->zipcode");
 $pdf->Cell(100, ROWHEIGHT, $address, 0, 1);
 $pdf->Ln(ROWHEIGHT);
 
 $pdf->SetFont('Arial','',10);
-$pdf->Cell(20, ROWHEIGHT, utf8_decode(tr("Account")), 1);
-$pdf->Cell(80, ROWHEIGHT, utf8_decode(tr("Description")), 1);
-$pdf->Cell(15, ROWHEIGHT, utf8_decode(tr("Quantity")), 1, 0, 'R');
-$pdf->Cell(30, ROWHEIGHT, utf8_decode(tr("Unit price")), 1, 0, 'R');
-$pdf->Cell(30, ROWHEIGHT, utf8_decode(tr("Amount")), 1, 1, 'R');
+$pdf->Cell(20, ROWHEIGHT, utf8ToLatin1(tr("Account")), 1);
+$pdf->Cell(80, ROWHEIGHT, utf8ToLatin1(tr("Description")), 1);
+$pdf->Cell(15, ROWHEIGHT, utf8ToLatin1(tr("Quantity")), 1, 0, 'R');
+$pdf->Cell(30, ROWHEIGHT, utf8ToLatin1(tr("Unit price")), 1, 0, 'R');
+$pdf->Cell(30, ROWHEIGHT, utf8ToLatin1(tr("Amount")), 1, 1, 'R');
 while ($row = fetch($rows)) {
 	$pdf->SetFont('Arial','',10);
 	$pdf->Cell(20, ROWHEIGHT, $row->accountid, 'L');
-	$pdf->Cell(80, ROWHEIGHT, utf8_decode($row->description), 'LR');
+	$pdf->Cell(80, ROWHEIGHT, utf8ToLatin1($row->description), 'LR');
 	$pdf->SetFont('Courier','',10);
 	$pdf->Cell(15, ROWHEIGHT, formatQuantity($row->quantity, $row->inputtype), 'LR', 0, 'R');
 	$pdf->Cell(30, ROWHEIGHT, formatMoney($row->unit_price), 'LR', 0, 'R');
@@ -95,7 +95,7 @@ while ($row = fetch($rows)) {
 $pdf->SetFont('Arial','',10);
 $pdf->Cell(115, ROWHEIGHT, '', 'T');
 $pdf->SetFont('Arial','',10);
-$pdf->Cell(30, ROWHEIGHT, utf8_decode(tr('To pay')), 'TLRB', 0, 'R');
+$pdf->Cell(30, ROWHEIGHT, utf8ToLatin1(tr('To pay')), 'TLRB', 0, 'R');
 $pdf->SetFont('Courier','',10);
 $pdf->Cell(30, ROWHEIGHT, formatMoney($netPay), 'TRB', 1, 'R');
 

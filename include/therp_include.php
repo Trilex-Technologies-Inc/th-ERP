@@ -54,14 +54,15 @@ function therpExceptionHandler($e)
 	echo $e;
 	echo "</pre>";
 	//try {
-		$ex = str_replace('\"', '', $e);
-		$sql ="insert into logger (loggtext, loggtime, username)
-		     values (\"$ex\", now(), '" . getUser() . "')";
-		echo $sql;
-		sql($sql);
-		die;
+	$ex = mysqli_real_escape_string(db_connection(), str_replace('\"', '', $e));
+	$user = mysqli_real_escape_string(db_connection(), getUser());
+	$sql = "insert into logger (loggtext, loggtime, username)
+		     values ('$ex', now(), '$user')";
+	echo $sql;
+	sql($sql);
+	die;
 	//} catch (Exceptione $e2) {
-		//echo $e2;
+	//echo $e2;
 	//}
 }
 
@@ -72,16 +73,17 @@ function therpErrorHandler($errno, $errstr)
 	if ($errno == E_NOTICE || $errno == E_STRICT)
 		return;
 	$isError = ($errno == E_USER_ERROR || $errno == E_CORE_ERROR
-	    || $errno == E_COMPILE_ERROR || $errno == E_USER_ERROR);
+		|| $errno == E_COMPILE_ERROR || $errno == E_USER_ERROR);
 	if ($isError) {
 		echo "<h1>Technical error</h1>";
 		echo "<pre>";
 		echo $errstr;
 		echo "</pre>";
 	}
-	$ex = $errno . ": " . str_replace('\"', '', $errstr);
-	$sql ="insert into logger (loggtext, loggtime, username)
-	     values (\"$ex\", now(), '" . getUser() . "')";
+	$ex = mysqli_real_escape_string(db_connection(), $errno . ": " . str_replace('\"', '', $errstr));
+	$user = mysqli_real_escape_string(db_connection(), getUser());
+	$sql = "insert into logger (loggtext, loggtime, username)
+	     values ('$ex', now(), '$user')";
 	sql($sql);
 	if ($isError)
 		die;
@@ -92,7 +94,7 @@ function serverErrorHandler($errno, $errstr)
 	if ($errno == E_NOTICE || $errno == E_STRICT)
 		return;
 	$isError = ($errno == E_USER_ERROR || $errno == E_CORE_ERROR
-	    || $errno == E_COMPILE_ERROR || $errno == E_USER_ERROR);
+		|| $errno == E_COMPILE_ERROR || $errno == E_USER_ERROR);
 	if ($isError) {
 		echo "ERROR:$errstr";
 	}
@@ -134,7 +136,11 @@ function styleSheet($file = 'therp')
 	$suffix = '';
 	if (getLanguage() == 'th' && $file == 'therp')
 		$suffix = '_th';
+	echo "<meta name='viewport' content='width=device-width, initial-scale=1'>";
+	echo "<link href='../include/bootstrap.min.css' rel='stylesheet'>";
 	echo "<LINK REL=StyleSheet HREF='../include/$file$suffix.css' TYPE='text/css'>";
+	echo "<link rel='stylesheet' href='../include/therp_modern.css'>";
+	echo "<script defer src='../include/therp_modern.js'></script>";
 }
 
 function hasPermission($permissionid)
@@ -160,17 +166,13 @@ function checkPermission($permissionid)
 
 function menupage_begin()
 {
-	echo "<br>";
-	echo "<div class=border>";
-	echo "<center>";
-	echo "<table><tr><td>";
+	echo "<main class='container-fluid py-4'>";
+	echo "<div class='card shadow-sm border-0'><div class='card-body'>";
 }
 
 function menupage_end()
 {
-	echo "</td></tr></table>";
-	echo "</center>";
-	echo "</div>";
+	echo "</div></div></main>";
 	bottom();
 }
 
@@ -180,68 +182,64 @@ function top($currentHRef, $title, $path = null, $help = "help")
 	if ($path != null)
 		title($path);
 	else
-		echo "<br>";
+		title($title);
 }
 
 function top0($module = null)
 {
-	echo "<table cellpadding=0 cellspacing=0 width='100%' border=0>";
-	echo "<tr>";
-	echo "<td width=20><img src='../images/tl.png'></td>";
-	echo "<td rowspan=2 bgColor='#CCCCE5'>";
+	global $therp_current_module;
+
+	$therp_current_module = $module;
 	$title = tr("Switch module");
-	$thERP = '$thERP';
-	$thERP = findValue("select companyname from companyinfo");
-	echo "<span style='font-size: 14pt;'>";
-	echo "<a class=logo href='../common/modules.php' title='$title'>$thERP</a></span>";
+	$company = findValue("select companyname from companyinfo");
+	if (isEmpty($company))
+		$company = '$thERP';
+
+	echo "<header class='app-header navbar navbar-expand-lg bg-white px-3 py-2'>";
+	echo "<div class='container-fluid px-0'>";
+	echo "<button class='sidebar-toggle' type='button' aria-label='" . tr("Toggle navigation") . "' aria-expanded='false'><span></span><span></span><span></span></button>";
+	echo "<a class='navbar-brand fw-bold text-primary' href='../common/modules.php' title='$title'><span class='brand-mark'>ERP</span><span class='brand-name'>$company</span></a>";
 	if ($module != null) {
-		echo "<span style='font-size: 12pt;'>&nbsp;-&nbsp;";
-		$onMouseOver = "document.getElementById(\"down\").src=\"../images/down_hover.gif\"";
-		$onMouseOut = "document.getElementById(\"down\").src=\"../images/down.gif\"";
-		echo "<a class=logo href='../common/modules.php' title='$title' ";
-		echo "onMouseOver='$onMouseOver' onMouseOut='$onMouseOut'>";
-		echo tr($module);
-		echo "&nbsp;<img id=down src='../images/down.gif' border=0 style='position: relative; top: -2'>";
-		echo "</a>";
-		echo "</span>";
+		echo "<span class='badge text-bg-light border me-auto'>" . tr($module) . "</span>";
+	} else {
+		echo "<span class='me-auto'></span>";
 	}
-	echo "</td>";
-	echo "<td align=right valign=bottom rowspan=2 bgColor='#CCCCE5' style='padding: 3'>";
-	echo "<span class=username>";
 	$href = '../payroll/selfservice_settings.php';
-	echo tr("User") . ": <a href='$href'>" . getUser() . "</a> | <a href='../common/modules.php?logout=true' class=logo>";
-	echo tr("Logout") . "</a>";
-	echo "</span>\n";
-	echo "</td>";
-	echo "<td width=20><img src='../images/tr.png'></td>";
-	echo "</tr>";
-	echo "<tr bgColor='#CCCCE5'>";
-	echo "<td>&nbsp;</td>";
-	echo "<td>&nbsp;</td>";
-	echo "</tr>";
-	echo "</table>\n";
+	echo "<div class='d-flex align-items-center gap-2 small'>";
+	echo "<span class='user-avatar' aria-hidden='true'>" . strtoupper(substr(getUser(), 0, 1)) . "</span>";
+	echo "<span class='text-secondary user-label'>" . tr("User") . ": <a class='fw-semibold' href='$href'>" . getUser() . "</a></span>";
+	echo "<a class='btn btn-outline-secondary btn-sm logout-link' href='../common/modules.php?logout=true'>" . tr("Logout") . "</a>";
+	echo "</div></div></header>\n";
 }
 
 function bottom()
 {
-	echo "<br>";
-	echo "<table cellpadding=0 cellspacing=0 width='100%' border=0>";
-	echo "<tr>";
-	echo "<td width=20><img src='../images/bl.png'></td>";
-	echo "<td bgColor='#CCCCE5' align=center><a href='http://www.therpsoft.com' class=logo>www.therpsoft.com</a></td>";
-	echo "<td width=20><img src='../images/br.png'></td>";
-	echo "</tr>";
-	echo "</table>";
+	echo "<footer class='app-footer container-fluid py-4 mt-4 border-top text-center text-secondary small'>";
+	echo "Copyright THERP 2008 - " . date('Y') . " <a href='https://th-erp.com' class='text-decoration-none'>th-erp.com</a> GPLv2";
+	echo "</footer>";
+	echo "<script src='../include/bootstrap.bundle.min.js'></script>";
 }
 
 function menu($href, $text, $width, $hasNext, $currentHref)
 {
 	$current = $href == $currentHref;
 	$class = $current ? 'menubar_current' : 'menubar';
-	echo "<td width='$width%' align='center'><a class=$class href='$href'>" . tr($text) . "</a></td>\n";
-	if ($hasNext)
-		echo "<td>|</td>";
+	$icons = array(
+		'Products' => '&#9638;', 'Purchase' => '&#128722;', 'Stock move' => '&#8644;',
+		'Configuration' => '&#9881;', 'Help' => '?', 'Employees' => '&#9787;',
+		'Reporting' => '&#9636;', 'End of period' => '&#10003;', 'Security' => '&#128274;',
+		'Languages' => 'A', 'Company info' => '&#9635;', 'Sales' => '$', 'Stock/Inventory' => '&#9638;',
+		'Manufacturing' => '&#9881;', 'Payroll' => '&#9636;', 'Project' => '&#10003;',
+		'General ledger' => '&#8644;', 'Common' => '&#9635;',
+		'Customers' => '&#9787;', 'Transactions' => '&#8644;', 'Accounts' => '&#9636;'
+	);
+	$icon = array_key_exists($text, $icons) ? $icons[$text] : '&#9679;';
+	echo "<div class='app-nav-item'><a class='$class' href='$href'><span class='nav-icon' aria-hidden='true'>$icon</span><span>" . tr($text) . "</span></a></div>\n";
+}
 
+function sidebarHomeLink()
+{
+	echo "<a class='sidebar-home-link' href='../common/modules.php' aria-label='" . tr("Home") . "'>thERP</a>";
 }
 
 function showUpgrade()
@@ -271,7 +269,8 @@ function cancel_transaction($transid, $narrative = null)
 
 function move_stock($productid, $diff, $narrative, $accountid, $transid = null)
 {
-	$standardCost = findValue("select purchase_price from product where productid=$productid");
+	$productidSql = sql_string($productid);
+	$standardCost = findValue("select purchase_price from product where productid=$productidSql");
 	$amount = $diff * $standardCost;
 	if ($transid == null) {
 		sql("insert into transaction (transtime, narrative, createdtime) values (now(), '$narrative', now())");
@@ -283,7 +282,7 @@ function move_stock($productid, $diff, $narrative, $accountid, $transid = null)
 	sql("insert into transaction_part (transactionid, accountid, amount)
 		 values ($transid, $accountid, (-1) * $amount)");
 	sql("insert into stockmove (productid, diff, narrative, transactionid)
-	     values ($productid, $diff, '$narrative', $transid)");
+	     values ($productidSql, $diff, '$narrative', $transid)");
 }
 
 function getCreditLength($supplierid)
@@ -301,7 +300,6 @@ function head_begin($title)
 	headTitle($title);
 	styleSheet();
 	include_common();
-	include_datebox();
 	echo "<script src='../include/AjaxRequest.js'></script>";
 }
 
@@ -325,7 +323,7 @@ function head($title)
 function oscommerce()
 {
 	$rs = query("show tables like 'products'");
-	return (num_rows($rs) > 0);	
+	return (num_rows($rs) > 0);
 }
 
 function getCurrentPeriod()
@@ -336,5 +334,3 @@ function getCurrentPeriod()
 	order by payperiod.starttime limit 1";
 	return findValue($sql);
 }
-
-?>

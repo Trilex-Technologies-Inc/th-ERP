@@ -55,38 +55,58 @@ title(tr("Unit types"))
 ?>
 
 <form action="unittypes.php" method="POST">
-<table>
-<th><?php echo tr("Delete") ?></th>
-<th><?php echo tr("Id") ?></th>
-<th><?php echo tr("Description") ?></th>
+<div class="card border-0 shadow-sm overflow-hidden">
+	<div class="card-header bg-white d-flex justify-content-between align-items-center py-3">
+		<div>
+			<h2 class="h5 fw-bold mb-1"><?php echo tr("Unit types") ?></h2>
+			<p class="text-secondary small mb-0"><?php echo tr("Configuration") ?></p>
+		</div>
+		<span class="badge text-bg-light border"><?php echo tr("Unit types") ?></span>
+	</div>
+	<div class="card-body p-0">
+		<div class="row g-0 align-items-center bg-light border-bottom fw-bold px-3 py-3">
+			<div class="col-2 col-md-1 text-center"><?php echo tr("Delete") ?></div>
+			<div class="col-3 col-md-2 px-2"><?php echo tr("Id") ?></div>
+			<div class="col-7 col-md-9"><?php echo tr("Description") ?></div>
+		</div>
 <?php
 $class = "odd";
 $i = 0;
 while ($row = fetch($rs)) {
-	echo "<input type=hidden name=unittype_$i value='$row->unittype'/>";
-    echo "<tr class='$class'>";
-    echo "<td align=center>";
+	$unittype = htmlspecialchars($row->unittype);
+	$description = htmlspecialchars($row->description);
+	echo "<input type='hidden' name='unittype_$i' value='$unittype'/>";
+	echo "<div class='row g-0 align-items-center border-bottom px-3 py-3 $class'>";
+	echo "<div class='col-2 col-md-1 text-center'>";
 	deleteIcon("unittypes.php?del_unittype=$row->unittype");
-    echo "</td>";
-    echo "<td>$row->unittype</td>";
-    echo "<td>";
-    textBox("description_$i", $row->description);
-    echo "</td>";
-    hidden("old_description_$i", $row->description);
-    echo "</tr>";
-    $class = ($class == "odd" ? "even" : "odd");
-    $i++;
+	echo "</div>";
+	echo "<div class='col-3 col-md-2 px-2'><span class='badge text-bg-light border'>$unittype</span></div>";
+	echo "<div class='col-7 col-md-9'><input class='form-control' type='text' name='description_$i' value='$description'/></div>";
+	echo "<input type='hidden' name='old_description_$i' value='$description'/>";
+	echo "</div>";
+	$class = ($class == "odd" ? "even" : "odd");
+	$i++;
 }
 hidden('count', $i);
 ?>
-<tr>
-<td/>
-<td><?php textBox('unittype_new', '', 6) ?></td>
-<td><?php textBox('description_new', '') ?></td>
-</tr>
-</table>
-<br/>
-<?php saveButton() ?>
+		<div class="bg-light p-3 p-md-4">
+			<h3 class="h6 fw-bold mb-3"><?php echo tr("New") ?> — <?php echo tr("Unit types") ?></h3>
+			<div class="row g-3 align-items-end">
+				<div class="col-12 col-md-3">
+					<label class="form-label fw-semibold" for="unittype_new"><?php echo tr("Id") ?></label>
+					<input class="form-control" id="unittype_new" type="number" name="unittype_new"/>
+				</div>
+				<div class="col-12 col-md-9">
+					<label class="form-label fw-semibold" for="description_new"><?php echo tr("Description") ?></label>
+					<input class="form-control" id="description_new" type="text" name="description_new"/>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="card-footer bg-white py-3">
+		<?php saveButton() ?>
+	</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>

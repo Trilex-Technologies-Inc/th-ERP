@@ -3,18 +3,21 @@ include('../include/therp_include.php');
 
 function deleteProduct($productid)
 {	
-	$count = findValue("select count(*) from salesorder_item where productid=$productid");
-	$count += findValue("select count(*) from purchaseorder_item where productid=$productid");
-	$count += findValue("select count(*) from stockmove where productid=$productid");
+	$productidSql = sql_string($productid);
+	$count = findValue("select count(*) from salesorder_item where productid=$productidSql", 0);
+	$count += findValue("select count(*) from purchaseorder_item where productid=$productidSql", 0);
+	$count += findValue("select count(*) from stockmove where productid=$productidSql", 0);
+	$count += findValue("select count(*) from bom where parentid=$productidSql or childid=$productidSql", 0);
 	if ($count > 0) {
-		sql("update product set active=0 where productid=$productid");
+		// Products referenced by orders, stock movements, or BOMs must remain
+		// available to preserve historical and manufacturing relationships.
+		sql("update product set active=0 where productid=$productidSql");
 	} else {
-		sql("delete from sales_price where productid='$productid'");
-		sql("delete from product where productid='$productid'");
+		$oscommerceid = findValue("select oscommerceid from product where productid=$productidSql", null);
+		sql("delete from sales_price where productid=$productidSql");
+		sql("delete from product where productid=$productidSql");
 		if (oscommerce()) {
-    		$oscommerceid = findValue("
-    		select oscommerceid from product where productid='$productid'");	
-    		if (!isEmpty($oscommerceid))		
+			if (!isEmpty($oscommerceid))
 				sql("delete from products where products_id=$oscommerceid");
 		}
 	}
@@ -23,22 +26,17 @@ function deleteProduct($productid)
 function menubar($currentHref = null, $helpUrl = 'http://therp.sf.net')
 {
 	top0("Stock/Inventory");
-	echo "<table width='100%' cellspacing=0 cellpadding=0 >";
-	echo "<tr>";
-	echo "<td>";
-	echo "<table width='100%' class=menubar>";
-		echo "<tr>";
+	echo "<nav class='app-sidebar' aria-label='" . tr("Module navigation") . "'>";
+	sidebarHomeLink();
+	echo "<div class='app-nav-list'>";
 			$percent = 20;
 			menu('products.php', 'Products', $percent, true, $currentHref);
 			menu('purchase.php', 'Purchase', $percent, true, $currentHref);
 			menu('goodsmoves.php', 'Stock move', $percent, true, $currentHref);
 			menu('configuration.php', 'Configuration', $percent, true, $currentHref);
 			menu($helpUrl, 'Help', $percent, false, $currentHref);
-		echo "</tr>";
-	echo "</table>";
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
+	echo "</div>";
+	echo "</nav>";
 	showUpgrade();
 }
 

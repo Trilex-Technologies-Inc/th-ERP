@@ -53,38 +53,41 @@ $accounts = rs2array(query("select accountid, description from payaccount"));
 <?php metatag() ?>
 <title>Payroll - <?php etr("Pay item") ?></title>
 <?php styleSheet() ?>
-<?php include_datebox() ?>
 </head>
 
 <body>
 
 <?php include("menubar.php") ?>
 <?php payEventTitle($employeeid, "Pay item") ?>
+<?php title(tr("Pay item")) ?>
 
-<form action="payitem.php" method=POST name='form1' class="border">
-<input type=hidden name=periodid value="<?php echo $periodid ?>"/>
-<input type=hidden name=no value="<?php echo $no ?>"/>
+<form action="payitem.php" method="POST" name="form1">
+<input type="hidden" name="periodid" value="<?php echo htmlspecialchars($periodid) ?>"/>
+<input type="hidden" name="no" value="<?php echo htmlspecialchars($no) ?>"/>
 <?php hiddenParams() ?>
-<table>
+<div class="card border-0 shadow-sm">
+<div class="card-header bg-white py-3">
+	<h2 class="h5 fw-bold mb-1"><?php etr("Pay item") ?></h2>
+	<p class="text-secondary small mb-0"><?php displayPeriod($periodid) ?></p>
+</div>
+<div class="card-body p-4">
+<div class="row g-4">
 <?php eventTypeRow('payitem') ?>
-<tr>
-  <td>Period:</td>
-  <td><?php displayPeriod($periodid) ?></td>
-<tr>
-  <td>Type:</td>
-  <td><?php comboBox('accountid', $accounts, $accountid, false) ?></td>
-</tr>
-<tr>
-  <td>Amount:</td>
-  <td><input type=text name='amount' value='<?php echo $amount ?>'/></td>
-</tr>
-</table>
-<table>
-<tr>
-<td><?php button("Submit", "save") ?></td>
-</tr>
-</table>
-&nbsp;
-<?php backButton($employeeid) ?>
+<div class="col-12 col-lg-6">
+	<label class="form-label fw-semibold"><?php etr("Type") ?></label>
+	<?php comboBox('accountid', $accounts, $accountid, false) ?>
+</div>
+<div class="col-12 col-lg-6">
+	<label class="form-label fw-semibold"><?php etr("Amount") ?></label>
+	<input class="form-control" type="text" name="amount" value="<?php echo htmlspecialchars($amount) ?>"/>
+</div>
+</div>
+</div>
+<div class="card-footer bg-white d-flex flex-wrap gap-2 py-3">
+	<?php button("Submit", "save") ?>
+	<?php backButton($employeeid) ?>
+</div>
+</div>
 </form>
+<?php bottom() ?>
 </body>

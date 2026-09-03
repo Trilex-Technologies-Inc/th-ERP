@@ -1,7 +1,8 @@
 <?php
 function add_orderitem($orderid, $productid, $quantity, $unitprice)
 {
-	$count = findValue("select count(*) from product where productid=$productid", 0);
+	$productidSql = sql_string($productid);
+	$count = findValue("select count(*) from product where productid=$productidSql", 0);
 	if ($count == 0) {
 		return tr("Product $productid doesn't exists!");
 	}
@@ -13,18 +14,18 @@ function add_orderitem($orderid, $productid, $quantity, $unitprice)
 		$unitprice = findValue("
 		select price
 		from supplier_price
-		where productid=$productid and supplierid=$supplierid");
+		where productid=$productidSql and supplierid=$supplierid");
 	if (isEmpty($unitprice))
 		return tr("No unit price supplied"). "!";
 	$vat = findValue("select percent
 	                  from vat_category v
 					  join category c on c.vatcatid=v.vatcatid
 					  join product p on p.categoryid=c.categoryid
-					  where productid=$productid");
+					  where productid=$productidSql");
 	$vat = $quantity * $unitprice * $vat/100;
-	$description = findValue("select description from product where productid=$productid");
+	$description = findValue("select description from product where productid=$productidSql");
 	$sql = "insert into purchaseorder_item (orderid, no, productid, quantity, unitprice, vat, comment)
-			values ($orderid, $no, $productid, $quantity, $unitprice, $vat, '$description')";
+			values ($orderid, $no, $productidSql, $quantity, $unitprice, $vat, '$description')";
 	sql($sql);
 	return null;
 }
@@ -47,7 +48,7 @@ function receive_goods($orderid, $no = null, $received_quantity = null)
 		while ($row = fetch($rs)) {
 			sql("insert into stockmove (productid, diff, narrative, transactionid,
 			                            purchaseorderid, no, createdby, locationid)
-			     values ($row->productid, $row->quantity, '$narrative', $transid,
+			     values (" . sql_string($row->productid) . ", $row->quantity, '$narrative', $transid,
 			             $orderid, $row->no, '" . getUser() . "', $locationid)");
 		}
 		$rs = query("select inventory_accountid, sum(pi.unitprice*pi.quantity) as amount
@@ -71,6 +72,7 @@ function receive_goods($orderid, $no = null, $received_quantity = null)
 		select received_quantity from purchaseorder_item
 		where orderid=$orderid and no=$no");
 		$productid = findValue("select productid from purchaseorder_item where orderid=$orderid and no=$no");
+		$productidSql = sql_string($productid);
 		$diff = $received_quantity - $old_quantity;
 		sql("
 		update purchaseorder_item set received_quantity=$received_quantity
@@ -79,16 +81,16 @@ function receive_goods($orderid, $no = null, $received_quantity = null)
 		select price
 		from product p
 	    join supplier_price sp on sp.productid=p.productid and sp.supplierid=$supplierid
-		where productid=$productid");
+		where productid=$productidSql");
 		$amount = $diff * $standardCost;
 		sql("insert into stockmove (productid, diff, narrative, transactionid,
 		                            purchaseorderid, no, createdby, locationid)
-		     values ($productid, $diff, '$narrative', $transid,
+		     values ($productidSql, $diff, '$narrative', $transid,
 		             $orderid, $no, '" . getUser() . "', $locationid)");
 		$inventory_accountid = findValue("select inventory_accountid
 		                                  from category c
 		                                  join product p on p.categoryid=c.categoryid
-		                                  where productid=$productid");
+		                                  where productid=$productidSql");
 		sql("insert into transaction_part (transactionid, accountid, amount)
 			 values ($transid, $inventory_accountid, $amount)");
 	}

@@ -150,11 +150,11 @@
 		$unitprice = findValue("
 		select price
 		from supplier_price
-		where productid=$productid
+		where productid=" . sql_string($productid) . "
 		and supplierid=$supplierid");
 		$quantity = findValue("
 		select reorder_qty from product 
-		where productid=$productid");
+		where productid=" . sql_string($productid));
 	}
 
 	$supplier = null;
@@ -197,20 +197,20 @@ if ($mess != null) {
 
 <form name=postform action="purchaseorder.php" method="POST">
 <input type=hidden name=supplierid value='<?php echo $supplierid ?>'/>
-<table>
+<div class="container-fluid px-0 erp-form-layout">
 <?php
 	if (!$new) {
-		echo "<tr><td><b>" . tr("Order id") . ":</b></td>";
-		echo "<td>";
+		echo "<div class='row g-3 align-items-center mb-2'><div class='col-12 col-md-auto'><b>" . tr("Order id") . ":</b></div>";
+		echo "<div class='col-12 col-md-auto'>";
 		echo $orderid;
 		hidden('orderid', $orderid);
-		echo "</td>";
+		echo "</div>";
 	}
 ?>
-<tr><td><b><?php etr("Supplier") ?>:</b></td><td><?php echo $supplier->name ?></td>
-<tr>
-	<td class=label><?php etr("Location") ?>:</td>
-	<td>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><b><?php etr("Supplier") ?>:</b></div><div class="col-12 col-md-auto"><?php echo $supplier->name ?></div>
+</div><div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Location") ?>:</div>
+	<div class="col-12 col-md-auto">
 	<?php
 	if ($received == 0 || $unreceived > 0)
 		combobox('locationid', $locations, $locationid, false, 'saveForm()');
@@ -219,22 +219,22 @@ if ($mess != null) {
 		echo $location;
 	}
 	?>
-	</td>
-</tr>
-<tr><td><b><?php etr("Order date") ?>:</b></td><td><?php echo date(DATE_PATTERN, $orderdate) ?></td></tr>
+	</div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><b><?php etr("Order date") ?>:</b></div><div class="col-12 col-md-auto"><?php echo date(DATE_PATTERN, $orderdate) ?></div></div>
 <?php
 if (!isEmpty($payableid)) {
-	echo "<tr>";
-	echo "<td class=label>" . tr("Payable") . ":</td>";
-	echo "<td>";
+	echo "<div class='row g-3 align-items-center mb-2'>";
+	echo "<div class='col-12 col-md-auto'>" . tr("Payable") . ":</div>";
+	echo "<div class='col-12 col-md-auto'>";
 	echo "<a href='payable.php?payableid=$payableid'>" . tr("Show payable") . "</a>";
-	echo "</td>";
-	echo "</tr>";
+	echo "</div>";
+	echo "</div>";
 }
 ?>
-<tr>
-<td class=label><?php etr("Payment") ?>:</td>
-<td>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php etr("Payment") ?>:</div>
+<div class="col-12 col-md-auto">
 <?php
 	if ($payed >= $toPay && $payed > 0)
 		etr("Fully paid");
@@ -248,29 +248,29 @@ if (!isEmpty($payableid)) {
 			echo "<a href='../accounting/transaction.php?transactionid=$payment_transid'>" . tr("Show transaction") . "</a>";
 	}
 ?>
-</td>
-</tr>
+</div>
+</div>
 <?php
 if ($cancelled) {
-	echo "<tr>";
-	echo "<td colspan=2>";
+	echo "<div class='row g-3 align-items-center mb-2'>";
+	echo "<div class='col-12 col-md-auto'>";
 	echo tr("This order is cancelled");
 	if ($cancel_transid != null)
 		echo " <a href='transaction.php?transactionid=$cancel_transid'>" . tr("Show transaction") . "</a>";
-	echo "</td>";
-	echo "</tr>";
+	echo "</div>";
+	echo "</div>";
 }
 
 ?>
-<tr>
-<td class=label><?php etr("Created by") ?>:</td>
-<td><?php echo $createdby ?></td>
-</tr>
-</table>
+<div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto"><?php etr("Created by") ?>:</div>
+<div class="col-12 col-md-auto"><?php echo $createdby ?></div>
+</div>
+</div>
 <br/>
 <?php if ($items != null) { ?>
 <div class='border'>
-<table>
+<div class="card border-0 shadow-sm overflow-hidden"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
 <?php
 if ($addable)
 	echo "<th>" . tr("Delete") . "</th>";
@@ -350,7 +350,7 @@ if ($addable) echo "<td/>";
 <td align=right class=label><?php etr("To pay") ?>:</td>
 <td align=right><?php echo formatMoney($toPay) ?></td>
 </tr>
-</table>
+</table></div></div>
 </div>
 <br/>
 <?php } ?>

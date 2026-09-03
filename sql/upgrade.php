@@ -1,5 +1,5 @@
 <?php
-define('DBVERSION', 64);
+define('DBVERSION', 68);
 
 function upgrade()
 {
@@ -25,6 +25,70 @@ function upgradeVersion($dbversion)
 	call_user_func("upgrade$dbversion");
 	sql("update version set dbversion=$dbversion");
 	return "Upgraded to database version $dbversion<br>";
+}
+function upgrade68()
+{
+	$column = findValue("
+	select count(*) from information_schema.columns
+	where table_schema=database()
+	and table_name='companyinfo'
+	and column_name='countrycode'", 0);
+	if ($column == 0)
+		sql("alter table companyinfo add countrycode varchar(2)");
+
+	$constraint = findValue("
+	select count(*) from information_schema.table_constraints
+	where constraint_schema=database()
+	and table_name='companyinfo'
+	and constraint_name='fk_companyinfo_country'", 0);
+	if ($constraint == 0)
+		sql("
+		alter table companyinfo add constraint fk_companyinfo_country
+		foreign key (countrycode) references country (countrycode)");
+}
+function upgrade67()
+{
+	$column = findValue("
+	select count(*) from information_schema.columns
+	where table_schema=database()
+	and table_name='customer'
+	and column_name='countrycode'", 0);
+	if ($column == 0)
+		sql("alter table customer add countrycode varchar(2)");
+
+	$constraint = findValue("
+	select count(*) from information_schema.table_constraints
+	where constraint_schema=database()
+	and table_name='customer'
+	and constraint_name='fk_customer_country'", 0);
+	if ($constraint == 0)
+		sql("
+		alter table customer add constraint fk_customer_country
+		foreign key (countrycode) references country (countrycode)");
+}
+function upgrade65()
+{
+	runScript("../sql/pos_retail_upgrade.sql");
+}
+function upgrade66()
+{
+	$column = findValue("
+	select count(*) from information_schema.columns
+	where table_schema=database()
+	and table_name='employee'
+	and column_name='countrycode'", 0);
+	if ($column == 0)
+		sql("alter table employee add countrycode varchar(2)");
+
+	$constraint = findValue("
+	select count(*) from information_schema.table_constraints
+	where constraint_schema=database()
+	and table_name='employee'
+	and constraint_name='fk_employee_country'", 0);
+	if ($constraint == 0)
+		sql("
+		alter table employee add constraint fk_employee_country
+		foreign key (countrycode) references country (countrycode)");
 }
 function upgrade64()
 {
@@ -143,7 +207,7 @@ function upgrade54()
 	sql("alter table payaccount add description varchar(80)");
 	sql("
 	update payaccount g set description=
-	(select description from payaccount_description d where d.accountid=g.accountid and language='en')");	
+	(select description from payaccount_description d where d.accountid=g.accountid and language='en')");
 }
 
 function upgrade53()
@@ -178,7 +242,7 @@ function upgrade53()
 	(select description from payaccountgroup_description d where d.groupid=g.groupid and language='en')");
 	sql("
 	insert into payaccountgroup (groupid, name, description)
-	values (5, 'general_ledger', 'General ledger')"); 
+	values (5, 'general_ledger', 'General ledger')");
 }
 
 function upgrade52()
@@ -227,7 +291,7 @@ function upgrade51()
 		primary key (rangesetid)
 	) ENGINE=InnoDB DEFAULT CHARSET=utf8");
 	sql("
-	create table range (
+	create table `range` (
 		rangesetid integer not null,
 		rangeid integer not null,
 		ceiling double,
@@ -271,7 +335,7 @@ function upgrade50()
 		sql("
 		update product_attribute_option_value
 		set attributeid=$attrid+100000
-		where attributeid=$row->attributeid");		
+		where attributeid=$row->attributeid");
 	}
 	sql("
 	update product_attribute_option_value
@@ -297,7 +361,7 @@ function upgrade49()
 function upgrade48()
 {
 	sql("alter table product add oscommerceid integer default null");
-	sql("alter table salesorder add oscommerceid integer default null");	
+	sql("alter table salesorder add oscommerceid integer default null");
 	sql("insert into user (username, full_name) values ('oscommerce', 'osCommerce')");
 }
 
@@ -336,7 +400,7 @@ function upgrade45()
 function upgrade44()
 {
 	sql("alter table transaction add createdtime datetime");
-	sql("update transaction set createdtime=transtime");	
+	sql("update transaction set createdtime=transtime");
 }
 
 
@@ -366,7 +430,7 @@ function upgrade43()
 	sql("alter table supplier_price add supplier_productcode varchar(80)");
 	sql("alter table supplier_price modify price decimal(10,2) default null");
 	sql("alter table product add reorder_level integer");
-	sql("alter table product add reorder_qty integer");		
+	sql("alter table product add reorder_qty integer");
 	sql("
 insert into country(countrycode, name) values 
 ('AE', 'United Arab Emirates'),
@@ -456,7 +520,7 @@ insert into country(countrycode, name) values
 ('TR', 'Turkey'),
 ('UA', 'Ukraine'),
 ('US', 'United States')
-");	
+");
 }
 
 function upgrade42()
@@ -690,7 +754,7 @@ function upgrade12()
 		from emp_attribute ea
 		join payperiod p1 on p1.periodid=ea.fromperiodid");
 
-    sql("drop table emp_attribute");
+	sql("drop table emp_attribute");
 	sql("alter table emp_attribute2 rename emp_attribute");
 	sql("alter table emp_attribute add constraint fk_emp_attribute FOREIGN KEY (employeeid)
 	     REFERENCES employee (employeeid)");
@@ -815,7 +879,6 @@ function upgrade16()
 	 (1,12,'2007-12-01 00:00:00','2008-01-01 00:00:00')
 	");
 	sql("alter table recur_salesorder add cycleid integer unsigned not null default '1'");
-
 }
 
 function upgrade17()
@@ -955,9 +1018,7 @@ function upgrade24()
 	sql("update phone_category set description='Fax' where phonecatid=5");
 }
 
-function upgrade25()
-{
-}
+function upgrade25() {}
 
 function upgrade26()
 {
@@ -1152,5 +1213,3 @@ function upgrade38()
 	sql("delete from accountgroup where groupid=9999");
 	sql("insert into accountgroup (groupid, description) values (7, 'Favorites')");
 }
-
-?>

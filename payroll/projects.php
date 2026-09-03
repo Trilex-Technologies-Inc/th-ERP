@@ -1,4 +1,4 @@
-<?
+<?php
 	include('include.php');
 
 	if (isSave()) {
@@ -56,41 +56,40 @@
 </head>
 
 <body>
-<? include("menubar.php") ?>
-<? title("Configuration > Projects") ?>
+<?php include("menubar.php") ?>
+<?php title("Configuration > Projects") ?>
 
-<form action="projects.php" method="GET" class="border">
-<table>
-<tr>
-    <td>Description:</td>
-    <td><? textbox("description") ?></td>
-</tr>
-<tr>
-    <td>Category:</td>
-    <td>
-    <select name='categoryid'>
+<form action="projects.php" method="GET" class="mb-4">
+<div class="card border-0 shadow-sm"><div class="card-body">
+<div class="d-flex flex-wrap justify-content-between align-items-center gap-2 mb-3"><h2 class="h6 fw-bold mb-0">Search</h2><span class="text-secondary small">Projects</span></div>
+<div class="row g-3 align-items-end">
+    <div class="col-12 col-lg-5"><label class="form-label fw-semibold" for="description">Description</label><?php textbox("description") ?></div>
+    <div class="col-12 col-lg-5"><label class="form-label fw-semibold" for="categoryid">Category</label>
+    <select id="categoryid" name="categoryid">
         <option value='null'></option>
-        <?
+        <?php
         $sql = "select categoryid, description from category";
         $q = sql($sql);
         while ($cat = fetch($q)) {
             $selected = $cat->categoryid == $categoryid ? "selected" : "";
-        	echo "<option value='$cat->categoryid' $selected>$cat->description</option>\n";
+            echo "<option value='" . htmlspecialchars($cat->categoryid) . "' $selected>" . htmlspecialchars($cat->description) . "</option>\n";
         }
         ?>
     </select>
-    </td>
-    <td><? button("Search", "search") ?></td>
-</tr>
-</table>
+    </div>
+    <div class="col-12 col-lg-auto"><?php button("Search", "search") ?></div>
+</div>
+</div></div>
 </form>
 
 <form action="projects.php" method="POST">
-<table>
-<th>Delete</th>
-<th>Description</th>
-<th>Categories</td>
-<?
+<div class="card border-0 shadow-sm overflow-hidden">
+<div class="card-header bg-white py-3"><h2 class="h5 fw-bold mb-1">Projects</h2><p class="text-secondary small mb-0">Project categories</p></div>
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+<thead><tr><th class="text-center" style="width: 90px;">Delete</th><th>Description</th><th>Categories</th></tr></thead>
+<tbody>
+<?php
 
 $sql = "select ";
 $sql .= "projectid, ";
@@ -102,14 +101,13 @@ if (!isEmpty($categoryid)) {
 }
 $sql .= "order by projectid ";
 $q = sql($sql);
-$class = "odd";
 $i = 0;
 while ($rec = fetch($q)) {
 	$projectid = $rec->projectid;
-	echo "\n<input type=hidden name=projectid_$i value='$rec->projectid'/>";
-	echo "<tr class='$class'>";
-	echo "<td align='center'><input type='checkbox' name='del_$i'/></td>";
-	echo "<td><input type='text' name='description_$i' value='$rec->description'/></td>";
+	$projectDescription = htmlspecialchars($rec->description);
+	echo "<tr>";
+	echo "<td class='text-center'><input type='checkbox' name='del_$i'/><input type='hidden' name='projectid_$i' value='" . htmlspecialchars($projectid) . "'/></td>";
+	echo "<td><input class='form-control' type='text' name='description_$i' value='$projectDescription'/></td>";
 	echo "<td>";
 	$sql = "select c.categoryid, description ";
 	$sql .= "from cat_project cp, category c ";
@@ -118,7 +116,7 @@ while ($rec = fetch($q)) {
 	$q2 = sql($sql);
 	$first = true;
 	while ($rec = fetch($q2)) {
-		echo $rec->description . "(<a href='projects.php?del_projectid=$projectid&delcat=true&del_categoryid=$rec->categoryid'>Del</a>), ";
+		echo "<span class='badge text-bg-light border me-1'>" . htmlspecialchars($rec->description) . " " . deleteLink("projects.php?del_projectid=$projectid&delcat=true&del_categoryid=$rec->categoryid", deleteIconImage()) . "</span>";
 		$first = false;
 	}
 	if (!$first)
@@ -128,24 +126,25 @@ while ($rec = fetch($q)) {
     $sql = "select categoryid, description from category";
     $q2 = sql($sql);
     while ($cat = fetch($q2)) {
-    	echo "<option value='$cat->categoryid'>$cat->description</option>\n";
+        echo "<option value='" . htmlspecialchars($cat->categoryid) . "'>" . htmlspecialchars($cat->description) . "</option>\n";
     }
     echo "</select>";
     echo "</td>";
 	echo "</tr>\n";
-	$class = ($class == "odd" ? "even" : "odd");
 	$i++;
 }
-echo "<input type=hidden name=rowcount value='$i'/>";
+echo "<input type='hidden' name='rowcount' value='$i'/>";
 ?>
-<tr>
+<tr class="table-light">
+<td class="text-center text-secondary fw-semibold">+</td>
+<td><input class="form-control" type="text" name="description_new"/></td>
 <td></td>
-<td><input type="text" name="description_new"/></td>
 </tr>
-<tr>
-<td><input type="submit" name="save" value="Save"/>
-</tr>
-
+</tbody>
 </table>
+</div>
+<div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3"><input type="submit" name="save" value="Save"/><span class="text-secondary small"><?php echo $i ?> <?php echo tr("records") ?></span></div>
+</div>
 </form>
+<?php bottom() ?>
 </body>

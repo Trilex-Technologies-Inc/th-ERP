@@ -147,121 +147,117 @@ if ($mess != null) {
 
 <form name=postform action="credit_salesorder.php" method="POST">
 <input type=hidden name=customerid value='<?php echo $customerid ?>'/>
-<table>
-<?php
-	echo "<tr><td><b>" . tr("Order id") . ":</b></td>";
-	echo "<td>";
-	echo $orderid;
-	echo "<input type='hidden' name='orderid' value='$orderid'/>";
-	echo "</td>";
-?>
-<tr><td><b><?php etr("Customer") ?>:</b></td><td><?php echo $customer->name ?></td>
-<tr><td><b><?php etr("Order date") ?>:</b></td><td><?php echo date(DATE_PATTERN, $orderdate) ?></td></tr>
-<?php
-if (!isEmpty($invoice_transid)) {
-	echo "<tr>";
-	echo "<td class=label>" . tr("Invoice") . ":</td>";
-	echo "<td>";
-	echo "<a href='invoice_pdf.php?orderid=$orderid&type=credit'>" . tr("Print") . "</a>";
-	echo "&nbsp;&nbsp;";
-	echo "<a href='salesorder.php?orderid=$orderid&action=email'>";
-	echo tr("E-mail customer") . "</a>";
-	echo "&nbsp;&nbsp;";
-	echo "<a href='../accounting/transaction.php?transactionid=$invoice_transid
-	      &salesorderid=$orderid'>";
-	echo tr("Show transaction") . "</a>";
-	echo "</td>";
-	echo "</tr>";
-	echo "<tr>";
-}
-if ($payed != 0) {
-	echo "<td class=label>" . tr("Receipt") . ":</td>";
-	echo "<td>";
-	if ($payed == $toPay)
-		etr("Fully paid");
-	else
-		echo formatMoney($payed) . " / " . formatMoney($toPay);
-	echo "&nbsp;&nbsp;";
-	$href = "../accounting/transaction.php?";
-	$href .= "transactionid=$receipt_transid&salesorderid=$orderid";
-	echo "<a href='$href'>";
-	echo tr("Show transaction") . "</a>";
-	echo "</td>";
-	echo "</tr>";
-}
-if ($cancelled) {
-	echo "<tr>";
-	echo "<td colspan=2>";
-	echo tr("This order is cancelled");
-	echo "</td>";
-	echo "</tr>";
-}
-?>
-<tr>
-<td class=label><?php etr("Created by") ?>:</td>
-<td><?php echo $createdby ?></td>
-</tr>
-<tr>
-<td colspan=2><?php 
-echo tr("This is a credit order for");
-echo "&nbsp;<a href='salesorder.php?orderid=$credit_orgid'>";
-echo tr("order");
-echo " $credit_orgid</a>";
-?>
-</td>
-</tr>
-</table>
+<div class="border p-3 mb-4">
+	<div class="row g-3">
+		<div class="col-md-4">
+			<label class="form-label"><?php echo tr("Order id") ?></label>
+			<div class="form-control-plaintext"><?php echo $orderid ?></div>
+			<input type='hidden' name='orderid' value='<?php echo $orderid ?>'/>
+		</div>
+		<div class="col-md-4">
+			<label class="form-label"><?php etr("Customer") ?></label>
+			<div class="form-control-plaintext"><?php echo $customer->name ?></div>
+		</div>
+		<div class="col-md-4">
+			<label class="form-label"><?php etr("Order date") ?></label>
+			<div class="form-control-plaintext"><?php echo date(DATE_PATTERN, $orderdate) ?></div>
+		</div>
+	</div>
+	<?php
+	if (!isEmpty($invoice_transid)) {
+		echo "<div class='row g-3 mt-3'><div class='col-md-12'><strong>" . tr("Invoice") . ":</strong> ";
+		echo "<a href='invoice_pdf.php?orderid=$orderid&type=credit' onclick='return thERPPrintDocument(this.href)'>" . tr("Print") . "</a>";
+		echo "&nbsp;&nbsp;";
+		echo "<a href='salesorder.php?orderid=$orderid&action=email'>" . tr("E-mail customer") . "</a>";
+		echo "&nbsp;&nbsp;";
+		echo "<a href='../accounting/transaction.php?transactionid=$invoice_transid&salesorderid=$orderid'>" . tr("Show transaction") . "</a>";
+		echo "</div></div>";
+	}
+	if ($payed != 0) {
+		echo "<div class='row g-3 mt-3'><div class='col-md-12'><strong>" . tr("Receipt") . ":</strong> ";
+		if ($payed == $toPay)
+			echo tr("Fully paid");
+		else
+			echo formatMoney($payed) . " / " . formatMoney($toPay);
+		$href = "../accounting/transaction.php?";
+		$href .= "transactionid=$receipt_transid&salesorderid=$orderid";
+		echo "&nbsp;&nbsp;<a href='$href'>" . tr("Show transaction") . "</a>";
+		echo "</div></div>";
+	}
+	if ($cancelled) {
+		echo "<div class='row g-3 mt-3'><div class='col-md-12'><span class='text-danger'>" . tr("This order is cancelled") . "</span></div></div>";
+	}
+	?>
+	<div class="row g-3 mt-3">
+		<div class="col-md-6">
+			<label class="form-label"><?php etr("Created by") ?></label>
+			<div class="form-control-plaintext"><?php echo $createdby ?></div>
+		</div>
+		<div class="col-md-6">
+			<label class="form-label"><?php echo tr("Credit order") ?></label>
+			<div class="form-control-plaintext"><?php echo tr("This is a credit order for") ?> <a href='salesorder.php?orderid=<?php echo $credit_orgid ?>'><?php echo tr("order") ?> <?php echo $credit_orgid ?></a></div>
+		</div>
+	</div>
+</div>
 <br/>
 <br/>
 <?php if ($items != null) { ?>
 <div class='border'>
-<table>
+<div class='table-responsive'>
+<table class='table table-sm table-striped table-hover align-middle w-100'>
+<thead>
+<tr>
 <th><?php etr("Product") ?></th>
-<th><?php etr("Original quantity") ?></th>
-<th><?php etr("Diff") ?></th>
-<th><?php etr("Unit price") ?></th>
-<th><?php etr("Amount") ?></th>
+<th class='text-end'><?php etr("Original quantity") ?></th>
+<th class='text-end'><?php etr("Diff") ?></th>
+<th class='text-end'><?php etr("Unit price") ?></th>
+<th class='text-end'><?php etr("Amount") ?></th>
 <?php
-	echo "<th>" . tr("VAT") . "</th>";
-	if (isEmpty($invoice_transid))
-		echo "<th>" . tr("Save") . "</th>";
-		
-	$class = 'odd';
-	$i = 0;
-	$sum = 0;
-	$vatSum = 0;
-	while ($row = fetch($items)) {
-		echo "<input type=hidden name=no_$i value='$row->no'/>";
-		echo "<tr class='$class'>";
-		echo "<td><a href='product.php?productid=$row->productid'>";
-		echo "$row->productid - $row->model</a></td>";
-		echo "<td align=right>";
-		echo $row->org_quantity . ' ' . $row->unittype;
-		echo "</td>";
-		echo "<td align=right>";
-		$quantity = (-1) * $row->quantity;
-		if (isEmpty($invoice_transid))
-			echo numberbox("quantity_$i", $quantity);
-		else
-			echo $quantity;
-		echo "</td>";
-		echo "<td align=right>";
-		$unitprice = $row->unitprice;
-		echo formatMoney($unitprice);
-		echo "</td>";
-		$amount = $quantity * $unitprice;
-		echo "<td align=right>" . formatMoney($amount) . "</td>";
-		echo "<td align=right>" . formatMoney($row->vat) . "</td>";
-		echo "<td align=center>";
-		if (isEmpty($invoice_transid))
-			echo "<input type='image' name='save' value='Save' src='../images/disk.gif'>";
-		echo "</td>";
-		echo "</tr>\n";
-		$sum += $amount;
-		$vatSum += $row->vat * $quantity;
+    echo "<th class='text-end'>" . tr("VAT") . "</th>";
+    if (isEmpty($invoice_transid))
+        echo "<th class='text-center'>" . tr("Save") . "</th>";
+?>
+</tr>
+</thead>
+<tbody>
+<?php
+    $class = 'odd';
+    $i = 0;
+    $sum = 0;
+    $vatSum = 0;
+    while ($row = fetch($items)) {
+        echo "<input type=hidden name=no_$i value='$row->no'/>";
+        echo "<tr class='$class'>";
+        echo "<td><a href='../erp/product.php?productid=$row->productid'>";
+        echo "$row->productid - $row->model</a></td>";
+        echo "<td class='text-end'>";
+        echo $row->org_quantity . ' ' . $row->unittype;
+        echo "</td>";
+        echo "<td class='text-end'>";
+        $quantity = (-1) * $row->quantity;
+        if (isEmpty($invoice_transid))
+            echo numberbox("quantity_$i", $quantity);
+        else
+            echo $quantity;
+        echo "</td>";
+        echo "<td class='text-end'>";
+        $unitprice = $row->unitprice;
+        echo formatMoney($unitprice);
+        echo "</td>";
+        $amount = $quantity * $unitprice;
+        echo "<td class='text-end'>" . formatMoney($amount) . "</td>";
+        echo "<td class='text-end'>" . formatMoney($row->vat) . "</td>";
+        echo "<td class='text-center'>";
+        if (isEmpty($invoice_transid))
+            echo "<input type='image' name='save' value='Save' src='../images/disk.gif'>";
+        echo "</td>";
+        echo "</tr>
+";
+        $sum += $amount;
+        $vatSum += $row->vat * $quantity;
         $class = ($class == "odd" ? "even" : "odd");
         $i++;
-	}
+    }
 ?>
 <input type=hidden name=count value='<?php echo $i ?>'/>
 <tr>
@@ -269,17 +265,19 @@ echo " $credit_orgid</a>";
 <td/>
 <td/>
 <?php
-	echo "<td align=right>" . tr("VAT") . ":</td>";
+    echo "<td class='text-end'>" . tr("VAT") . ":</td>";
 ?>
-<td align=right><?php echo formatMoney($vatSum) ?></td>
+<td class='text-end'><?php echo formatMoney($vatSum) ?></td>
 </tr>
 <tr>
 <?php $colspan = $addable ? 3 : 2 ?>
 <td colspan='<?php echo $colspan ?>'/>
-<td align=right class=label><?php etr("To refund") ?>:</td>
-<td align=right><?php echo formatMoney((-1) * $toPay) ?></td>
+<td class='text-end label'><?php etr("To refund") ?>:</td>
+<td class='text-end'><?php echo formatMoney((-1) * $toPay) ?></td>
 </tr>
+</tbody>
 </table>
+</div>
 </div>
 <br/>
 <?php } ?>
@@ -297,7 +295,7 @@ if (!$cancelled) {
 	button("Cancel order", 'cancel');
 	echo "&nbsp;";
 }
-button("Show stock moves", "moves", "stockmoves.php?salesorderid=$orderid");
+button("Show stock moves", "moves", "../erp/stockmoves.php?salesorderid=$orderid");
 ?>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>

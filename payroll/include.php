@@ -187,17 +187,15 @@ function formatDateInterval($start, $end)
 
 function getCurrentEmployee()
 {
-	return findValue("select employeeid from user where username='" . getUser() . "'");
+	return findValue("select employeeid from user where username='" . getUser() . "'", null);
 }
 
 function menubar($currentHref = null, $helpSection = null)
 {
 	top0("Payroll");
-	echo "<table width='100%' cellspacing=0 cellpadding=0 >";
-	echo "<tr>";
-	echo "<td>";
-	echo "<table width='100%' class=menubar>";
-		echo "<tr>";
+	echo "<nav class='app-sidebar' aria-label='" . tr("Module navigation") . "'>";
+	sidebarHomeLink();
+	echo "<div class='app-nav-list'>";
 		$percent = 20;
 		menu('employees.php', 'Employees', $percent, true, $currentHref);
 		menu('reporting.php', 'Reporting', $percent, true, $currentHref);
@@ -206,11 +204,8 @@ function menubar($currentHref = null, $helpSection = null)
 		if ($helpSection != null)
 			$helpSection = '#' . $helpSection;
 		menu('help.php' . $helpSection, 'Help', $percent, false, $currentHref);
-		echo "</tr>";
-	echo "</table>";
-	echo "</td>";
-	echo "</tr>";
-	echo "</table>";
+	echo "</div>";
+	echo "</nav>";
 }
 
 ?>

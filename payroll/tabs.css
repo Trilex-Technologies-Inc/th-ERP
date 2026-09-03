@@ -1,115 +1,124 @@
-#main {
-	border: 1px solid #666;
-	clear: both;
-	background0: #FFF3B3;
-	padding-top0: 1em;
-}
-
-#contents {
-	padding: 1.5em;
-	background0: #FFFDF3;
-	background0: white;
-	min-height: 300px;
-}
-
-#header {
-	position: relative;
+.policy-tabs {
+	display: block !important;
+	visibility: visible !important;
 	width: 100%;
-	height: 3em;
-	width: 45em; /* a width is required for Opera, older Mozilla browsers, and Konqueror browsers */
+	height: auto;
+	margin: 0 0 1.25rem;
+	overflow-x: auto;
 }
 
-#header ul#primary {
+.policy-tabs-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .5rem;
+	width: 100%;
 	margin: 0;
-	padding: 0;
-	position: absolute;
-	bottom: -1px;
-	width: 45em; /* a width is required for Opera, older Mozilla browsers, and Konqueror browsers */
+	padding: .35rem;
+	list-style: none;
+	background: #fff;
+	border: 1px solid #e4e8f0;
+	border-radius: .75rem;
+	box-shadow: 0 .25rem 1rem rgba(32, 40, 56, .05);
 }
 
-#header ul#primary li  {
-	display: inline;
+.policy-tabs-list li {
+	display: block;
 	list-style: none;
 }
 
-#header ul#primary a,#header ul#primary span,#header ul#primary a.current {
-	width: 8em;
-	display: block;
-	float: left;
-	padding: 4px 0;
-	margin: 1px 2px 0 0;
+.policy-tabs-list a,
+.policy-tabs-list span {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	min-height: 38px;
+	min-width: 108px;
+	margin: 0;
+	padding: .55rem .9rem;
+	color: #5d6678;
+	background: transparent;
+	border: 1px solid transparent;
+	border-radius: .55rem;
+	font-family: inherit;
+	font-size: .86rem;
+	font-weight: 700;
 	text-align: center;
-	font-family0: tahoma, verdana, sans-serif;
-	font-family: verdana;
-	font-weight: bold;
-	font-size: 10pt;
 	text-decoration: none;
-	color: #333;
+	transition: color .15s ease, background .15s ease, border-color .15s ease;
 }
 
-#header ul#primary span,#header ul#primary a.current,#header ul#primary a.current:hover {
-	border: 1px solid #666;
-	border-bottom: none;
-	background0: #FFF3B3;
-	background0: #EAEAEA;
-	background: #FFFFFF;
-	padding-bottom: 6px;
-	margin-top: 0;
+.policy-tabs-list a:hover {
+	color: #3547b7;
+	background: #eef0ff;
+	border-color: #dce1ff;
 }
 
-#header ul#primary a {
-	background0: #FFFAE1;
-	background: #CCCCE5;
-	border: 1px solid #AAA;
-	border-bottom: none;
+.policy-tabs-list span.active {
+	color: #fff;
+	background: #4b5fd7;
+	border-color: #4b5fd7;
+	box-shadow: 0 .25rem .7rem rgba(75, 95, 215, .18);
 }
 
-#header ul#primary a:hover {
-	margin-top: 0;
-	border-color: #666;
-	background0: #FFF7CD;
-	background: #CCCCE5;
-	padding-bottom: 5px;
+.policy-tabs-list span.disabled {
+	color: #a2a9b7;
+	background: #f5f6f8;
+	border-color: #eceef2;
+	cursor: not-allowed;
 }
 
-#header ul#secondary {
-	position: absolute;
-	margin: 0;
+#main {
+	clear: both;
+	background: transparent;
+	border: 0;
+}
+
+#contents {
+	min-height: 240px;
 	padding: 0;
-	bottom: -1.4em;
-	left: 1px;
-	width: 50em; /* a width is required for Opera, older Mozilla browsers, and Konqueror browsers */
 }
 
+.policy-tabs ul#secondary,
+#header ul#secondary {
+	display: flex;
+	flex-wrap: wrap;
+	gap: .35rem;
+	margin: .65rem 0 0;
+	padding: 0;
+	list-style: none;
+}
+
+.policy-tabs ul#secondary li a,
+.policy-tabs ul#secondary li span,
 #header ul#secondary li a,#header ul#secondary li span {
+	display: inline-flex;
+	align-items: center;
 	width: auto;
-	display: block;
-	float: left;
-	padding: 0 10px;
 	margin: 0;
-	text-align: auto;
-	border: none;
-	border-right: 1px dotted #AAA;
-	background: none;
-
+	padding: .35rem .65rem;
+	color: #5d6678;
+	background: #fff;
+	border: 1px solid #e4e8f0;
+	border-radius: .45rem;
+	text-decoration: none;
 }
 
-#header ul#secondary li a {
-	color: #06C;
-	text-decoration: underline;
-}
-
+.policy-tabs ul#secondary li a:hover,
 #header ul#secondary li a:hover {
-	color: #333;
-	background: transparent;
-	padding: 0 10px;
-	border: none;
-	border-right: 1px dotted #AAA;
+	color: #3547b7;
+	background: #eef0ff;
+	border-color: #dce1ff;
 }
 
-#header ul#secondary li a:active {
-	color: #000;
-	background: transparent;
-}
+@media (max-width: 575.98px) {
+	.policy-tabs-list {
+		flex-wrap: nowrap;
+		width: max-content;
+		min-width: 100%;
+	}
 
-#header ul#secondary li:last-child a { border: none; }
+	.policy-tabs-list a,
+	.policy-tabs-list span {
+		min-width: 96px;
+	}
+}

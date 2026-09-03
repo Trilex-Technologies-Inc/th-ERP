@@ -19,94 +19,94 @@ INSERT INTO `account` (`dimid`,`accountid`,`name`) VALUES
 INSERT INTO `account` (`dimid`,`accountid`,`name`) VALUES 
  (1,1400,'Lager'),
  (1,1500,'Kundfordringar '),
- (1,1600,'Övriga fordringar'),
+ (1,1600,'Ãvriga fordringar'),
  (1,1650,'Momsfordran'),
- (1,1700,'Förskott till leverantörer'),
+ (1,1700,'FÃ¶rskott till leverantÃ¶rer'),
  (1,1910,'Kassa '),
  (1,1920,'Bank'),
- (1,1970,'Särskilda bankkonton '),
+ (1,1970,'SÃ¤rskilda bankkonton '),
  (1,2010,'Eget kapital'),
  (1,2011,'Egna varuuttag'),
- (1,2012,'Avräkningg för skatter och avgifter (skattekonto)'),
- (1,2013,'Övriga egna uttag'),
- (1,2014,'Uttag förmåner'),
- (1,2017,'Egna insättningar');
+ (1,2012,'AvrÃ¤kningg fÃ¶r skatter och avgifter (skattekonto)'),
+ (1,2013,'Ãvriga egna uttag'),
+ (1,2014,'Uttag fÃ¶rmÃ¥ner'),
+ (1,2017,'Egna insÃ¤ttningar');
 INSERT INTO `account` (`dimid`,`accountid`,`name`) VALUES 
  (1,2350,'Skulder till kreditinstitut'),
- (1,2390,'Övriga löneskulder'),
- (1,2440,'Leverantörsskulder '),
- (1,2512,'Beräknad inkomstskatt'),
- (1,2610,'Utgående moms'),
- (1,2611,'Utgående moms på försäljning inom Sverige'),
- (1,2612,'Utgående moms på egna uttag'),
- (1,2614,'Beräknad utgående moms på tjänsteförvärv från utlandet');
+ (1,2390,'Ãvriga lÃ¶neskulder'),
+ (1,2440,'LeverantÃ¶rsskulder '),
+ (1,2512,'BerÃ¤knad inkomstskatt'),
+ (1,2610,'UtgÃ¥ende moms'),
+ (1,2611,'UtgÃ¥ende moms pÃ¥ fÃ¶rsÃ¤ljning inom Sverige'),
+ (1,2612,'UtgÃ¥ende moms pÃ¥ egna uttag'),
+ (1,2614,'BerÃ¤knad utgÃ¥ende moms pÃ¥ tjÃ¤nstefÃ¶rvÃ¤rv frÃ¥n utlandet');
 INSERT INTO `account` (`dimid`,`accountid`,`name`) VALUES 
- (1,2615,'Beräknad utgående moms på varuförvärv från annat EG-land'),
- (1,2640,'Ingående moms'),
- (1,2645,'Beräknad ingående moms på förvärv från utlandet '),
- (1,2646,'Ingående moms på uthyrning ');
+ (1,2615,'BerÃ¤knad utgÃ¥ende moms pÃ¥ varufÃ¶rvÃ¤rv frÃ¥n annat EG-land'),
+ (1,2640,'IngÃ¥ende moms'),
+ (1,2645,'BerÃ¤knad ingÃ¥ende moms pÃ¥ fÃ¶rvÃ¤rv frÃ¥n utlandet '),
+ (1,2646,'IngÃ¥ende moms pÃ¥ uthyrning ');
 INSERT INTO `account` (`dimid`,`accountid`,`name`) VALUES 
- (1,2660,'Särskilda punktskatter'),
+ (1,2660,'SÃ¤rskilda punktskatter'),
  (1,2710,'Personalskatt'),
- (1,2730,'Lagstadgade/avtalade sociala avgifter och särskild löneskatt'),
- (1,2900,'Övriga skulder'),
- (1,3000,'Försäljning och utfört arbete samt övriga momspliktiga intäkter'),
- (1,3100,'Momsfria intäkter'),
- (1,3200,'Bil- och bostadsförmån m.m.'),
+ (1,2730,'Lagstadgade/avtalade sociala avgifter och sÃ¤rskild lÃ¶neskatt'),
+ (1,2900,'Ãvriga skulder'),
+ (1,3000,'FÃ¶rsÃ¤ljning och utfÃ¶rt arbete samt Ã¶vriga momspliktiga intÃ¤kter'),
+ (1,3100,'Momsfria intÃ¤kter'),
+ (1,3200,'Bil- och bostadsfÃ¶rmÃ¥n m.m.'),
  (1,3500,'Fakturerade kostnader'),
- (1,3700,'Lämnade rabatter, bonus etc.'),
- (1,3740,'Öresavrundning'),
- (1,3900,'Övriga rörelseintäkter'),
- (1,3980,'Erhållna bidrag'),
+ (1,3700,'LÃ¤mnade rabatter, bonus etc.'),
+ (1,3740,'Ãresavrundning'),
+ (1,3900,'Ãvriga rÃ¶relseintÃ¤kter'),
+ (1,3980,'ErhÃ¥llna bidrag'),
  (1,4000,'Varor'),
  (1,4600,'Legoarbeten och underentreprenader'),
- (1,4700,'Erhållna rabatter, bonus etc.'),
- (1,4900,'Förändring av lager'),
+ (1,4700,'ErhÃ¥llna rabatter, bonus etc.'),
+ (1,4900,'FÃ¶rÃ¤ndring av lager'),
  (1,5000,'Lokalkostnader'),
  (1,5100,'Fastighetskostnader'),
- (1,5200,'Hyra av anläggningstillgångar'),
- (1,5400,'Förbrukningsinventarier och förbrukningsmaterial'),
- (1,5500,'Reparation och underhåll');
+ (1,5200,'Hyra av anlÃ¤ggningstillgÃ¥ngar'),
+ (1,5400,'FÃ¶rbrukningsinventarier och fÃ¶rbrukningsmaterial'),
+ (1,5500,'Reparation och underhÃ¥ll');
 INSERT INTO `account` (`dimid`,`accountid`,`name`) VALUES 
- (1,5600,'Kostnader för transportmedel'),
+ (1,5600,'Kostnader fÃ¶r transportmedel'),
  (1,5610,'Personbilskostnader'),
- (1,5618,'Schablonmässig milkostnad privat personbil'),
+ (1,5618,'SchablonmÃ¤ssig milkostnad privat personbil'),
  (1,5700,'Frakter och transporter'),
  (1,5900,'Reklam och PR'),
- (1,6000,'Övriga försäljningskostnader'),
+ (1,6000,'Ãvriga fÃ¶rsÃ¤ljningskostnader'),
  (1,6070,'Representation'),
  (1,6072,'Representation, ej avdragsgill'),
  (1,6100,'Kontorsmateriel och trycksaker'),
  (1,6200,'Tele och post'),
- (1,6310,'Företagsförsäkringar'),
- (1,6500,'Övriga externa tjänster'),
+ (1,6310,'FÃ¶retagsfÃ¶rsÃ¤kringar'),
+ (1,6500,'Ãvriga externa tjÃ¤nster'),
  (1,6800,'Inhyrd personal'),
- (1,6900,'Övriga kostnader'),
- (1,6980,'Föreningsavgifter'),
- (1,7000,'Löner till anställda'),
- (1,7300,'Kostnadsersättningar och förmåner'),
+ (1,6900,'Ãvriga kostnader'),
+ (1,6980,'FÃ¶reningsavgifter'),
+ (1,7000,'LÃ¶ner till anstÃ¤llda'),
+ (1,7300,'KostnadsersÃ¤ttningar och fÃ¶rmÃ¥ner'),
  (1,7400,'Pensionskostnader');
 INSERT INTO `account` (`dimid`,`accountid`,`name`) VALUES 
  (1,7500,'Sociala och andra avgifter enligt lag och avtal'),
- (1,7600,'Övriga personalkostnader'),
+ (1,7600,'Ãvriga personalkostnader'),
  (1,7632,'Personalrepresentation, ej avdragsgill'),
  (1,7700,'Nedskrivningar'),
- (1,7810,'Avskrivningar på immateriella anläggningstillgångar'),
- (1,7820,'Avskrivningar på byggnader och markanläggningar'),
- (1,7830,'Avskrivningar på maskiner och inventarier '),
- (1,7970,'Förlust vid avyttring av immateriella och materiella anläggningstillgångar'),
- (1,8310,'Ränteintäkter och utdelningar'),
- (1,8314,'Skattefria ränteintäkter'),
- (1,8330,'Valutakursdifferenser på fordringar och placeringar '),
- (1,8410,'Räntekostnader för skulder'),
- (1,8430,'Valutakursdifferenser på skulder'),
+ (1,7810,'Avskrivningar pÃ¥ immateriella anlÃ¤ggningstillgÃ¥ngar'),
+ (1,7820,'Avskrivningar pÃ¥ byggnader och markanlÃ¤ggningar'),
+ (1,7830,'Avskrivningar pÃ¥ maskiner och inventarier '),
+ (1,7970,'FÃ¶rlust vid avyttring av immateriella och materiella anlÃ¤ggningstillgÃ¥ngar'),
+ (1,8310,'RÃ¤nteintÃ¤kter och utdelningar'),
+ (1,8314,'Skattefria rÃ¤nteintÃ¤kter'),
+ (1,8330,'Valutakursdifferenser pÃ¥ fordringar och placeringar '),
+ (1,8410,'RÃ¤ntekostnader fÃ¶r skulder'),
+ (1,8430,'Valutakursdifferenser pÃ¥ skulder'),
  (1,8990,'Resultat'),
- (1,8999,'Årets resultat');
+ (1,8999,'Ãrets resultat');
 
 delete from ap_bracket;
 delete from advanced_percent;
 INSERT INTO `advanced_percent` (`apid`, `name`, `description`) VALUES 
-(2, 'engangsskattAP', 'EngÃ¥ngsskatt');
+(2, 'engangsskattAP', 'EngÃÂ¥ngsskatt');
 
 
 INSERT INTO `ap_bracket` (`apid`, `bracketid`, `ceiling`, `percent`) VALUES 
@@ -125,12 +125,12 @@ delete from emp_attribute;
 delete from attribute_value;
 delete from attribute;
 INSERT INTO `attribute` (`attributeid`,`name`,`type`, description, object) VALUES 
- (1,'salary',NULL, 'Månadslön', 1),
+ (1,'salary',NULL, 'MÃ¥nadslÃ¶n', 1),
  (6,'skattetabell',3, 'Skattetabell', 1),
  (7,'skattekolumn',3, 'Skattekolumn', 1),
  (8,'skatteprocent',3, 'Skatteprocent', 1),
  (9,'annan_huvudarbetsgivare',2, 'Annan Huvudarbetsgivare', 1),
- (10,'jamkning',NULL, 'Jämkning', 1);
+ (10,'jamkning',NULL, 'JÃ¤mkning', 1);
 
 INSERT INTO `attribute_option` (`attributeid`,`optionid`,`description`) VALUES 
  (6,29,'29'),
@@ -148,21 +148,21 @@ INSERT INTO `emp_tab` (`tabid`, `name`, `no_of_cols`) VALUES
 (2, 'Skatt', 1);
 
 INSERT INTO `payaccount` (`accountid`, `formula`, `calcseq`, `inputtype`, `glaccountid`, `dimid`, description) VALUES 
-(1010, 'attribute(salary)', 1010, 0, 7000, 1,'Månadslön'),
+(1010, 'attribute(salary)', 1010, 0, 7000, 1,'MÃ¥nadslÃ¶n'),
 (1030, 'attribute(hourrate) * attribute(hours_per_day)', 1030, 2, NULL, 1, 'Arbetad dag'),
-(1050, '', 1050, 0, 7000, 1, 'Retrolön'),
-(2010, '(-1) * attribute(salary) / 160', 2010, 1, 7000, 1,'Timfrånvaro'),
-(2020, '(-1) * attribute(salary)/21', 2020, 2, 7000, 1,'Dagfrånvaro'),
-(2030, 'sick_leave(2031, 2032)', 2030, 2, 7000, 1,'Sjukfrånvaro'),
-(2031, '0', 2031, 2, NULL, 1,'Betald sjukfrånvaro'),
-(2032, '(-1) * attribute(salary) / 21', 2032, 2, 7000, 1,'Obetald sjukfrånvaro'),
+(1050, '', 1050, 0, 7000, 1, 'RetrolÃ¶n'),
+(2010, '(-1) * attribute(salary) / 160', 2010, 1, 7000, 1,'TimfrÃ¥nvaro'),
+(2020, '(-1) * attribute(salary)/21', 2020, 2, 7000, 1,'DagfrÃ¥nvaro'),
+(2030, 'sick_leave(2031, 2032)', 2030, 2, 7000, 1,'SjukfrÃ¥nvaro'),
+(2031, '0', 2031, 2, NULL, 1,'Betald sjukfrÃ¥nvaro'),
+(2032, '(-1) * attribute(salary) / 21', 2032, 2, 7000, 1,'Obetald sjukfrÃ¥nvaro'),
 (2033, 'yearAccountQuantitySum(2031)', 2033, 2, NULL, 1,'Antal betalda sjukdagar'),
-(3010, '', 3010, 0, NULL, 1,'Reseutlägg'),
+(3010, '', 3010, 0, NULL, 1,'ReseutlÃ¤gg'),
 (5010, '(-1) * periodSum(earnings) * getArbetsgivaravgiftProcent()/100', 5010, 0, NULL, 1,'Arbetsgivaravgifter'),
-(9007, '', 9007, 0, NULL, 1,'Jämkning'),
+(9007, '', 9007, 0, NULL, 1,'JÃ¤mkning'),
 (9008, 'periodSum(taxable)', 9008, 0, NULL, 1,'Summa skattepliktigt'),
 (9009, 'advanced_percent(th_tax_ap, 12*periodSum(taxable))', 9009, 0, NULL, 1,'Genomsnittlig skattesats'),
-(9020, 'round((-1) * advanced_percent(engangsskattAP, 12*periodSum(taxable)) * periodSum(engangsskatt))', 9020, 0, NULL, 1,'Engångsskatt'),
+(9020, 'round((-1) * advanced_percent(engangsskattAP, 12*periodSum(taxable)) * periodSum(engangsskatt))', 9020, 0, NULL, 1,'EngÃ¥ngsskatt'),
 (9030, 'getPrelskatt()', 9030, 0, NULL, 1,'Prelskatt');
 
 delete from payaccountgroup_description;
@@ -171,11 +171,11 @@ INSERT INTO `payaccountgroup` (`groupid`, `name`, `report`, description) VALUES
 (1, 'payable', 1, 'Att utbetala'),
 (2, 'taxable', NULL, 'Skattepliktigt'),
 (3, 'tax', 1, 'Skatt'),
-(4, 'earnings', NULL, 'Intjänat'),
+(4, 'earnings', NULL, 'IntjÃ¤nat'),
 (11, 'social_security_fund', 1, 'Arbetsgivaravgifter'),
-(21, 'attendence', NULL, 'Närvaro'),
-(30, 'expenses', NULL, 'Utlägg'),
-(31, 'engangsskatt', NULL, 'Eng�ngsskatt');
+(21, 'attendence', NULL, 'NÃ¤rvaro'),
+(30, 'expenses', NULL, 'UtlÃ¤gg'),
+(31, 'engangsskatt', NULL, 'Engångsskatt');
 
 INSERT INTO `payaccount_group` (`groupid`, `accountid`) VALUES 
 (1, 1010),
@@ -253,7 +253,7 @@ INSERT INTO `policy_attribute` (`policyid`, `attributeid`, `tabid`, `row`, `col`
 
 INSERT INTO `policy_description` (`policyid`, `language`, `description`) VALUES 
  (1,'en','Salaried'),
- (1,'sv','Månadsavlönad');
+ (1,'sv','MÃ¥nadsavlÃ¶nad');
 
 INSERT INTO `policy_payitem` (`policyid`, `no`, `fromperiodid`, `toperiodid`, `amount`, `accountid`) VALUES 
 (1, 1, 3, NULL, NULL, 1010),
@@ -359,9 +359,9 @@ update category set
     revenue_accountid=3740
 where categoryid=2;
 
-update accountgroup set description='Tillgångar' where groupid=1;
+update accountgroup set description='TillgÃ¥ngar' where groupid=1;
 update accountgroup set description='Skulder' where groupid=2;
-update accountgroup set description='Intäkter' where groupid=3;
+update accountgroup set description='IntÃ¤kter' where groupid=3;
 update accountgroup set description='Kostnader' where groupid=4;
 
 delete from se_taxtable;

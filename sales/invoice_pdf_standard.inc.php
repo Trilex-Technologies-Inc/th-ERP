@@ -7,7 +7,7 @@ function ccs($text)
 	if ($lang == 'en')
 		return $text;
 	if ($lang == 'sv')
-		return utf8_decode($text);
+		return utf8ToLatin1($text);
 	if ($lang == 'cn'){
 		return iconv("UTF-8","GB2312//IGNORE",$text);
 	}
@@ -255,9 +255,10 @@ function buildInvoicePDF($orderid, $filename = '', $type = 'invoice')
 		$y += ROWHEIGHT;		
 		$text1 = ccs(tr("VAT number")) . ': ';
 		$text2 = $customer->vatnumber;
-		$pdf->Text($text1);
+		$pdf = setLabelFont($pdf);
+		$pdf->Text($x, $y, $text1);
 		$pdf = setNumericFont($pdf);
-		$x = $rightX;
+		$x += 25;
 		$pdf->Text($x, $y, $text2);
 	}	
 	$pdf->SetX(0);
@@ -286,7 +287,7 @@ function buildInvoicePDF($orderid, $filename = '', $type = 'invoice')
 		$pdf = setNumericFont($pdf);
 		$unitprice = $row->unitprice;
 		if ($incVAT)
-			$unitprice += $row->vat;
+			$unitprice *= (1 + $row->vat/100);
 		$pdf->Cell(22, ROWHEIGHT, formatMoney($unitprice), 'LR', 0, 'R');
 		$pdf->Cell(30, ROWHEIGHT, formatMoney($unitprice*$row->quantity), 'LR', 1, 'R');
 	}

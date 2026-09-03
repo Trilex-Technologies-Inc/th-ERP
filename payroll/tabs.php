@@ -29,7 +29,7 @@ if (isSave()) {
 	if (!isEmpty($tabid_new)) {
 		$sql = "
 		insert into emp_tab (tabid, name, no_of_cols)
-		values ($tabid_new, '$name_new', $no_of_cols)";
+		values ($tabid_new, '$name_new', $no_of_cols_new)";
 		sql($sql);
 	}
 }
@@ -62,22 +62,29 @@ title(tr("Tabs"))
 ?>
 
 <form action="tabs.php" method="POST">
-<input type=hidden name=policyid value='<?php echo $policyid ?>'/>
-<table>
-<th><?php echo tr("Delete") ?></th>
-<th><?php echo tr("Id") ?></th>
+<div class="card border-0 shadow-sm overflow-hidden">
+<div class="card-header bg-white py-3">
+	<h2 class="h5 fw-bold mb-1"><?php echo tr("Tabs") ?></h2>
+	<p class="text-secondary small mb-0"><?php echo tr("Employee detail sections") ?></p>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+<thead><tr>
+<th class="text-center" style="width: 90px;"><?php echo tr("Delete") ?></th>
+<th class="text-end" style="width: 120px;"><?php echo tr("Id") ?></th>
 <th><?php echo tr("Name") ?></th>
-<th><?php echo tr("No of columns") ?></th>
+<th style="width: 180px;"><?php echo tr("No of columns") ?></th>
+</tr></thead>
+<tbody>
 <?php
-$class = "odd";
 $i = 0;
 while ($row = fetch($rs)) {
-	echo "<input type=hidden name=tabid_$i value='$row->tabid'/>";
-    echo "<tr class='$class'>";
-    echo "<td align=center>";
-	deleteIcon('emp_tabs.php?del_tabid=$row->tabid');
+	$tabid = htmlspecialchars($row->tabid);
+    echo "<tr>";
+    echo "<td class='text-center'>";
+	deleteIcon("tabs.php?del_tabid=$tabid");
     echo "</td>";
-    echo "<td>$row->tabid</td>";
+    echo "<td class='text-end font-monospace'>$tabid<input type='hidden' name='tabid_$i' value='$tabid'/></td>";
     echo "<td>";
     textBox("name_$i", $row->name);
     echo "</td>";
@@ -85,20 +92,24 @@ while ($row = fetch($rs)) {
     numberbox("no_of_cols_$i", $row->no_of_cols);
     echo "</td>";
     echo "</tr>";
-    $class = ($class == "odd" ? "even" : "odd");
     $i++;
 }
 hidden('count', $i);
 ?>
-<tr>
-<td/>
+<tr class="table-light">
+<td class="text-center text-secondary fw-semibold">+</td>
 <td><?php textBox('tabid_new', '', 6) ?></td>
 <td><?php textBox('name_new', '') ?></td>
 <td><?php numberbox('no_of_cols_new', '') ?></td>
 </tr>
+</tbody>
 </table>
-<br/>
-<?php saveButton() ?>
+</div>
+<div class="card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+	<?php saveButton() ?>
+	<span class="text-secondary small"><?php echo $i ?> <?php echo tr("records") ?></span>
+</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>

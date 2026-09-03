@@ -57,20 +57,20 @@ title("<a href='accountgroups.php'>" . tr("Account groups") . "</a> > $title")
 ?>
 
 <form action="accountgroup.php" method="POST">
-<table>
-<tr>
-	<td><?php etr("Id") ?>:</td>
-	<td><input type=text name='groupid' value='<?php echo $groupid ?>'/></td>
-</tr>
-<tr><td><?php etr("Description") ?>:</td><td><input type="text" name="description" value="<?php echo $description ?>"/></td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-auto"><?php etr("Id") ?>:</div>
+	<div class="col-12 col-md-auto"><input type=text name='groupid' value='<?php echo $groupid ?>'/></div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Description") ?>:</div><div class="col-12 col-md-auto"><input type="text" name="description" value="<?php echo $description ?>"/></div>
 <?php $checked = $type ? 'checked' : '' ?>
-<tr>
-<td colspan=2>
+</div><div class="row g-3 align-items-center mb-2">
+<div class="col-12 col-md-auto">
 <?php saveButton() ?>
 &nbsp;
-</td>
-</tr>
-</table>
+</div>
+</div>
+</div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
 

@@ -36,7 +36,7 @@ SQL;
 	$i = 0;
     while ($row = fetch_object($rs)) {
         echo "<tr class='$class'>";
-		echo "<td><a href='logg.php?loggid=$row->loggid'>$row->loggid</a></td>";
+		echo "<td>" . (int)$row->loggid . "</td>";
 		echo "<td>" . formatDate($row->loggtime) . ' ' . date('H:i', $row->loggtime) . "</td>";
 		echo "<td>$row->username</td>";
 		echo "<td><pre>$row->loggtext</pre></td>";

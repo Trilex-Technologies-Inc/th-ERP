@@ -1,0 +1,12 @@
+<?php
+include('include.php');
+include('pos_shift.inc.php');
+
+checkPermission(PERMISSIONID_SELL);
+$returnid = (int)getParam('returnid', 0);
+$return = $returnid ? find("select pr.*, so.no sale_no, l.name location_name from pos_return pr join salesorder so on so.orderid=pr.orderid join location l on l.locationid=so.locationid where pr.returnid=$returnid") : null;
+if ($return == null || ($return->createdby != getUser() && !hasPermission(PERMISSIONID_POS_REFUND_SALE))) { header('Location: pos_returns.php'); die; }
+$lines = query("select pri.*, p.model, p.description from pos_return_item pri join product p on p.productid=pri.productid where pri.returnid=$returnid order by pri.order_line");
+?>
+<head><title>thERP - <?php etr('Refund receipt') ?></title><?php styleSheet(); ?></head>
+<body><main class="container" style="max-width:640px;margin-top:24px"><div class="d-flex justify-content-between border-bottom pb-3"><div><h1 class="h4 mb-1"><?php etr('Refund receipt') ?></h1><p class="text-secondary mb-0"><?php etr('Return') ?> #<?php echo $returnid ?> · <?php echo htmlspecialchars($return->createdtime) ?></p></div><div class="text-end"><strong><?php echo htmlspecialchars($return->location_name) ?></strong><br><small><?php etr('Sale') ?> #<?php echo htmlspecialchars($return->sale_no) ?></small></div></div><p class="mt-3"><strong><?php etr('Refund method') ?>:</strong> <?php echo htmlspecialchars(tr(ucfirst(str_replace('_', ' ', $return->refund_method)))) ?><br><strong><?php etr('Reason') ?>:</strong> <?php echo htmlspecialchars($return->reason) ?></p><table class="table"><thead><tr><th><?php etr('Product') ?></th><th class="text-end"><?php etr('Quantity') ?></th><th class="text-end"><?php etr('Refund') ?></th></tr></thead><tbody><?php while ($line=fetch($lines)) { ?><tr><td><?php echo htmlspecialchars($line->model) ?><br><small class="text-secondary"><?php echo htmlspecialchars($line->description) ?></small></td><td class="text-end"><?php echo htmlspecialchars($line->quantity) ?></td><td class="text-end"><?php echo formatMoney($line->amount) ?></td></tr><?php } ?></tbody><tfoot><tr><th colspan="2" class="text-end"><?php etr('Total refunded') ?></th><th class="text-end"><?php echo formatMoney($return->total) ?></th></tr></tfoot></table><div class="d-print-none mt-4"><button class="btn btn-primary" onclick="window.print()"><?php etr('Print') ?></button><a class="btn btn-outline-secondary ms-2" href="pos_returns.php"><?php etr('Back to returns') ?></a></div></main></body>

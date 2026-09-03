@@ -1,7 +1,8 @@
  <?php
 function add_orderitem($orderid, $productid, $quantity)
 {
-	$count = findValue("select count(*) from product where productid=$productid", 0);
+	$productidSql = sql_string($productid);
+	$count = findValue("select count(*) from product where productid=$productidSql", 0);
 	if ($count == 0) {
 		return tr("Product $productid doesn't exists!");
 	}
@@ -9,26 +10,27 @@ function add_orderitem($orderid, $productid, $quantity)
 	$no = findValue("select max(no) from movesorder_item where orderid=$orderid", 0);
 	$no++;
 	$toid = findValue("select toid from movesorder where orderid=$orderid");
-	$description = findValue("select description from product where productid=$productid");
+	$description = findValue("select description from product where productid=$productidSql");
 	$sql = "insert into movesorder_item (orderid, no, productid, quantity, comment)
-			values ($orderid, $no, $productid, $quantity, '$description')";
+			values ($orderid, $no, $productidSql, $quantity, '$description')";
 	sql($sql);
 	return null;
 }
 
 function changeQuantity($orderid,$productid, $locationid, $diff, $createtrans)
 {
+	$productidSql = sql_string($productid);
 	$narrative = tr("Stock Move Order")."#".$orderid;
 	$transid = "null";
 	if ($createtrans) {
 	}
 	sql("insert into stockmove (movesorderid,productid, diff, narrative, transactionid, locationid)
-		 values ($orderid,$productid, $diff, '$narrative', $transid, $locationid)");
-	$parts = query("select childid, quantity from bom where parentid=$productid");
+		 values ($orderid,$productidSql, $diff, '$narrative', $transid, $locationid)");
+	$parts = query("select childid, quantity from bom where parentid=$productidSql");
 	while ($row = fetch($parts)) {
 		$childdiff = $diff * $row->quantity;
 		sql("insert into stockmove (movesorderid,productid, diff, narrative, transactionid, locationid)
-			 values ($orderid,$row->childid, $childdiff, '$narrative', $transid, $locationid)");
+			 values ($orderid," . sql_string($row->childid) . ", $childdiff, '$narrative', $transid, $locationid)");
 	}
 }
 

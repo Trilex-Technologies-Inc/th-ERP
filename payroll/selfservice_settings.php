@@ -76,38 +76,39 @@
 <body>
 <?php top("employees.php", "Settings") ?>
 
-<form name=form1 action="selfservice_settings.php" method="POST">
-<table>
-
-<tr><td class=label><?php echo tr("Givenname") ?>:</td><td><input type="text" name="givenname" value="<?php echo $emp->givenname ?>"/></td></tr>
-<tr><td class=label><?php echo tr("Surname") ?>:</td><td><input type="text" name="surname" value="<?php echo $emp->surname ?>"/></td></tr>
+<form name="form1" action="selfservice_settings.php" method="POST">
+<div class="card border-0 shadow-sm">
+<div class="card-header bg-white py-3">
+<h2 class="h5 fw-bold mb-1"><?php echo htmlspecialchars(trim($emp->givenname . ' ' . $emp->surname)) ?></h2>
+<p class="text-secondary small mb-0"><?php echo tr("Settings") ?></p>
+</div>
+<div class="card-body p-4">
+<div class="row g-4">
+<div class="col-12 col-lg-6"><label class="form-label fw-semibold" for="givenname"><?php echo tr("Givenname") ?></label><input class="form-control" id="givenname" type="text" name="givenname" value="<?php echo htmlspecialchars($emp->givenname) ?>"/></div>
+<div class="col-12 col-lg-6"><label class="form-label fw-semibold" for="surname"><?php echo tr("Surname") ?></label><input class="form-control" id="surname" type="text" name="surname" value="<?php echo htmlspecialchars($emp->surname) ?>"/></div>
 <?php
 
 if ($teams != null) {
-	echo "<tr>";
-	echo "<td class=label>" . tr("Teams") . ":</td>";
-	echo "<td>";
+	echo "<div class='col-12'><label class='form-label fw-semibold'>" . tr("Teams") . "</label>";
+	echo "<div class='d-flex flex-wrap align-items-center gap-2'>";
 	while ($row = fetch($teams)) {
 		$href = "selfservice_settings.php?del_teamid=$row->teamid";
-		echo $row->description . "&nbsp;";
+		echo "<span class='badge text-bg-light border d-inline-flex align-items-center gap-2'>" . htmlspecialchars($row->description);
 		deleteIcon($href);
-		echo ",&nbsp;";
+		echo "</span>";
 	}
 	comboBox('teamid_new', $allTeams, null, true);
-	echo "</td>";
-	echo "</tr>";
+	echo "</div></div>";
 }
 ?>
-<tr><td class=label><?php echo tr("Bank account") ?>:</td><td><input type="text" name="bank_account" value="<?php echo $emp->bank_account ?>"/></td></tr>
-
-
-<tr><td class=label><?php etr("Street") ?>:</td><td><?php textbox('street_address', $emp->street_address, 60) ?></td></tr>
-<tr><td class=label><?php etr("Zipcode") ?>:</td><td><?php textbox('zipcode', $emp->zipcode, 15) ?></td></tr>
-<tr><td class=label><?php etr("City") ?>:</td><td><?php textbox('city', $emp->city, 30) ?></td></tr>
-</table>
-
-<br/>
-<?php saveButton() ?>
+<div class="col-12 col-lg-6"><label class="form-label fw-semibold" for="bank_account"><?php echo tr("Bank account") ?></label><input class="form-control" id="bank_account" type="text" name="bank_account" value="<?php echo htmlspecialchars($emp->bank_account) ?>"/></div>
+<div class="col-12"><label class="form-label fw-semibold" for="street_address"><?php etr("Street") ?></label><?php textbox('street_address', $emp->street_address, 60) ?></div>
+<div class="col-12 col-lg-4"><label class="form-label fw-semibold" for="zipcode"><?php etr("Zipcode") ?></label><?php textbox('zipcode', $emp->zipcode, 15) ?></div>
+<div class="col-12 col-lg-8"><label class="form-label fw-semibold" for="city"><?php etr("City") ?></label><?php textbox('city', $emp->city, 30) ?></div>
+</div>
+</div>
+<div class="card-footer bg-white d-flex flex-wrap gap-2 py-3"><?php saveButton() ?></div>
+</div>
 </form>
 <?php bottom() ?>
 

@@ -14,20 +14,9 @@ function rollPeriod($cycleid, $periodid)
 
 $cycleid = $argv[3];
 
-$period = find("
-select unix_timestamp(starttime) as starttime,
-	unix_timestamp(endtime) as endtime,
-	state_receivables,
-	periodid
-from period p
-where periodid=(
-	select min(periodid) 
-	from period p2
-	where state_receivables != " . STATE_RECEIVABLES_SENT . " 
-	or state_receivables is null
-	and p2.cycleid=p.cycleid
-	and cycleid)
-and cycleid=$cycleid");
+$period = getReceivablesPeriod($cycleid);
+if ($period == null)
+	die("There are no receivables periods waiting to be processed.\n");
 $periodStart = formatDatetime($period->starttime);
 $user = getUser();
 
@@ -48,5 +37,4 @@ insert into logger (loggtext, loggtime, username, level)
 values ('$mess', now(), '$user', 100)"); 
 
 ?>
-
 

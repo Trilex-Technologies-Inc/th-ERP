@@ -11,6 +11,32 @@ function calculateIfNeeded($employeeid, $periodid)
 	}
 }
 
+/**
+ * Build the payment summary used by the bank payment export.
+ *
+ * Payable payroll accounts already contain the correct sign for earnings and
+ * deductions, so the net payment is their sum for the requested pay period.
+ */
+function createPayStub($employeeid, $periodid)
+{
+	calculateIfNeeded($employeeid, $periodid);
+
+	$paystub = new stdClass();
+	$paystub->netPayment = (float) findValue("
+		select sum(pe.amount)
+		from payevent pe
+		where pe.employeeid=$employeeid
+		and pe.periodid=$periodid
+		and exists (
+			select 1
+			from payaccount_group pag
+			where pag.accountid=pe.accountid
+			and pag.groupid=" . GROUPID_PAYABLE . "
+		)", 0);
+
+	return $paystub;
+}
+
 function calculate($employeeid, $periodid)
 {
 	$policyid = getPolicy($employeeid, $periodid);
@@ -166,7 +192,7 @@ function calculatePayevent($payeventid, $value = null, $accountid = null,
 
 function replaceNarrative($description, $payeventid)
 {
-	ereg("\\{.*\\}", $description, $regs);
+	preg_match("/\{.*\}/", $description, $regs);
 	foreach ($regs as $reg) {
 		$expression = str_replace('{', '', $reg);
 		$expression = str_replace('}', '', $expression);

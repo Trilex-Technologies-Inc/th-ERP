@@ -41,41 +41,51 @@ top("daily_forms.php", "Daily forms");
 ?>
 
 <form action="daily_forms.php" method="POST">
-<input type=hidden name=policyid value='<?php echo $policyid ?>'/>
-<table>
-<th><?php echo tr("Delete") ?></th>
-<th><?php echo tr("Id") ?></th>
+<div class="card border-0 shadow-sm overflow-hidden">
+<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+	<div>
+		<h2 class="h5 fw-bold mb-1"><?php echo tr("Daily forms") ?></h2>
+		<p class="text-secondary small mb-0"><?php echo tr("Daily report forms") ?></p>
+	</div>
+	<?php if ($mode != 'select') newButton("daily_form.php"); ?>
+</div>
+<div class="table-responsive">
+<table class="table table-hover align-middle mb-0">
+<thead><tr>
+<th class="text-center" style="width: 90px;"><?php echo tr("Delete") ?></th>
+<th class="text-end" style="width: 120px;"><?php echo tr("Id") ?></th>
 <th><?php echo tr("Description") ?></th>
+</tr></thead>
+<tbody>
 <?php
-$class = "odd";
 $i = 0;
 while ($row = fetch($rs)) {
-	echo "<input type=hidden name=formid_$i value='$row->formid'/>";
-    echo "<tr class='$class'>";
-    echo "<td align=center>";
-	$href = "daily_forms.php?del_formid=$row->formid";
-    echo "<a href='$href'>";
-    image("delete.png'");
-    echo "</a></td>";
-    echo "<td>$row->formid</td>";
+	$formid = htmlspecialchars($row->formid);
+	$description = htmlspecialchars($row->description);
+    echo "<tr>";
+    echo "<td class='text-center'>";
+	deleteIcon("daily_forms.php?del_formid=$formid");
+    echo "</td>";
+    echo "<td class='text-end font-monospace'>$formid<input type='hidden' name='formid_$i' value='$formid'/></td>";
 	if ($mode == 'select')
-		$href = "attendence_day.php?formid=$row->formid";
+		$href = "attendence_day.php?formid=$formid";
 	else
-		$href = "daily_form.php?formid=$row->formid";
-    echo "<td><a href='$href'>";
-    echo $row->description;
-    echo "</a></td>";
+		$href = "daily_form.php?formid=$formid";
+    echo "<td><a class='fw-semibold' href='$href'>$description</a></td>";
     echo "</tr>";
-    $class = ($class == "odd" ? "even" : "odd");
     $i++;
 }
 hidden('count', $i);
+if ($i == 0)
+	echo "<tr><td colspan='3' class='text-center text-secondary py-5'>" . tr("No records found") . "</td></tr>";
 ?>
+</tbody>
 </table>
-<br/>
-<?php
-newButton("daily_form.php") ;
-?>
+</div>
+<div class="card-footer bg-white d-flex justify-content-end py-3">
+	<span class="text-secondary small"><?php echo $i ?> <?php echo tr("records") ?></span>
+</div>
+</div>
 </form>
 <?php bottom() ?>
 </body>

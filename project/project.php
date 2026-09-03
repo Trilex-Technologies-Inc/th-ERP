@@ -11,7 +11,7 @@
 		$customerid = prepParam('customerid');
 		if (isNew()) {
 			$sql = "insert into project (projectid, description, customerid)
-			        values ($projectid, '$description', customerid)";
+			        values ($projectid, '$description', $customerid)";
 			sql($sql);
 			//header("Location: projects.php");
 			//die;
@@ -83,45 +83,59 @@
 
 <body>
 <?php
-$title = $row->description;
-if ($new)
-	$title = tr("Create project");
-$title = "<a href='projects.php'>" . tr("Projects") . "</a> > $title";
+$title = tr("Project");
 top("projects", "Project", $title);
 ?>
 
+<main class="project-editor-page">
+	<header class="project-editor-intro">
+		<a class="project-editor-back" href="projects.php" aria-label="<?php etr("Projects") ?>">&#8592;</a>
+		<div class="projects-intro-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 7h6l2 2h8v10H4V7Zm0 4h16"/></svg></div>
+		<div class="project-editor-heading">
+			<span><?php etr("Project management") ?></span>
+			<h1><?php echo $new ? tr("Create project") : htmlspecialchars($row->description) ?></h1>
+			<p><?php etr("Manage the project customer, tasks, payroll accounts, and linked products.") ?></p>
+		</div>
+		<?php if (!$new) { ?><span class="project-editor-id">#<?php echo htmlspecialchars($projectid) ?></span><?php } ?>
+	</header>
+
 <form action="project.php" method="POST">
-<table>
-<tr>
-	<td><?php etr("Id") ?>:</td>
-	<td>
+<section class="project-editor-overview card border-0 shadow-sm">
+	<div class="card-header bg-white project-editor-card-header"><div><span><?php etr("Project details") ?></span><h2><?php etr("General information") ?></h2></div></div>
+	<div class="card-body">
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-3"><label class="form-label fw-semibold" for="projectid"><?php etr("Id") ?></label></div>
+	<div class="col-12 col-md-9">
 	<?php numberBox('projectid', $projectid); ?>
-	</td>
-</tr>
-<tr><td><?php etr("Description") ?>:</td><td><input type="text" name="description" value="<?php echo $row->description ?>"/></td>
-<tr>
-	<td><?php etr("Customer") ?>:</td>
-	<td><?php combobox('customerid', $customers, $row->customerid, true) ?></td>
-</table>
+	</div>
+</div>
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-3"><label class="form-label fw-semibold" for="project-description"><?php etr("Description") ?></label></div><div class="col-12 col-md-9"><input id="project-description" type="text" name="description" value="<?php echo htmlspecialchars($row->description) ?>"/></div>
+</div><div class="row g-3 align-items-center mb-2">
+	<div class="col-12 col-md-3"><label class="form-label fw-semibold" for="customerid"><?php etr("Customer") ?></label></div>
+	<div class="col-12 col-md-9"><?php combobox('customerid', $customers, $row->customerid, true) ?></div>
+</div></div></div></section>
 <?php
 if ($tasks != null) {
-	echo "<br/>";
-	echo "<div class=border>";
-	echo "<table>";
+	echo "<section class='project-tasks card border-0 shadow-sm overflow-hidden'>";
+	echo "<div class='card-header bg-white project-editor-card-header'><div><span>" . tr("Project work") . "</span><h2>" . tr("Tasks") . "</h2></div></div>";
+	echo "<div class='erp-table-responsive'><table class='erp-data-table project-tasks-table'><thead><tr>";
 	echo "<th>" . tr("Delete") . "</th>";
 	echo "<th>" . tr("Id") . "</th>";
 	echo "<th>" . tr("Task") . "</th>";
 	echo "<th>" . tr("Pay account") . "</th>";
 	echo "<th>" . tr("Product") . "</th>";
+	echo "</tr></thead><tbody>";
 	$class = 'odd';
 	$i = 0;
 	while ($row = fetch($tasks)) {
-		hidden("taskid_$i", $row->taskid);
 		echo "<tr class=$class>";
 		echo "<td align=center>";
 		deleteIcon("project.php?projectid=$projectid&del_taskid=$row->taskid");
 		echo "</td>";
-		echo "<td>$row->taskid</td>";
+		echo "<td>";
+		hidden("taskid_$i", $row->taskid);
+		echo htmlspecialchars($row->taskid) . "</td>";
 		echo "<td>";
 		textbox("description_$i", $row->description);
 		echo "</td>";
@@ -135,8 +149,7 @@ if ($tasks != null) {
         $class = ($class == "odd" ? "even" : "odd");
         $i++;
 	}
-	hidden('count', $i);
-	echo "<tr class=$class/>";
+	echo "<tr class='$class project-task-new'>";
 	echo "<td/>";
 	echo "<td>";
 	numberbox('taskid_new', '');
@@ -151,13 +164,14 @@ if ($tasks != null) {
 	combobox("productid_new", $products, null, true);
 	echo "</td>";
 	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
+	echo "</tbody></table></div>";
+	hidden('count', $i);
+	echo "</section>";
 }
 ?>
-<br/>
-<?php saveButton() ?>
+<div class="project-editor-actions"><?php saveButton() ?></div>
 <input type="hidden" name="new" value="<?php echo $new ?>"/>
 </form>
+</main>
 <?php bottom() ?>
 </body>

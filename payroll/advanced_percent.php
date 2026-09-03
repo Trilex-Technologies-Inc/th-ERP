@@ -73,56 +73,66 @@
 $title = $rec->name;
 if ($new)
 	$title = tr("Create");
-title("<a href='advanced_percents.php'>" . tr("Advanced percent") . "</a> > $title")
+title("<a href='advanced_percents.php'>" . tr("Advanced percent") . "</a> > " . htmlspecialchars($title))
 ?>
 
 <form action="advanced_percent.php" method="POST">
-<table>
-<tr>
-	<td><?php etr("Id") ?>:</td>
-	<td><input type=text name='apid' value='<?php echo $apid ?>'/></td>
-</tr>
-<tr><td><?php etr("Name") ?>:</td><td><input type="text" name="name" value="<?php echo $rec->name ?>"/></td>
-<tr><td><?php etr("Description") ?>:</td><td><input type="text" name="description" value="<?php echo $rec->description ?>"/></td>
-</table>
-<br/>
+<div class="card border-0 shadow-sm mb-4">
+<div class="card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3">
+<div><h2 class="h5 fw-bold mb-1"><?php echo htmlspecialchars($title) ?></h2><p class="text-secondary small mb-0"><?php etr("Advanced percent") ?></p></div>
+<span class="badge text-bg-light border"><?php echo $new ? tr("New") : '#' . htmlspecialchars($apid) ?></span>
+</div>
+<div class="card-body p-4"><div class="row g-4">
+<div class="col-12 col-lg-3"><label class="form-label fw-semibold" for="apid"><?php etr("Id") ?></label><input class="form-control" id="apid" type="text" name="apid" value="<?php echo htmlspecialchars($apid) ?>"/></div>
+<div class="col-12 col-lg-9"><label class="form-label fw-semibold" for="name"><?php etr("Name") ?></label><input class="form-control" id="name" type="text" name="name" value="<?php echo htmlspecialchars($rec->name) ?>" required /></div>
+<div class="col-12"><label class="form-label fw-semibold" for="description"><?php etr("Description") ?></label><input class="form-control" id="description" type="text" name="description" value="<?php echo htmlspecialchars($rec->description) ?>" required /></div>
+</div></div>
+</div>
 <?php
 if ($bracketids != null) {
-	echo "<div class=border>";
-	echo "<table>";
-	echo "<th>" . tr("Delete") . "</th>";
+	echo "<div class='card border-0 shadow-sm overflow-hidden'>";
+	echo "<div class='card-header bg-white py-3'><h2 class='h5 fw-bold mb-1'>" . tr("Interval") . "</h2><p class='text-secondary small mb-0'>" . tr("Percent") . "</p></div>";
+	echo "<div class='table-responsive'><table class='table table-hover align-middle mb-0'>";
+	echo "<thead><tr><th class='text-center' style='width: 90px;'>" . tr("Delete") . "</th>";
 	echo "<th>" . tr("Interval") . "</th>";
-	echo "<th>" . tr("Percent") . "</th>";
+	echo "<th style='width: 180px;'>" . tr("Percent") . "</th></tr></thead><tbody>";
 	$floor = 0;
-	$class = 'odd';
 	$i = 0;
 	while ($row = fetch($bracketids)) {
-		echo "<input type=hidden name='bracketid_$i' value='$row->bracketid'/>";
-		echo "<tr class=$class>";
-		echo "<td align=center>";
-		deleteIcon("advanced_percent.php?apid=$apid&del_bracketid=$row->bracketid");
+		$bracketid = htmlspecialchars($row->bracketid);
+		$ceiling = htmlspecialchars($row->ceiling);
+		$percent = htmlspecialchars($row->percent);
+		echo "<tr>";
+		echo "<td class='text-center'>";
+		deleteIcon("advanced_percent.php?apid=" . htmlspecialchars($apid) . "&del_bracketid=$bracketid");
 		echo "</td>";
-		echo "<td>$floor - $row->ceiling</td>";
-		echo "<td align=right><input type=text name='percent_$i' value='$row->percent' size=5/></td>";
+		echo "<td><input type='hidden' name='bracketid_$i' value='$bracketid'/>" . htmlspecialchars($floor) . " - $ceiling</td>";
+		echo "<td><input class='form-control' type='text' name='percent_$i' value='$percent' size='5'/></td>";
 		echo "</tr>";
 		$floor = $row->ceiling;
-		$class = ($class == "odd" ? "even" : "odd");
 		$i++;
 	}
-	echo "<tr class=$class>";
-	echo "<td/>";
-	echo "<td><input type=text name='ceiling_new' /></td>";
-	echo "<td><input type=text name='percent_new' size=5 /></td>";
+	echo "<tr class='table-light'>";
+	echo "<td class='text-center text-secondary fw-semibold'>+</td>";
+	echo "<td><input class='form-control' type='text' name='ceiling_new' /></td>";
+	echo "<td><input class='form-control' type='text' name='percent_new' size='5' /></td>";
 	echo "</tr>";
-	echo "<input type=hidden name=count value='$i'/>";
+	echo "</tbody></table></div>";
+	echo "<input type='hidden' name='count' value='$i'/>";
+	echo "</div>";
 }
 ?>
-</table>
+<div class="advanced-percent-actions" role="group" aria-label="<?php etr("Form actions") ?>">
+	<a class="advanced-percent-back" href="advanced_percents.php">
+		<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M19 12H5m6-6-6 6 6 6"/></svg>
+		<span><?php etr("Back") ?></span>
+	</a>
+	<button class="advanced-percent-save" type="submit" name="save" value="Save">
+		<svg aria-hidden="true" viewBox="0 0 24 24"><path d="M5 3h11l3 3v15H5zM8 3v6h8V3M8 21v-7h8v7"/></svg>
+		<span><?php etr("Save") ?></span>
+	</button>
 </div>
-<br/>
-<?php saveButton() ?>
-
-<input type="hidden" name="new" value="<?php echo $new ?>"/>
+<?php if ($new) { ?><input type="hidden" name="new" value="1"/><?php } ?>
 </form>
 <?php bottom() ?>
 </body>

@@ -2,6 +2,8 @@
 include('include.php');
 include('calculations.php');
 
+$mess = null;
+
 function lockPeriod($periodid)
 {
 	$rs = query("
@@ -37,24 +39,35 @@ function lockPeriod($periodid)
 
 if (!isEmpty(getParam('lock'))) {
 	$periodid = getCurrentPeriod();
-	tx("lockPeriod", array($periodid));
+	if (isEmpty($periodid))
+		$mess = tr("There is no open payroll period to lock.");
+	else
+		tx("lockPeriod", array((int)$periodid));
 }
 if (!isEmpty(getParam('unlock'))) {
 	$periodid = findValue("select max(periodid) from payperiod where locked=1");
-	sql("update payperiod set locked=0 where periodid=$periodid");
+	if (isEmpty($periodid))
+		$mess = tr("There is no locked payroll period to unlock.");
+	else {
+		$periodid = (int)$periodid;
+		sql("update payperiod set locked=0 where periodid=$periodid");
+	}
 }
 
 $periodid = getCurrentPeriod();
-
-$pattern = DATE_PATTERN_MYSQL;
-$sql = <<<SQL
+$period = null;
+if (!isEmpty($periodid)) {
+	$periodid = (int)$periodid;
+	$pattern = DATE_PATTERN_MYSQL;
+	$sql = <<<SQL
   select p.periodid,
 	date_format(starttime, '$pattern') as starttime,
 	date_format(endtime, '$pattern') as endtime
   from payperiod p
   where p.periodid=$periodid
 SQL;
-$period = find($sql);
+	$period = find($sql);
+}
 
 ?>
 
@@ -67,13 +80,18 @@ $period = find($sql);
 <body>
 
 <?php menubar("endofperiod.php", "end") ?>
+<?php title(tr("End of period")) ?>
 
-<br/>
+<?php if ($mess) { ?><div class="alert alert-warning"><?php echo htmlspecialchars($mess) ?></div><?php } ?>
+<?php if ($period) { ?>
 <?php etr("Current period is") ?>:
-<?php echo $period->starttime . ' - ' . $period->endtime; ?><br/>
+<?php echo htmlspecialchars($period->starttime . ' - ' . $period->endtime); ?><br/>
+<?php } else { ?>
+<div class="alert alert-info"><?php etr("There is no open payroll period. Unlock the last period or create a new period.") ?></div>
+<?php } ?>
 <br/>
 <form action='endofperiod.php' method=POST>
-<input type=submit name='lock' value='<?php etr("Lock current period") ?>'/>
+<input type=submit name='lock' value='<?php etr("Lock current period") ?>' <?php if (!$period) echo 'disabled'; ?>/>
 <input type=submit name='unlock' value='<?php etr("Unlock last period") ?>'/>
 </form>
 <ul>

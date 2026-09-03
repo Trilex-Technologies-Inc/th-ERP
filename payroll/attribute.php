@@ -52,42 +52,41 @@
 
 <body>
 <?php 
-$title = "<a href='attributes.php'>" . tr("Attributes") . "</a> > $rec->description ";
+$title = "<a href='attributes.php'>" . tr("Attributes") . "</a> > " . htmlspecialchars($rec->description);
 top("configuration.php", "Attribute", $title); 
 ?>
 
 <form action="attribute.php" method="POST">
-<input type=hidden name=attributeid value='<?php echo $attributeid ?>'/>
-<table>
-<tr><td><?php echo tr("Name") ?>:</td><td><?php echo $rec->description ?></td>
-</table>
+<input type="hidden" name="attributeid" value="<?php echo htmlspecialchars($attributeid) ?>"/>
 <?php
 if ($options != null) {
-	echo "<br/>";
-	echo "<div class=border>";
-	echo "<table>";
-	echo "<th>" . tr("Delete") . "</th>";	
-	echo "<th>" . tr("Id") . "</th>";
-	echo "<th>" . tr("Option") . "</th>";
-	$class = 'odd';
+	echo "<div class='card border-0 shadow-sm overflow-hidden'>";
+	echo "<div class='card-header bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3'>";
+	echo "<div><h2 class='h5 fw-bold mb-1'>" . htmlspecialchars($rec->description) . "</h2><p class='text-secondary small mb-0'>" . tr("Choices") . "</p></div>";
+	echo "<span class='badge text-bg-light border'>#" . htmlspecialchars($attributeid) . "</span></div>";
+	echo "<div class='table-responsive'><table class='table table-hover align-middle mb-0'>";
+	echo "<thead><tr><th class='text-center' style='width: 90px;'>" . tr("Delete") . "</th>";
+	echo "<th class='text-end' style='width: 120px;'>" . tr("Id") . "</th>";
+	echo "<th>" . tr("Option") . "</th></tr></thead><tbody>";
 	$i = 0;
 	while ($row = fetch($options)) {
-		hidden("optionid_$i", $row->optionid);
-		echo "<tr class=$class>";
-		echo "<td align=center>";
-		deleteIcon("attribute.php?attributeid=$attributeid&del_optionid=$row->optionid");
+		$optionid = htmlspecialchars($row->optionid);
+		echo "<tr>";
+		echo "<td class='text-center'>";
+		deleteIcon("attribute.php?attributeid=" . htmlspecialchars($attributeid) . "&del_optionid=$optionid");
 		echo "</td>";
-		echo "<td>$row->optionid</td>";
+		echo "<td class='text-end font-monospace'>$optionid";
+		hidden("optionid_$i", $row->optionid);
+		echo "</td>";
 		echo "<td>";
 		textbox("description_$i", $row->description);
 		echo "</td>";
 		echo "</tr>";
-        $class = ($class == "odd" ? "even" : "odd");
         $i++;
 	}
 	hidden('count', $i);
-	echo "<tr class=$class/>";
-	echo "<td/>";
+	echo "<tr class='table-light'>";
+	echo "<td class='text-center text-secondary fw-semibold'>+</td>";
 	echo "<td>";
 	textbox('optionid_new', '');
 	echo "</td>";
@@ -95,14 +94,14 @@ if ($options != null) {
 	textbox('description_new', '');
 	echo "</td>";
 	echo "</tr>";
-	echo "</table>";
-	echo "</div>";
+	echo "</tbody></table></div>";
+	echo "<div class='card-footer bg-white d-flex flex-wrap justify-content-between align-items-center gap-2 py-3'>";
 }
 ?>
-
-<br>
 <?php saveButton() ?>
-<input type="hidden" name="new" value="<?php echo $new ?>"/>
+<a class="btn btn-outline-secondary" href="attributes.php"><?php etr("Back") ?></a>
+<?php if ($options != null) echo "<span class='text-secondary small'>$i " . tr("records") . "</span></div></div>"; ?>
+<?php if ($new) { ?><input type="hidden" name="new" value="1"/><?php } ?>
 </form>
 <?php bottom() ?>
 

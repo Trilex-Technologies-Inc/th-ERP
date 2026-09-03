@@ -27,16 +27,16 @@ title(tr("Supplier balance"));
 
 <form action="supplier_balance.php" method="GET">
 <div class="border">
-<table>
-<tr><td>Name:</td><td><input type="text" name="name" value="<?php echo $name ?>"/></td>
-<tr><td><input type="submit" name="search" value="Search" /></td></tr>
-</tr>
-</table>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto">Name:</div><div class="col-12 col-md-auto"><input type="text" name="name" value="<?php echo $name ?>"/></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><input type="submit" name="search" value="Search" /></div></div>
+
+</div>
 </div>
 </form>
 &nbsp;
 
-<table>
+<div class="card border-0 shadow-sm overflow-hidden"><div class="table-responsive"><table class="table table-hover align-middle mb-0">
 <th><?php etr("Id") ?></th>
 <th><?php etr("Name") ?></th>
 <th><?php etr("Balance") ?></th>
@@ -55,6 +55,6 @@ title(tr("Supplier balance"));
         $class = ($class == "odd" ? "even" : "odd");
     }
 ?>
-</table>
+</table></div></div>
 <?php bottom() ?>
 </body>

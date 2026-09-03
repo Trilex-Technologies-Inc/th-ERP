@@ -5,7 +5,7 @@
 ?>
 <head>
 <title>thERP - <?php etr("Receive goods") ?></title>
-<LINK REL=StyleSheet HREF="therp.css" TYPE="text/css">
+<?php styleSheet() ?>
 </head>
 
 <body>
@@ -14,19 +14,19 @@
 
 <form action="receive_goods.php" method="POST">
 <input type=hidden name=transactionid value='<?php echo $transactionid ?>'/>
-<table>
-<tr><td class=label><?php etr("Id") ?>:</td><td><?php echo $transactionid ?></td>
-<tr><td class=label><?php etr("Narrative") ?>:</td>
-<td>
+<div class="container-fluid px-0 erp-form-layout">
+<div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Id") ?>:</div><div class="col-12 col-md-auto"><?php echo $transactionid ?></div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Narrative") ?>:</div>
+<div class="col-12 col-md-auto">
 <input type=text name='narrative' value='<?php echo $narrative ?>'/>
-</td>
-<tr><td class=label><?php etr("Time") ?>:</td><td><?php echo formatDate($transtime) ?></td></tr>
-</table>
+</div>
+</div><div class="row g-3 align-items-center mb-2"><div class="col-12 col-md-auto"><?php etr("Time") ?>:</div><div class="col-12 col-md-auto"><?php echo formatDate($transtime) ?></div></div>
+</div>
 <br/>
 <?php
 if ($parts != null) {
 	echo "<div class=border>";
-	echo "<table>";
+	echo "<div class='card border-0 shadow-sm overflow-hidden'><div class='table-responsive'><table class='table table-hover align-middle mb-0'>";
 	echo "<th>" . tr("Delete") . "</th>";
 	echo "<th>" . tr("Account") . "</th>";
 	echo "<th>" . tr("Amount") . "</th>";
@@ -54,7 +54,7 @@ if ($parts != null) {
 	echo "</td>";
 	echo "<td><input type=text name='amount_new'/></td>";
 	echo "</tr>";
-	echo "</table>";
+	echo "</table></div></div>";
 	echo "</div>";	
 }
 ?>
